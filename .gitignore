@@ -1,0 +1,13 @@
+/bin
+/addons
+/logs
+/screenshots
+/tmp
+/videos
+/scripts
+*.class
+# Package Files #
+*.jar
+.classpath
+.project
+.settings/

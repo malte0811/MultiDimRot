@@ -1,8 +1,5 @@
 package malte0811.multiDim.render;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -15,6 +12,14 @@ import org.lwjgl.util.glu.GLU;
 
 public abstract class RenderAlgo {
 	public static int mainShaderId;
+	final static String vertexShader = "#version 150 core\r\n"
+			+ "in vec4 in_Position;\r\n" + "in vec4 in_Color;\r\n"
+			+ "out vec4 pass_Color;\r\n" + "void main(void) {\r\n"
+			+ "gl_Position = in_Position;\r\n" + "pass_Color = in_Color;\r\n"
+			+ "}";
+	final static String fragShader = "#version 150 core\r\n"
+			+ "in vec4 pass_Color;\r\n" + "out vec4 out_Color;\r\n"
+			+ "void main(void) {\r\n" + "out_Color = pass_Color;\r\n" + "}";
 
 	public abstract double[] getInitialParams();
 
@@ -22,10 +27,8 @@ public abstract class RenderAlgo {
 			double[] options, boolean drawVertices, float[][] colors);
 
 	public static void init() {
-		int vsId = loadShader(System.getProperty("user.dir")
-				+ "\\src\\vertex.glsl", GL20.GL_VERTEX_SHADER);
-		int frId = loadShader(System.getProperty("user.dir")
-				+ "\\src\\fragment.glsl", GL20.GL_FRAGMENT_SHADER);
+		int vsId = loadShader(vertexShader, GL20.GL_VERTEX_SHADER);
+		int frId = loadShader(fragShader, GL20.GL_FRAGMENT_SHADER);
 		mainShaderId = GL20.glCreateProgram();
 		GL20.glAttachShader(mainShaderId, vsId);
 		GL20.glAttachShader(mainShaderId, frId);
@@ -44,25 +47,11 @@ public abstract class RenderAlgo {
 		}
 	}
 
-	public static int loadShader(String filename, int type) {
-		StringBuilder shaderSource = new StringBuilder();
+	public static int loadShader(String shader, int type) {
 		int shaderID = 0;
 
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(filename));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				shaderSource.append(line).append("\n");
-			}
-			reader.close();
-		} catch (IOException e) {
-			System.err.println("Could not read file.");
-			e.printStackTrace();
-			System.exit(-1);
-		}
-
 		shaderID = GL20.glCreateShader(type);
-		GL20.glShaderSource(shaderID, shaderSource);
+		GL20.glShaderSource(shaderID, shader);
 		GL20.glCompileShader(shaderID);
 
 		return shaderID;

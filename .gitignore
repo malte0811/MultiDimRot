@@ -5,9 +5,10 @@
 /tmp
 /videos
 /scripts
+/src/build.bat
+/src/run.bat
 *.class
 # Package Files #
-*.jar
 .classpath
 .project
 .settings/

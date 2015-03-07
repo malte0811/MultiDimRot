@@ -12,11 +12,11 @@ import malte0811.multiDim.commands.CommandExit;
 import malte0811.multiDim.commands.CommandHelp;
 import malte0811.multiDim.commands.CommandRecord;
 import malte0811.multiDim.commands.CommandResetRot;
+import malte0811.multiDim.commands.CommandResizeSolid;
 import malte0811.multiDim.commands.CommandRotCon;
 import malte0811.multiDim.commands.CommandRotInst;
 import malte0811.multiDim.commands.CommandScreenShot;
 import malte0811.multiDim.commands.CommandSetSize;
-import malte0811.multiDim.commands.CommandResizeSolid;
 import malte0811.multiDim.commands.CommandZoom;
 import malte0811.multiDim.commands.ser.CommandAdd;
 import malte0811.multiDim.commands.ser.CommandDeserialize;
@@ -63,7 +63,6 @@ public abstract class Command {
 		register(new CommandScreenShot());
 		register(new CommandRecord());
 		register(new CommandSetSize());
-
 	}
 
 	public static boolean processCommand(String command, boolean suppressWarning) {

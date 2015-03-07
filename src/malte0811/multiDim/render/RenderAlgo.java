@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -237,5 +238,97 @@ public abstract class RenderAlgo {
 		// Delete the index VBO
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 		GL15.glDeleteBuffers(vbocId);
+	}
+
+	public int[][] getDensity(int[][][] triangles) {
+		int[][] dens = new int[Display.getWidth()][Display.getHeight()];
+		for (int[][] tri : triangles) {
+			int[] min = {
+					(int) Math.min(tri[0][0], Math.min(tri[1][0], tri[1][0])),
+					(int) Math.min(tri[0][1], Math.min(tri[1][1], tri[2][1])) };
+			int[] max = {
+					(int) Math.max(tri[0][0], Math.max(tri[1][0], tri[1][0])),
+					(int) Math.max(tri[0][1], Math.max(tri[1][1], tri[2][1])) };
+
+			boolean middleAbove = false;
+			int middle = 0;
+			for (int i = 0; i < 3; i++) {
+				if ((tri[i][0] >= tri[(i + 1) % 3][0] && tri[i][0] <= tri[(i + 2) % 3][0])
+						|| (tri[i][0] <= tri[(i + 1) % 3][0] && tri[i][0] >= tri[(i + 2) % 3][0])) {
+					middle = i;
+					break;
+				}
+			}
+			int[] mp = tri[middle];
+			int[] s1 = tri[(middle + 1) % 3];
+			int[] s2 = tri[(middle + 2) % 3];
+			if (mp[1] > valueAt(mp[0], s1[0], s1[1], s2[0], s2[1])) {
+				middleAbove = true;
+			}
+			for (int x = min[0]; x < max[0]; x++) {
+				for (int y = min[1]; y < max[1]; y++) {
+					float vOp = valueAt(x, s1[0], s1[1], s2[0], s2[1]);
+					float vS1 = valueAt(x, s1[0], s1[1], mp[0], mp[1]);
+					float vS2 = valueAt(x, s1[0], s1[1], mp[0], mp[1]);
+					if (middleAbove) {
+						// is the current point in the triangle tri?
+						if (vOp < y && vS1 > y && vS2 > y) {
+							dens[x][y]++;
+						}
+					} else {
+						// is the current point in the triangle tri?
+						if (vOp > y && vS1 < y && vS2 < y) {
+							dens[x][y]++;
+						}
+					}
+				}
+			}
+		}
+		return dens;
+	}
+
+	protected double[] achsenabschnitt(double[] v1, double[] v2,
+			double[] options) {
+		double[] ret = new double[v1.length];
+		for (int i = 0; i < v1.length - 1; i++) {
+			ret[i] = achsenabschnitt(v1[v1.length - 1], v2[v2.length - 1],
+					v1[i], v2[i]);
+		}
+		if (options != null) {
+			ret[v1.length - 1] = Math.abs(options[0]) < 0.001 ? 0.001
+					: options[0];
+		}
+
+		return ret;
+	}
+
+	protected double achsenabschnitt(double x1, double x2, double y1, double y2) {
+		double steigung = (y2 - y1) / (x2 - x1);
+
+		double d = y2 - steigung * x2;
+		return d;
+	}
+
+	protected float[] valueAt(float x, float[] ret2, float[] ret3) {
+		float[] ret = new float[ret2.length];
+		double[] s1D = new double[ret2.length];
+		double[] s2D = new double[ret2.length];
+		for (int i = 0; i < s1D.length; i++) {
+			s1D[i] = ret2[i];
+			s2D[i] = ret3[i];
+		}
+		double[] achse = achsenabschnitt(s1D, s2D, null);
+		for (int i = 0; i < ret2.length - 1; i++) {
+			double steigung = (s1D[i] - s2D[i])
+					/ (s1D[s1D.length - 1] - s2D[ret3.length - 1]);
+			ret[i] = (int) (achse[i] + steigung * (double) x);
+		}
+		ret[ret.length - 1] = x;
+		return ret;
+	}
+
+	protected float valueAt(float f, float x1, float y1, float x2, float y2) {
+		float steig = (y2 - y1) / (x2 - x1);
+		return (float) (steig * f + achsenabschnitt(x1, x2, y1, y2));
 	}
 }

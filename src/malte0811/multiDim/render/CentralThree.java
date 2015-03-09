@@ -3,11 +3,13 @@ package malte0811.multiDim.render;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.lwjgl.opengl.Display;
+
 public class CentralThree extends ZoomableRender {
 
 	@Override
 	public void render(double[][] vertices, int[][] edges, double[] options,
-			boolean renderVertices, float[][] colors) {
+			boolean renderVertices, float[][] colors, int[][] sides) {
 		int length = vertices[0].length;
 		boolean[] extraVertices = new boolean[vertices.length];
 		while (length > 2) {
@@ -137,18 +139,22 @@ public class CentralThree extends ZoomableRender {
 		} else {
 			renderNoColor(ret, edges, RenderAlgo.mainShaderId);
 		}
-
-		// NYI
-		// int[][][] sInt = new int[sides.length][3][2];
-		// for (int i = 0;i<sides.length;i++) {
-		// for (int i2 = 0;i2<3;i2++) {
-		// sInt[i][i2][0] = (int)
-		// ((ret[sides[i][i2]][0]+1)/2*Display.getWidth());
-		// sInt[i][i2][1] = (int)
-		// ((ret[sides[i][i2]][1]+1)/2*Display.getHeight());
-		// }
-		// }
-
+		if (sides != null) {
+			int[][][] sInt = new int[sides.length][3][2];
+			for (int i = 0; i < sides.length; i++) {
+				for (int i2 = 0; i2 < 3; i2++) {
+					if (ret[sides[i][i2]] == null) {
+						sides[i] = null;
+						break;
+					}
+					sInt[i][i2][0] = (int) ((ret[sides[i][i2]][0] + 1) / 2 * Display
+							.getWidth());
+					sInt[i][i2][1] = (int) ((ret[sides[i][i2]][1] + 1) / 2 * Display
+							.getHeight());
+				}
+			}
+			renderSides(getDensity(sInt));
+		}
 	}
 
 	private double[] zentralDownOne(double[] in, boolean clean, double[] options) {

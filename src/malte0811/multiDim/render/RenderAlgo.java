@@ -13,11 +13,19 @@ import org.lwjgl.util.glu.GLU;
 
 public abstract class RenderAlgo {
 	public static int mainShaderId;
-	final static String vertexShader = "#version 150 core\r\n"
+	public static int sideShaderId;
+
+	final static String vertexShaderEdges = "#version 150 core\r\n"
 			+ "in vec4 in_Position;\r\n" + "in vec4 in_Color;\r\n"
 			+ "out vec4 pass_Color;\r\n" + "void main(void) {\r\n"
 			+ "gl_Position = in_Position;\r\n" + "pass_Color = in_Color;\r\n"
 			+ "}";
+	final static String vertexShaderSides = "#version 150 core\r\n"
+			+ "in vec2 in_Position;\r\n" + "in float in_dens;\r\n"
+			+ "out vec4 pass_Color;\r\n" + "void main(void) {\r\n"
+			+ "gl_Position = vec4(in_Position[0], in_Position[1], 0, 0);\r\n"
+			+ "pass_Color[0] = vec4(0, 0, 1-0.5/in_dens, 1);\r\n" + "}";
+
 	final static String fragShader = "#version 150 core\r\n"
 			+ "in vec4 pass_Color;\r\n" + "out vec4 out_Color;\r\n"
 			+ "void main(void) {\r\n" + "out_Color = pass_Color;\r\n" + "}";
@@ -25,10 +33,11 @@ public abstract class RenderAlgo {
 	public abstract double[] getInitialParams();
 
 	public abstract void render(double[][] vertices, int[][] edges,
-			double[] options, boolean drawVertices, float[][] colors);
+			double[] options, boolean drawVertices, float[][] colors,
+			int[][] sides);
 
 	public static void init() {
-		int vsId = loadShader(vertexShader, GL20.GL_VERTEX_SHADER);
+		int vsId = loadShader(vertexShaderEdges, GL20.GL_VERTEX_SHADER);
 		int frId = loadShader(fragShader, GL20.GL_FRAGMENT_SHADER);
 		mainShaderId = GL20.glCreateProgram();
 		GL20.glAttachShader(mainShaderId, vsId);
@@ -40,6 +49,17 @@ public abstract class RenderAlgo {
 		GL20.glLinkProgram(mainShaderId);
 		GL20.glValidateProgram(mainShaderId);
 		System.out.println("Loaded shaders: " + mainShaderId);
+		vsId = loadShader(vertexShaderSides, GL20.GL_VERTEX_SHADER);
+		sideShaderId = GL20.glCreateProgram();
+		GL20.glAttachShader(sideShaderId, vsId);
+		GL20.glAttachShader(sideShaderId, frId);
+		// Position information will be attribute 0
+		GL20.glBindAttribLocation(sideShaderId, 0, "in_Position");
+		// Color information will be attribute 1
+		GL20.glBindAttribLocation(sideShaderId, 1, "in_dens");
+		GL20.glLinkProgram(sideShaderId);
+		GL20.glValidateProgram(sideShaderId);
+		System.out.println("Loaded shaders: " + sideShaderId);
 		int errorCheckValue = GL11.glGetError();
 		if (errorCheckValue != GL11.GL_NO_ERROR) {
 			System.out.println("ERROR - Could not create the shaders:"
@@ -58,7 +78,7 @@ public abstract class RenderAlgo {
 		return shaderID;
 	}
 
-	public void renderNoColor(float[][] rV, int[][] edges, int shader) {
+	protected void renderNoColor(float[][] rV, int[][] edges, int shader) {
 		IntBuffer indices = BufferUtils.createIntBuffer(2 * edges.length);
 		float[] tmp = { 0, 1 };
 		FloatBuffer interL = BufferUtils.createFloatBuffer(8 * rV.length);
@@ -142,7 +162,7 @@ public abstract class RenderAlgo {
 		GL15.glDeleteBuffers(vboiId);
 	}
 
-	public void renderColor(float[][] rV, int[][] edges, float[][] colors,
+	protected void renderColor(float[][] rV, int[][] edges, float[][] colors,
 			int shader) {
 		IntBuffer vboI = BufferUtils.createIntBuffer(2 * edges.length);
 		for (int i = 0; i < 2 * edges.length; i++) {
@@ -243,6 +263,9 @@ public abstract class RenderAlgo {
 	public int[][] getDensity(int[][][] triangles) {
 		int[][] dens = new int[Display.getWidth()][Display.getHeight()];
 		for (int[][] tri : triangles) {
+			if (tri == null) {
+				continue;
+			}
 			int[] min = {
 					(int) Math.min(tri[0][0], Math.min(tri[1][0], tri[1][0])),
 					(int) Math.min(tri[0][1], Math.min(tri[1][1], tri[2][1])) };
@@ -285,6 +308,66 @@ public abstract class RenderAlgo {
 			}
 		}
 		return dens;
+	}
+
+	protected void renderSides(int[][] density) {
+		int count = 0;
+		for (int[] i : density) {
+			for (int i2 : i) {
+				if (i2 > 0) {
+					count++;
+				}
+			}
+		}
+		FloatBuffer vertices = BufferUtils.createFloatBuffer(2 * count);
+		FloatBuffer dens = BufferUtils.createFloatBuffer(count);
+		int width = Display.getWidth();
+		int height = Display.getHeight();
+		for (int i = 0; i < density.length; i++) {
+			for (int i2 = 0; i2 < density[i].length; i2++) {
+				if (density[i][i2] > 0) {
+					vertices.put(i / width - 1);
+					vertices.put(i2 / height - 1);
+					dens.put(density[i][i2]);
+				}
+			}
+		}
+		int vboId = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
+		GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0);
+		// Deselect (bind to 0) the VBO
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+		int vboDId = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboDId);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dens, GL15.GL_STATIC_DRAW);
+		GL20.glVertexAttribPointer(1, 1, GL11.GL_FLOAT, false, 0, 0);
+		// Deselect (bind to 0) the VBO
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		GL20.glUseProgram(sideShaderId);
+		GL20.glEnableVertexAttribArray(0);
+		GL20.glEnableVertexAttribArray(1);
+
+		// Draw the vertices
+		GL11.glDrawArrays(GL11.GL_LINES, count, GL11.GL_UNSIGNED_INT);
+		GL20.glUseProgram(0);
+		// deselect
+		GL20.glDisableVertexAttribArray(0);
+		GL20.glDisableVertexAttribArray(1);
+
+		// Deselect (bind to 0) the VAO
+		GL30.glBindVertexArray(0);
+		// Disable the VBO index from the VAO attributes list
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+		GL20.glDisableVertexAttribArray(0);
+
+		// Delete the VBO
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL15.glDeleteBuffers(vboId);
+
 	}
 
 	protected double[] achsenabschnitt(double[] v1, double[] v2,

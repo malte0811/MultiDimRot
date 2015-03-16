@@ -37,7 +37,6 @@ public class CalcThread implements Runnable {
 	public Color background = Color.GRAY;
 	public double zoomMax = 5;
 	public double zoomStep = 0;
-	public boolean showVertices = false;
 	public RenderAlgo algo = null;
 	public HashSet<TickHandler> handlers = new HashSet<>();
 	public CommandListener c;
@@ -167,8 +166,7 @@ public class CalcThread implements Runnable {
 			edges[i] = Arrays.copyOf(oldEdges[i], 2);
 		}
 		// TODO not only HyperCube should have sides
-		algo.render(vertices, edges, renderOptions, showVertices, solid
-				.getColors(),
+		algo.render(vertices, edges, renderOptions, solid.getColors(),
 				(solid instanceof HyperCube) ? ((HyperCube) solid).sides : null);
 	}
 

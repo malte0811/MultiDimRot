@@ -63,6 +63,15 @@ public abstract class Command {
 		register(new CommandScreenShot());
 		register(new CommandRecord());
 		register(new CommandSetSize());
+		try {
+			// only load if exists, so it doesnt appear in the master branch
+			Class<?> cl = Class
+					.forName("malte0811.multiDim.commands.CommandTmp");
+			Command cmd = (Command) cl.asSubclass(Command.class)
+					.getConstructor().newInstance();
+			register(cmd);
+		} catch (Exception x) {
+		}
 	}
 
 	public static boolean processCommand(String command, boolean suppressWarning) {

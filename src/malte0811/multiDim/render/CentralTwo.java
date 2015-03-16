@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class CentralTwo extends ZoomableRender {
 	@Override
 	public void render(double[][] vertices, int[][] edges, double[] options,
-			boolean renderVertices, float[][] colors, int[][] sides) {
+			float[][] colors, int[][] sides) {
 		for (int i = 0; i < vertices.length; i++) {
 			while (vertices[i] != null && vertices[i].length > 2) {
 				vertices[i] = zentralDownOne(vertices[i], true, options);

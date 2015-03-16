@@ -4,7 +4,7 @@ public class ParallelRender extends RenderAlgo {
 
 	@Override
 	public void render(double[][] vertices, int[][] edges, double[] options,
-			boolean drawVertices, float[][] colors, int[][] sides) {
+			float[][] colors, int[][] sides) {
 		float[][] rV = new float[vertices.length][2];
 		for (int i = 0; i < vertices.length; i++) {
 			double[] vertex = vertices[i];

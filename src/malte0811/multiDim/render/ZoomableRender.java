@@ -4,8 +4,7 @@ public abstract class ZoomableRender extends RenderAlgo {
 
 	@Override
 	public abstract void render(double[][] vertices, int[][] edges,
-			double[] options, boolean renderVertices, float[][] colors,
-			int[][] sides);
+			double[] options, float[][] colors, int[][] sides);
 
 	@Override
 	public double[] getInitialParams() {

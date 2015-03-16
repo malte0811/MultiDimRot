@@ -23,8 +23,8 @@ public abstract class RenderAlgo {
 	final static String vertexShaderSides = "#version 150 core\r\n"
 			+ "in vec2 in_Position;\r\n" + "in float in_dens;\r\n"
 			+ "out vec4 pass_Color;\r\n" + "void main(void) {\r\n"
-			+ "gl_Position = vec4(in_Position[0], in_Position[1], 0, 0);\r\n"
-			+ "pass_Color[0] = vec4(0, 0, 1-0.5/in_dens, 1);\r\n" + "}";
+			+ "gl_Position = vec4(in_Position[0], in_Position[1], 0, 1);\r\n"
+			+ "pass_Color = vec4(0, 0, 1-2/(3+in_dens), 1);\r\n" + "}";
 
 	final static String fragShader = "#version 150 core\r\n"
 			+ "in vec4 pass_Color;\r\n" + "out vec4 out_Color;\r\n"
@@ -33,39 +33,41 @@ public abstract class RenderAlgo {
 	public abstract double[] getInitialParams();
 
 	public abstract void render(double[][] vertices, int[][] edges,
-			double[] options, boolean drawVertices, float[][] colors,
-			int[][] sides);
+			double[] options, float[][] colors, int[][] sides);
 
 	public static void init() {
 		int vsId = loadShader(vertexShaderEdges, GL20.GL_VERTEX_SHADER);
 		int frId = loadShader(fragShader, GL20.GL_FRAGMENT_SHADER);
+
 		mainShaderId = GL20.glCreateProgram();
 		GL20.glAttachShader(mainShaderId, vsId);
 		GL20.glAttachShader(mainShaderId, frId);
-		// Position information will be attribute 0
 		GL20.glBindAttribLocation(mainShaderId, 0, "in_Position");
-		// Color information will be attribute 1
 		GL20.glBindAttribLocation(mainShaderId, 1, "in_Color");
 		GL20.glLinkProgram(mainShaderId);
 		GL20.glValidateProgram(mainShaderId);
-		System.out.println("Loaded shaders: " + mainShaderId);
+		int error;
+		if ((error = GL11.glGetError()) != GL11.GL_NO_ERROR) {
+			System.out.println("ERROR - Could not create edge shaders:"
+					+ GLU.gluErrorString(error));
+			System.exit(-1);
+		}
+		System.out.println("Loaded edge shaders: " + mainShaderId);
+
 		vsId = loadShader(vertexShaderSides, GL20.GL_VERTEX_SHADER);
 		sideShaderId = GL20.glCreateProgram();
 		GL20.glAttachShader(sideShaderId, vsId);
 		GL20.glAttachShader(sideShaderId, frId);
-		// Position information will be attribute 0
 		GL20.glBindAttribLocation(sideShaderId, 0, "in_Position");
-		// Color information will be attribute 1
 		GL20.glBindAttribLocation(sideShaderId, 1, "in_dens");
 		GL20.glLinkProgram(sideShaderId);
 		GL20.glValidateProgram(sideShaderId);
-		System.out.println("Loaded shaders: " + sideShaderId);
-		int errorCheckValue = GL11.glGetError();
-		if (errorCheckValue != GL11.GL_NO_ERROR) {
-			System.out.println("ERROR - Could not create the shaders:"
-					+ GLU.gluErrorString(errorCheckValue));
+		if ((error = GL11.glGetError()) != GL11.GL_NO_ERROR) {
+			System.out.println("ERROR - Could not create side shaders:"
+					+ GLU.gluErrorString(error));
 			System.exit(-1);
 		}
+		System.out.println("Loaded side shaders: " + sideShaderId);
 	}
 
 	public static int loadShader(String shader, int type) {
@@ -105,8 +107,6 @@ public abstract class RenderAlgo {
 		}
 		indices.flip();
 
-		// Create a new Vertex Array Object in memory and select it (bind)
-		// A VAO can have up to 16 attributes (VBO's) assigned to it by default
 		int vaoId = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vaoId);
 
@@ -115,9 +115,6 @@ public abstract class RenderAlgo {
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indices,
 				GL15.GL_STATIC_DRAW);
 
-		// Create a new Vertex Buffer Object in memory and select it (bind)
-		// A VBO is a collection of Vectors which in this case resemble the
-		// location of each vertex.
 		int vboInterId = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboInterId);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, interL, GL15.GL_STATIC_DRAW);
@@ -195,14 +192,9 @@ public abstract class RenderAlgo {
 		colorsBuf.flip();
 		verticesBuffer.flip();
 
-		// Create a new Vertex Array Object in memory and select it (bind)
-		// A VAO can have up to 16 attributes (VBO's) assigned to it by default
 		int vaoId = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vaoId);
 
-		// Create a new Vertex Buffer Object in memory and select it (bind)
-		// A VBO is a collection of Vectors which in this case resemble the
-		// location of each vertex.
 		int vboId = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer,
@@ -227,7 +219,6 @@ public abstract class RenderAlgo {
 				GL15.GL_STATIC_DRAW);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		GL20.glUseProgram(shader);
 		GL30.glBindVertexArray(vaoId);
 		GL20.glEnableVertexAttribArray(0);
@@ -262,15 +253,17 @@ public abstract class RenderAlgo {
 
 	public int[][] getDensity(int[][][] triangles) {
 		int[][] dens = new int[Display.getWidth()][Display.getHeight()];
+		int iI = 0;
 		for (int[][] tri : triangles) {
+			iI++;
 			if (tri == null) {
 				continue;
 			}
 			int[] min = {
-					(int) Math.min(tri[0][0], Math.min(tri[1][0], tri[1][0])),
+					(int) Math.min(tri[0][0], Math.min(tri[1][0], tri[2][0])),
 					(int) Math.min(tri[0][1], Math.min(tri[1][1], tri[2][1])) };
 			int[] max = {
-					(int) Math.max(tri[0][0], Math.max(tri[1][0], tri[1][0])),
+					(int) Math.max(tri[0][0], Math.max(tri[1][0], tri[2][0])),
 					(int) Math.max(tri[0][1], Math.max(tri[1][1], tri[2][1])) };
 
 			boolean middleAbove = false;
@@ -292,7 +285,7 @@ public abstract class RenderAlgo {
 				for (int y = min[1]; y < max[1]; y++) {
 					float vOp = valueAt(x, s1[0], s1[1], s2[0], s2[1]);
 					float vS1 = valueAt(x, s1[0], s1[1], mp[0], mp[1]);
-					float vS2 = valueAt(x, s1[0], s1[1], mp[0], mp[1]);
+					float vS2 = valueAt(x, s2[0], s2[1], mp[0], mp[1]);
 					if (middleAbove) {
 						// is the current point in the triangle tri?
 						if (vOp < y && vS1 > y && vS2 > y) {
@@ -304,6 +297,7 @@ public abstract class RenderAlgo {
 							dens[x][y]++;
 						}
 					}
+
 				}
 			}
 		}
@@ -326,33 +320,35 @@ public abstract class RenderAlgo {
 		for (int i = 0; i < density.length; i++) {
 			for (int i2 = 0; i2 < density[i].length; i2++) {
 				if (density[i][i2] > 0) {
-					vertices.put(i / width - 1);
-					vertices.put(i2 / height - 1);
+					vertices.put(((float) (2 * i) / (float) width) - 1F);
+					vertices.put(((float) (2 * i2) / (float) height) - 1F);
 					dens.put(density[i][i2]);
 				}
 			}
 		}
+		vertices.flip();
+		dens.flip();
+		int vaoId = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(vaoId);
+
 		int vboId = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0);
-		// Deselect (bind to 0) the VBO
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-		int vboDId = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboDId);
+		int densVbo = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, densVbo);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dens, GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(1, 1, GL11.GL_FLOAT, false, 0, 0);
-		// Deselect (bind to 0) the VBO
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		GL20.glUseProgram(sideShaderId);
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
 
 		// Draw the vertices
-		GL11.glDrawArrays(GL11.GL_LINES, count, GL11.GL_UNSIGNED_INT);
+		GL11.glDrawArrays(GL11.GL_POINTS, 0, count);
 		GL20.glUseProgram(0);
 		// deselect
 		GL20.glDisableVertexAttribArray(0);
@@ -367,6 +363,12 @@ public abstract class RenderAlgo {
 		// Delete the VBO
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		GL15.glDeleteBuffers(vboId);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL15.glDeleteBuffers(densVbo);
+
+		// Delete the VAO
+		GL30.glBindVertexArray(0);
+		GL30.glDeleteVertexArrays(vaoId);
 
 	}
 

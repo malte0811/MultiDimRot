@@ -5,8 +5,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import malte0811.multiDim.solids.HyperCube;
 import malte0811.multiDim.solids.Solid;
+import malte0811.multiDim.solids.euclidND.NDTetraeder;
 
 public class Main {
 	CalcThread panel;
@@ -26,7 +26,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		Main m = new Main(new HyperCube());
+		Main m = new Main(new NDTetraeder(2));
 	}
 
 }

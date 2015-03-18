@@ -11,6 +11,7 @@ import java.util.HashMap;
 public abstract class Solid implements Serializable {
 	public double[][] vertices;
 	public int[][] edges;
+	public int[][] sides;
 	private HashMap<String, Object> data = new HashMap<>();
 
 	public void rotate(int firstAxis, int secondAxis, int degree) {
@@ -148,5 +149,9 @@ public abstract class Solid implements Serializable {
 
 	public boolean hasProperty(String n) {
 		return data.containsKey(n);
+	}
+
+	public int[][] getSides() {
+		return sides;
 	}
 }

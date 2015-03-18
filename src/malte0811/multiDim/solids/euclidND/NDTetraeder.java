@@ -13,6 +13,7 @@ public class NDTetraeder extends Solid {
 			double[][] tmpV = { { -0.5 }, { 0.5 } };
 			vertices = tmpV;
 			edges = tmp;
+			sides = new int[0][3];
 			return;
 		}
 
@@ -32,6 +33,20 @@ public class NDTetraeder extends Solid {
 		tmp = Solid.add(oldTetra, tmp, false);
 		edges = tmp.getEdges();
 		vertices = tmp.getCopyOfVertices(dim);
+		sides = oldTetra.sides;
+		int sideI = sides.length;
+		sides = Arrays.copyOf(sides, sides.length + dim * (dim - 1) / 2);
+		for (int i = 0; i < dim - 1; i++) {
+			for (int i2 = i + 1; i2 < dim; i2++) {
+				sides[sideI] = new int[3];
+				sides[sideI][0] = dim;
+				sides[sideI][1] = i;
+				sides[sideI][2] = i2;
+				System.out.println(dim + "|" + i + "|" + i2);
+				sideI++;
+			}
+		}
+		System.out.print("");
 	}
 
 	@Override

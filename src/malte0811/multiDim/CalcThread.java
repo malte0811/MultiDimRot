@@ -16,7 +16,6 @@ import malte0811.multiDim.addons.TickHandler;
 import malte0811.multiDim.commands.programs.Programm;
 import malte0811.multiDim.render.ParallelRender;
 import malte0811.multiDim.render.RenderAlgo;
-import malte0811.multiDim.solids.HyperCube;
 import malte0811.multiDim.solids.Solid;
 import malte0811.multiDim.tickHandlers.DebugHandler;
 
@@ -165,9 +164,8 @@ public class CalcThread implements Runnable {
 		for (int i = 0; i < edges.length; i++) {
 			edges[i] = Arrays.copyOf(oldEdges[i], 2);
 		}
-		// TODO not only HyperCube should have sides
 		algo.render(vertices, edges, renderOptions, solid.getColors(),
-				(solid instanceof HyperCube) ? ((HyperCube) solid).sides : null);
+				solid.getSides());
 	}
 
 	public void addRotCon(int[] value) {

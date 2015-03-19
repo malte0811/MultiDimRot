@@ -3,7 +3,7 @@ package malte0811.multiDim.solids;
 import java.util.Arrays;
 
 public class TestingSolid extends Solid {
-	public double[][] vertices1 = { { -1, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 } };
+	public double[][] vertices1 = { { -1, 0 }, { 0, 1 }, { 1, 0 } };
 	public int[][] edges = { { 0, 1 }, { 0, 2 } };
 	public float[][] colors = { { 0F, 0F, 1F }, { 1F, 0F, 0F } };
 

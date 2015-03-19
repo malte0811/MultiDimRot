@@ -23,7 +23,7 @@ public abstract class RenderAlgo {
 			+ "in vec2 in_Position;\r\n" + "in float in_dens;\r\n"
 			+ "out vec4 pass_Color;\r\n" + "void main(void) {\r\n"
 			+ "gl_Position = vec4(in_Position[0], in_Position[1], 0, 1);\r\n"
-			+ "pass_Color = vec4(0, 0, 1-1/(1+in_dens), 1);\r\n" + "}";
+			+ "pass_Color = vec4(0, 0, 1-2/(2+in_dens), 1);\r\n" + "}";
 	final static String fragShader = "#version 150 core\r\n"
 			+ "in vec4 pass_Color;\r\n" + "out vec4 out_Color;\r\n"
 			+ "void main(void) {\r\n" + "out_Color = pass_Color;\r\n" + "}";
@@ -113,7 +113,6 @@ public abstract class RenderAlgo {
 		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 32, 0);
 		GL20.glVertexAttribPointer(1, 4, GL11.GL_FLOAT, false, 32, 16);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		GL20.glUseProgram(shader);
 		GL30.glBindVertexArray(vaoId);
 		GL20.glEnableVertexAttribArray(0);
@@ -259,12 +258,12 @@ public abstract class RenderAlgo {
 							middleAbove ? max[1] : min[1]);
 					if (middleAbove) {
 						// is the current point in the triangle tri?
-						if (vOp < y && vS1 > y && vS2 > y) {
+						if (vOp <= y && vS1 > y && vS2 > y) {
 							dens[x][y]++;
 						}
 					} else {
 						// is the current point in the triangle tri?
-						if (vOp > y && vS1 < y && vS2 < y) {
+						if (vOp >= y && vS1 < y && vS2 < y) {
 							dens[x][y]++;
 						}
 					}

@@ -12,13 +12,14 @@ public class NDOctaeder extends Solid {
 			edges = new int[0][2];
 			vertices[0][0] = -1D;
 			vertices[1][0] = 1D;
+			sides = new int[0][3];
 			return;
 		}
 		double[][] tV = new double[2][d];
 		tV[0][d - 1] = -1D;
 		tV[1][d - 1] = 1D;
-		Solid a = Solid.add(new NDOctaeder(d - 1), new TMPSolid(new int[0][2],
-				tV), true);
+		Solid old = new NDOctaeder(d - 1);
+		Solid a = Solid.add(old, new TMPSolid(new int[0][2], tV), true);
 		this.vertices = a.getCopyOfVertices(d);
 		int l = this.vertices.length;
 		int lE = a.getEdges().length;
@@ -32,6 +33,19 @@ public class NDOctaeder extends Solid {
 			this.edges[lE + l - 2 + i] = new int[2];
 			this.edges[lE + l - 2 + i][0] = i;
 			this.edges[lE + l - 2 + i][1] = l - 1;
+		}
+		int oldL = old.getCopyOfVertices(0).length;
+		sides = new int[2 * oldL][3];
+		int sideI = 0;
+		for (int i = 0; i < oldL; i++) {
+			sides[sideI][0] = oldL;
+			sides[sideI][1] = i;
+			sides[sideI][2] = (i + 1) % oldL;
+			sides[sideI + 1][0] = oldL + 1;
+			sides[sideI + 1][1] = i;
+			sides[sideI + 1][2] = (i + 1) % oldL;
+
+			sideI += 2;
 		}
 	}
 

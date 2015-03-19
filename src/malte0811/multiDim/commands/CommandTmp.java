@@ -6,7 +6,7 @@ import java.util.HashSet;
 import malte0811.multiDim.addons.Command;
 import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.render.ParallelRender;
-import malte0811.multiDim.solids.HyperCube;
+import malte0811.multiDim.solids.Solid;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -25,10 +25,10 @@ public class CommandTmp extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		HyperCube hc = (HyperCube) DimRegistry.getCalcThread().solid;
+		Solid hc = DimRegistry.getCalcThread().solid;
 		render(hc.getCopyOfVertices(4), hc.getEdges(),
 				DimRegistry.getCalcThread().renderOptions, false, null,
-				hc.sides, Mouse.getX(), Mouse.getY());
+				hc.getSides(), Mouse.getX(), Mouse.getY());
 	}
 
 	// From rendering

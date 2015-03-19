@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 
 public class CentralThree extends ZoomableRender {
 
@@ -132,7 +131,6 @@ public class CentralThree extends ZoomableRender {
 				}
 			}
 		}
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		if (sides != null) {
 			int[][][] sInt = new int[sides.length][3][2];
 			for (int i = 0; i < sides.length; i++) {

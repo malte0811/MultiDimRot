@@ -164,6 +164,7 @@ public class CalcThread implements Runnable {
 		for (int i = 0; i < edges.length; i++) {
 			edges[i] = Arrays.copyOf(oldEdges[i], 2);
 		}
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		algo.render(vertices, edges, renderOptions, solid.getColors(),
 				solid.getSides());
 	}

@@ -23,7 +23,7 @@ import malte0811.multiDim.commands.ser.CommandDeserialize;
 import malte0811.multiDim.commands.ser.CommandSerialize;
 import malte0811.multiDim.commands.show.CommandShowCube;
 import malte0811.multiDim.commands.show.CommandShowLorenz;
-import malte0811.multiDim.commands.show.CommandShowOktaeder;
+import malte0811.multiDim.commands.show.CommandShowOctaeder;
 import malte0811.multiDim.commands.show.CommandShowSphere;
 import malte0811.multiDim.commands.show.CommandShowStatic;
 import malte0811.multiDim.commands.show.CommandShowTetraeder;
@@ -49,7 +49,7 @@ public abstract class Command {
 		register(new CommandShowStatic());
 		register(new CommandResetRot());
 		register(new CommandBackground());
-		register(new CommandShowOktaeder());
+		register(new CommandShowOctaeder());
 		register(new CommandSerialize());
 		register(new CommandDeserialize());
 		register(new CommandAdd());

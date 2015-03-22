@@ -24,10 +24,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
-/**
- * email an niklasnickel@yahoo.de
- * 
- */
 public class CalcThread implements Runnable {
 	public Solid solid = null;
 	public int[][] rotations = new int[0][3];
@@ -40,6 +36,7 @@ public class CalcThread implements Runnable {
 	public HashSet<TickHandler> handlers = new HashSet<>();
 	public CommandListener c;
 	ArrayDeque<String> commands = new ArrayDeque<>();
+	public boolean showSides = true;
 
 	public CalcThread(Solid s) {
 		solid = s;
@@ -73,7 +70,8 @@ public class CalcThread implements Runnable {
 		String[] dirs = { "tmp", "addons", "logs", "screenshots", "videos",
 				"scripts" };
 		for (String s : dirs) {
-			Path p = Paths.get(System.getProperty("user.dir") + "\\" + s);
+			Path p = Paths.get(System.getProperty("user.dir")
+					+ System.getProperty("file.separator") + s);
 			if (!Files.exists(p)) {
 				try {
 					Files.createDirectories(p);
@@ -166,7 +164,7 @@ public class CalcThread implements Runnable {
 		}
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		algo.render(vertices, edges, renderOptions, solid.getColors(),
-				solid.getSides());
+				showSides ? solid.getSides() : null);
 	}
 
 	public void addRotCon(int[] value) {

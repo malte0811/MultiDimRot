@@ -56,15 +56,17 @@ public class MediaHandler extends TickHandler {
 
 	@Override
 	public void handleTick(Solid d, double[] renderoptions) {
+		String sep = System.getProperty("file.separator");
 		if (screenShot) {
-			String file = System.getProperty("user.dir") + "\\screenshots\\"
-					+ Long.toString(System.currentTimeMillis()) + ".jpeg";
+			String file = System.getProperty("user.dir") + sep + "screenshots"
+					+ sep + Long.toString(System.currentTimeMillis()) + ".jpeg";
 			handleScreenShot(new File(file));
 			screenShot = false;
 		}
 		if (rec) {
 			if (framesLeft == 0) {
-				String file = System.getProperty("user.dir") + "\\tmp\\screen";
+				String file = System.getProperty("user.dir") + sep + "tmp"
+						+ sep + "screen";
 				for (int i = 0; i < maxFrames; i++) {
 					try {
 						BufferedImage tmp = ImageIO.read(new File(file
@@ -91,8 +93,8 @@ public class MediaHandler extends TickHandler {
 
 				rec = false;
 			} else {
-				String file = System.getProperty("user.dir") + "\\tmp\\screen"
-						+ (maxFrames - framesLeft) + ".jpeg";
+				String file = System.getProperty("user.dir") + sep + "tmp"
+						+ sep + "screen" + (maxFrames - framesLeft) + ".jpeg";
 				handleScreenShot(new File(file));
 				framesLeft--;
 			}

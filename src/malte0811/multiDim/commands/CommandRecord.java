@@ -23,7 +23,8 @@ public class CommandRecord extends Command {
 
 		int ticks = Integer.parseInt(args[0]);
 		DimRegistry.getCalcThread().addCommand(args[1]);
-		File f = new File(System.getProperty("user.dir") + "\\videos\\"
+		String sep = System.getProperty("file.separator");
+		File f = new File(System.getProperty("user.dir") + sep + "videos" + sep
 				+ args[2]);
 		MediaHandler.instance.record(ticks, f);
 	}

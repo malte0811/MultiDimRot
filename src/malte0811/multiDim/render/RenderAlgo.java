@@ -248,8 +248,10 @@ public abstract class RenderAlgo {
 			if (mp[1] > valueAt(mp[0], s1[0], s1[1], s2[0], s2[1], 0)) {
 				middleAbove = true;
 			}
-			for (int x = min[0]; x < max[0]; x++) {
-				for (int y = min[1]; y < max[1]; y++) {
+			for (int x = Math.max(min[0], 0); x < Math.min(max[0],
+					Display.getWidth()); x++) {
+				for (int y = Math.max(min[1], 0); y < Math.min(max[1],
+						Display.getHeight()); y++) {
 					float vOp = valueAt(x, s1[0], s1[1], s2[0], s2[1],
 							middleAbove ? min[1] : max[1]);
 					float vS1 = valueAt(x, s1[0], s1[1], mp[0], mp[1],

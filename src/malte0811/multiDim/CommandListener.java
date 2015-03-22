@@ -9,6 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -69,8 +72,7 @@ public class CommandListener extends JFrame {
 		}
 
 		public TextStream() throws IOException {
-			super(new OutStream(new File(System.getProperty("user.dir")
-					+ "\\logs\\" + System.currentTimeMillis() + ".log")));
+			super(new OutStream());
 		}
 	}
 
@@ -79,8 +81,27 @@ public class CommandListener extends JFrame {
 		FileOutputStream fos;
 		String line = "";
 
-		public OutStream(File f) throws IOException {
-			outFile = f;
+		public OutStream() throws IOException {
+			String base = System.getProperty("user.dir")
+					+ System.getProperty("file.separator") + "logs"
+					+ System.getProperty("file.separator");
+			Path logLate = Paths.get(base + "latest.log");
+			Path log1 = Paths.get(base + "log1.log");
+			Path log2 = Paths.get(base + "log2.log");
+			Path log3 = Paths.get(base + "log3.log");
+			Files.deleteIfExists(log3);
+			if (Files.exists(log2)) {
+				Files.move(log2, log3);
+			}
+			if (Files.exists(log1)) {
+				Files.move(log1, log2);
+			}
+			if (Files.exists(logLate)) {
+				Files.move(logLate, log1);
+			}
+			outFile = new File(System.getProperty("user.dir")
+					+ System.getProperty("file.separator") + "logs"
+					+ System.getProperty("file.separator") + "latest.log");
 			fos = new FileOutputStream(outFile);
 		}
 

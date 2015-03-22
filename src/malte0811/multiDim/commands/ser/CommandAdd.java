@@ -21,12 +21,13 @@ public class CommandAdd extends Command {
 			System.out.println("2 arguments are required");
 			return;
 		}
-		File f = new File(System.getProperty("user.dir") + "\\" + args[0]);
+		String sep = System.getProperty("file.separator");
+		File f = new File(System.getProperty("user.dir") + sep + args[0]);
 		FileInputStream fos = new FileInputStream(f);
 		ObjectInputStream oos = new ObjectInputStream(fos);
 		Solid a = (Solid) oos.readObject();
 		oos.close();
-		f = new File(System.getProperty("user.dir") + "\\" + args[1]);
+		f = new File(System.getProperty("user.dir") + sep + args[1]);
 		fos = new FileInputStream(f);
 		oos = new ObjectInputStream(fos);
 		Solid b = (Solid) oos.readObject();

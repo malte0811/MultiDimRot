@@ -65,5 +65,4 @@ public class NDSphere extends Solid {
 			}
 		}
 	}
-
 }

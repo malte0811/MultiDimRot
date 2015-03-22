@@ -21,7 +21,8 @@ public class CommandDeserialize extends Command {
 			System.out.println("1 argument is required");
 			return;
 		}
-		File f = new File(System.getProperty("user.dir") + "\\" + args[0]);
+		File f = new File(System.getProperty("user.dir")
+				+ System.getProperty("file.separator") + args[0]);
 		FileInputStream fos = new FileInputStream(f);
 		ObjectInputStream oos = new ObjectInputStream(fos);
 		DimRegistry.getCalcThread().solid = (Solid) oos.readObject();

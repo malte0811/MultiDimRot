@@ -17,7 +17,13 @@ public class CommandToggleSides extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		DimRegistry.getCalcThread().showSides = !DimRegistry.getCalcThread().showSides;
+		if (args.length == 1) {
+			DimRegistry.getCalcThread().showSides = args[0]
+					.equalsIgnoreCase("on") ? true : false;
+		} else {
+			DimRegistry.getCalcThread().showSides = !DimRegistry
+					.getCalcThread().showSides;
+		}
 	}
 
 }

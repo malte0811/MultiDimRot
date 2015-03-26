@@ -6,7 +6,8 @@ public class NDTorus extends Solid {
 	public NDTorus(int dim, double rad, int res) {
 		final Solid oldSphere = new NDSphere(dim - 1, res);
 		oldSphere.translate(0, rad);
-		Solid tmp = new TMPSolid(new int[0][2], new double[0][dim]);
+		Solid tmp = new TMPSolid(new int[0][2], new double[0][dim],
+				new int[0][3]);
 		for (int rot = 0; rot < 360; rot += res) {
 			tmp.rotate(0, dim - 1, res);
 			tmp = Solid.add(tmp, oldSphere, true);

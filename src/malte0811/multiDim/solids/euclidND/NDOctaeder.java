@@ -21,7 +21,8 @@ public class NDOctaeder extends Solid {
 		tV[0][d - 1] = -1D;
 		tV[1][d - 1] = 1D;
 		Solid old = new NDOctaeder(d - 1);
-		Solid a = Solid.add(old, new TMPSolid(new int[0][2], tV), true);
+		Solid a = Solid.add(old,
+				new TMPSolid(new int[0][2], tV, new int[0][3]), true);
 		this.vertices = a.getCopyOfVertices(d);
 		int l = this.vertices.length;
 		int lE = old.getEdges().length;

@@ -28,7 +28,7 @@ public class NDTetraeder extends Solid {
 			newEs[i][0] = i;
 			newEs[i][1] = dim;
 		}
-		Solid tmp = new TMPSolid(newEs, newV);
+		Solid tmp = new TMPSolid(newEs, newV, new int[0][3]);
 		oldTetra.translate(dim - 1, -height / (double) (dim + 1));
 		tmp = Solid.add(oldTetra, tmp, false);
 		edges = tmp.getEdges();

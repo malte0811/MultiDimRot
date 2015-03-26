@@ -4,9 +4,10 @@ import java.util.Arrays;
 
 public class TMPSolid extends Solid {
 
-	public TMPSolid(int[][] edgesA, double[][] verticesA) {
+	public TMPSolid(int[][] edgesA, double[][] verticesA, int[][] sidesA) {
 		edges = edgesA;
 		vertices = verticesA;
+		sides = sidesA;
 	}
 
 	@Override

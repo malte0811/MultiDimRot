@@ -51,7 +51,6 @@ public class NDSphere extends Solid {
 			edges[i + oldELength][0] = i;
 			edges[i + oldELength][1] = (i + oldLength) % vertices.length;
 		}
-		// TODO add sides
 	}
 
 	@Override

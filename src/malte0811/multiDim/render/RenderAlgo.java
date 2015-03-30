@@ -245,19 +245,35 @@ public abstract class RenderAlgo {
 			int[] mp = tri[middle];
 			int[] s1 = tri[(middle + 1) % 3];
 			int[] s2 = tri[(middle + 2) % 3];
-			if (mp[1] > valueAt(mp[0], s1[0], s1[1], s2[0], s2[1], 0)) {
+
+			float stOp = (float) (s1[1] - s2[1])
+					/ (s1[0] == s2[0] ? 1 : (float) (s1[0] - s2[0]));
+			boolean noStOp = s1[0] == s2[0];
+			float acOp = (float) achsenabschnitt(s1[0], s2[0], s1[1], s2[1]);
+
+			float stS1 = (float) (s1[1] - mp[1])
+					/ (s1[0] == mp[0] ? 1 : (float) (s1[0] - mp[0]));
+			boolean noStS1 = (s1[0] - mp[0]) == 0;
+			float acS1 = (float) achsenabschnitt(s1[0], mp[0], s1[1], mp[1]);
+
+			float stS2 = (float) (mp[1] - s2[1])
+					/ ((mp[0] - s2[0]) == 0 ? 1 : (float) (mp[0] - s2[0]));
+			boolean noStS2 = (mp[0] - s2[0]) == 0;
+			float acS2 = (float) achsenabschnitt(mp[0], s2[0], mp[1], s2[1]);
+
+			if (mp[1] > (noStOp ? 0 : (stOp * (float) mp[0] + acOp))) {
 				middleAbove = true;
 			}
 			for (int x = Math.max(min[0], 0); x < Math.min(max[0],
 					Display.getWidth()); x++) {
 				for (int y = Math.max(min[1], 0); y < Math.min(max[1],
 						Display.getHeight()); y++) {
-					float vOp = valueAt(x, s1[0], s1[1], s2[0], s2[1],
-							middleAbove ? min[1] : max[1]);
-					float vS1 = valueAt(x, s1[0], s1[1], mp[0], mp[1],
-							middleAbove ? max[1] : min[1]);
-					float vS2 = valueAt(x, s2[0], s2[1], mp[0], mp[1],
-							middleAbove ? max[1] : min[1]);
+					float vOp = (noStOp ? middleAbove ? min[1] : max[1] : (stOp
+							* (float) x + acOp));
+					float vS1 = (noStS1 ? middleAbove ? max[1] : min[1] : (stS1
+							* (float) x + acS1));
+					float vS2 = (noStS2 ? middleAbove ? max[1] : min[1] : (stS2
+							* (float) x + acS2));
 					if (middleAbove) {
 						// is the current point in the triangle tri?
 						if (vOp <= y && vS1 > y && vS2 > y) {
@@ -380,5 +396,9 @@ public abstract class RenderAlgo {
 		}
 		float steig = (y2 - y1) / (x2 - x1);
 		return (float) (steig * f + achsenabschnitt(x1, x2, y1, y2));
+	}
+
+	protected float valueAt(float st, float ac, float x) {
+		return st * x + ac;
 	}
 }

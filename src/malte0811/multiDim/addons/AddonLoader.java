@@ -42,7 +42,6 @@ public class AddonLoader {
 			if (fileEntry.isDirectory()) {
 				listFilesForFolder(fileEntry);
 			} else {
-				System.out.println(fileEntry.getName());
 				ret.add(fileEntry.getName());
 			}
 		}

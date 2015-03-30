@@ -21,8 +21,9 @@ public class InputField extends JTextField {
 	public InputField() {
 		this.addKeyListener(new KeyAdapter() {
 			boolean ctrlDown = false;
-			String lastComp = "";
+			String lastComp = "\r";
 			int lastInd = 0;
+			List<String> lastPossible = null;
 
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -87,13 +88,17 @@ public class InputField extends JTextField {
 							toComplete += currText.charAt(i);
 						}
 						Set<String> keys = Command.commands.keySet();
-						List<String> possible = new ArrayList<>();
+						if (!lastComp.equals(toComplete)) {
+							lastPossible = new ArrayList<>();
+						}
 						String out = "";
 						for (String c : keys) {
 							if (c.length() >= toComplete.length()
 									&& c.substring(0, toComplete.length())
 											.equalsIgnoreCase(toComplete)) {
-								possible.add(c);
+								if (!lastComp.equals(toComplete)) {
+									lastPossible.add(c);
+								}
 								if (out.equals("")) {
 									out += c;
 								} else {
@@ -101,16 +106,19 @@ public class InputField extends JTextField {
 								}
 							}
 						}
-						if (!possible.isEmpty()) {
-							// TODO use last completion to determine next
+						if (!lastPossible.isEmpty()) {
 							String sub1 = currText.substring(0, lastSpace);
 							String sub2 = currText.substring(pos);
 							int index = toComplete.equals(lastComp) ? (lastInd + 1)
-									% possible.size()
+									% lastPossible.size()
 									: 0;
-							setText(sub1 + possible.get(0) + sub2);
-							lastComp = possible.get(0);
-							System.out.println(out);
+
+							if (!lastComp.equals(toComplete)) {
+								System.out.println(out);
+							}
+							lastInd = index;
+							setText(sub1 + lastPossible.get(index) + sub2);
+							lastComp = lastPossible.get(index);
 						}
 					}
 				} else {

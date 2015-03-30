@@ -1,7 +1,9 @@
 package malte0811.multiDim.addons;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
 import malte0811.multiDim.commands.CommandBackground;
@@ -39,6 +41,8 @@ public abstract class Command {
 
 	public abstract void processCommand(String[] args) throws Exception;
 
+	// TODO implement this method in all commands
+	// public abstract String[] getCompletion(int i, String toComplete);
 	static {
 		register(new CommandChangeRenderAlgo());
 		register(new CommandChangeRenderOption());
@@ -105,5 +109,32 @@ public abstract class Command {
 
 	public static void register(Command c) {
 		commands.put(c.getCommandName(), c);
+	}
+
+	// TODO make protected
+	public String[] getFiles(File base, String startsWith) {
+		HashSet<String> files = listFilesForFolder(base);
+		HashSet<String> possible = new HashSet<>();
+		int startLength = startsWith.length();
+		for (String s : files) {
+			if (startLength <= s.length()
+					&& s.substring(0, startLength).equalsIgnoreCase(startsWith)) {
+				possible.add(s);
+			}
+		}
+		return possible.toArray(new String[0]);
+	}
+
+	private HashSet<String> listFilesForFolder(File folder) {
+		HashSet<String> ret = new HashSet<>();
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				listFilesForFolder(fileEntry);
+			} else {
+				System.out.println(fileEntry.getName());
+				ret.add(fileEntry.getName());
+			}
+		}
+		return ret;
 	}
 }

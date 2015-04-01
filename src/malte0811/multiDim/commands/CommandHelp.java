@@ -1,5 +1,8 @@
 package malte0811.multiDim.commands;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import malte0811.multiDim.addons.Command;
 
 public class CommandHelp extends Command {
@@ -28,4 +31,23 @@ public class CommandHelp extends Command {
 		return "\"help <command>\" shows help for <command>\r\n \"help\" shows a list of all commands";
 	}
 
+	@Override
+	public ArrayList<String> getCompletion(int i, String toComplete) {
+		Set<String> keys = Command.commands.keySet();
+		ArrayList<String> possible = new ArrayList<>();
+		String out = "";
+		for (String c : keys) {
+			if (c.length() >= toComplete.length()
+					&& c.substring(0, toComplete.length()).equalsIgnoreCase(
+							toComplete)) {
+				possible.add(c);
+				if (out.equals("")) {
+					out += c;
+				} else {
+					out += ", " + c;
+				}
+			}
+		}
+		return possible;
+	}
 }

@@ -136,7 +136,7 @@ public class CentralThree extends ZoomableRender {
 			for (int i = 0; i < sides.length; i++) {
 				for (int i2 = 0; i2 < 3; i2++) {
 					if (sides[i] == null || ret[sides[i][i2]] == null) {
-						sides[i] = null;
+						sInt[i] = null;
 						break;
 					}
 					sInt[i][i2][0] = (int) ((ret[sides[i][i2]][0] + 1) / 2 * Display

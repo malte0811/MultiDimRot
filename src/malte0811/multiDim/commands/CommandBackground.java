@@ -28,5 +28,4 @@ public class CommandBackground extends Command {
 	public String getCommandUsage() {
 		return "\"setBackground <r> <g> <b>\" changes the background to the color r g b. r, g and b are greater than 0 and less than 1";
 	}
-
 }

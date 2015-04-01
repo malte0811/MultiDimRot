@@ -1,6 +1,7 @@
 package malte0811.multiDim.addons;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,8 +42,10 @@ public abstract class Command {
 
 	public abstract void processCommand(String[] args) throws Exception;
 
-	// TODO implement this method in all commands
-	// public abstract String[] getCompletion(int i, String toComplete);
+	public ArrayList<String> getCompletion(int i, String toComplete) {
+		return new ArrayList<>();
+	}
+
 	static {
 		register(new CommandChangeRenderAlgo());
 		register(new CommandChangeRenderOption());
@@ -111,8 +114,7 @@ public abstract class Command {
 		commands.put(c.getCommandName(), c);
 	}
 
-	// TODO make protected
-	public String[] getFiles(File base, String startsWith) {
+	protected String[] getFiles(File base, String startsWith) {
 		HashSet<String> files = listFilesForFolder(base);
 		HashSet<String> possible = new HashSet<>();
 		int startLength = startsWith.length();
@@ -131,7 +133,6 @@ public abstract class Command {
 			if (fileEntry.isDirectory()) {
 				listFilesForFolder(fileEntry);
 			} else {
-				System.out.println(fileEntry.getName());
 				ret.add(fileEntry.getName());
 			}
 		}

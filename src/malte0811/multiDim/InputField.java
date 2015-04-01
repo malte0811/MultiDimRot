@@ -6,6 +6,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.swing.JTextField;
 
@@ -87,27 +88,56 @@ public class InputField extends JTextField {
 							}
 							toComplete += currText.charAt(i);
 						}
-						Set<String> keys = Command.commands.keySet();
-						if (!lastComp.equals(toComplete)) {
-							lastPossible = new ArrayList<>();
-						}
 						String out = "";
-						for (String c : keys) {
-							if (c.length() >= toComplete.length()
-									&& c.substring(0, toComplete.length())
-											.equalsIgnoreCase(toComplete)) {
-								if (!lastComp.equals(toComplete)) {
-									lastPossible.add(c);
+						if (lastSpace == 0) {
+							Set<String> keys = Command.commands.keySet();
+							if (!lastComp.equals(toComplete)) {
+								lastPossible = new ArrayList<>();
+							}
+							out = "";
+							for (String c : keys) {
+								if (c.length() >= toComplete.length()
+										&& c.substring(0, toComplete.length())
+												.equalsIgnoreCase(toComplete)) {
+									if (!lastComp.equals(toComplete)) {
+										lastPossible.add(c);
+									}
+									if (out.equals("")) {
+										out += c;
+									} else {
+										out += ", " + c;
+									}
 								}
-								if (out.equals("")) {
-									out += c;
+							}
+						} else {
+							int wordI = 0;
+							char[] txt = getText().toCharArray();
+							char lastI = 'x';
+							for (char i : txt) {
+								if (i == ' ' && lastI != ' ') {
+									wordI++;
+									lastI = ' ';
+								}
+							}
+							StringTokenizer st = new StringTokenizer(getText());
+							String cmd = st.nextToken();
+							if (Command.commands.containsKey(cmd.toUpperCase())) {
+								lastPossible = Command.commands.get(
+										cmd.toUpperCase()).getCompletion(wordI,
+										toComplete);
+								if (lastComp.equalsIgnoreCase(toComplete)) {
+									lastInd = (lastInd + 1)
+											% lastPossible.size();
 								} else {
-									out += ", " + c;
+									lastInd = 0;
 								}
+								lastComp = toComplete;
+
 							}
 						}
 						if (!lastPossible.isEmpty()) {
-							String sub1 = currText.substring(0, lastSpace);
+							String sub1 = currText.substring(0,
+									lastSpace == 0 ? 0 : (lastSpace + 1));
 							String sub2 = currText.substring(pos);
 							int index = toComplete.equals(lastComp) ? (lastInd + 1)
 									% lastPossible.size()

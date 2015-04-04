@@ -110,7 +110,7 @@ public class InputField extends JTextField {
 								}
 							}
 						} else {
-							int wordI = 0;
+							int wordI = -1;
 							char[] txt = getText().toCharArray();
 							char lastI = 'x';
 							for (char i : txt) {
@@ -122,13 +122,10 @@ public class InputField extends JTextField {
 							StringTokenizer st = new StringTokenizer(getText());
 							String cmd = st.nextToken();
 							if (Command.commands.containsKey(cmd.toUpperCase())) {
-								lastPossible = Command.commands.get(
-										cmd.toUpperCase()).getCompletion(wordI,
-										toComplete);
-								if (lastComp.equalsIgnoreCase(toComplete)) {
-									lastInd = (lastInd + 1)
-											% lastPossible.size();
-								} else {
+								if (!lastComp.equalsIgnoreCase(toComplete)) {
+									lastPossible = Command.commands.get(
+											cmd.toUpperCase()).getCompletion(
+											wordI, toComplete);
 									lastInd = 0;
 								}
 								lastComp = toComplete;
@@ -176,16 +173,4 @@ public class InputField extends JTextField {
 		active = !active;
 	}
 
-	public void processCommand() throws Exception {
-		String cmd = getText();
-		comms.addFirst(cmd);
-		setText("");
-		if (!Command.processCommand(cmd, false)) {
-
-			DimRegistry.getCalcThread().programmRunning = Programm.load(cmd);
-			if (DimRegistry.getCalcThread().programmRunning != null) {
-				toggle();
-			}
-		}
-	}
 }

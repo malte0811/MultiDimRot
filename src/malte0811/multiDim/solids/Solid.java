@@ -103,20 +103,31 @@ public abstract class Solid implements Serializable {
 			edges[i][0] = edgesB[i - eL][0] + (intelligentEdges ? vL : 0);
 			edges[i][1] = edgesB[i - eL][1] + (intelligentEdges ? vL : 0);
 		}
-		int[][] sidesTMP = b.getSides();
-		int[][] sides = new int[a.getSides().length + sidesTMP.length][3];
-		for (int i = 0; i < a.getSides().length; i++) {
-			sides[i] = Arrays.copyOf(a.getSides()[i], 3);
-		}
-		if (sidesTMP.length > 0) {
-			for (int i = a.getSides().length; i < sides.length; i++) {
-				sides[i] = new int[3];
-				sides[i][0] = sidesTMP[i - a.getSides().length][0]
-						+ (intelligentEdges ? vL : 0);
-				sides[i][1] = sidesTMP[i - a.getSides().length][1]
-						+ (intelligentEdges ? vL : 0);
-				sides[i][2] = sidesTMP[i - a.getSides().length][2]
-						+ (intelligentEdges ? vL : 0);
+		int[][] sides = new int[0][3];
+		if (a.getSides() != null) {
+			if (b.getSides() != null) {
+				int[][] sidesTMP = b.getSides();
+				sides = new int[a.getSides().length + sidesTMP.length][3];
+				for (int i = 0; i < a.getSides().length; i++) {
+					sides[i] = Arrays.copyOf(a.getSides()[i], 3);
+				}
+				if (sidesTMP.length > 0) {
+					for (int i = a.getSides().length; i < sides.length; i++) {
+						sides[i] = new int[3];
+						sides[i][0] = sidesTMP[i - a.getSides().length][0]
+								+ (intelligentEdges ? vL : 0);
+						sides[i][1] = sidesTMP[i - a.getSides().length][1]
+								+ (intelligentEdges ? vL : 0);
+						sides[i][2] = sidesTMP[i - a.getSides().length][2]
+								+ (intelligentEdges ? vL : 0);
+					}
+				}
+			} else {
+				sides = a.getSides();
+			}
+		} else {
+			if (b.getSides() != null) {
+				sides = b.getSides();
 			}
 		}
 		return new TMPSolid(edges, vertices, sides);

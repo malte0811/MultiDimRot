@@ -20,8 +20,9 @@ public class CommandSerialize extends Command {
 			System.out.println("1 argument is required");
 			return;
 		}
-		File f = new File(System.getProperty("user.dir")
-				+ System.getProperty("file.separator") + args[0]);
+		String s = System.getProperty("file.separator");
+		File f = new File(System.getProperty("user.dir") + s + "solids" + s
+				+ args[0]);
 		FileOutputStream fos = new FileOutputStream(f);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(DimRegistry.getCalcThread().solid);

@@ -85,7 +85,7 @@ public abstract class Command {
 	}
 
 	public static boolean processCommand(String command, boolean suppressWarning) {
-		if (command == null) {
+		if (command == null || command.equals("")) {
 			return false;
 		}
 		StringTokenizer st = new StringTokenizer(command);
@@ -114,9 +114,9 @@ public abstract class Command {
 		commands.put(c.getCommandName(), c);
 	}
 
-	protected String[] getFiles(File base, String startsWith) {
+	protected ArrayList<String> getFiles(File base, String startsWith) {
 		HashSet<String> files = listFilesForFolder(base);
-		HashSet<String> possible = new HashSet<>();
+		ArrayList<String> possible = new ArrayList<>();
 		int startLength = startsWith.length();
 		for (String s : files) {
 			if (startLength <= s.length()
@@ -124,7 +124,7 @@ public abstract class Command {
 				possible.add(s);
 			}
 		}
-		return possible.toArray(new String[0]);
+		return possible;
 	}
 
 	private HashSet<String> listFilesForFolder(File folder) {

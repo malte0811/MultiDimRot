@@ -33,21 +33,24 @@ public class CommandHelp extends Command {
 
 	@Override
 	public ArrayList<String> getCompletion(int i, String toComplete) {
-		Set<String> keys = Command.commands.keySet();
-		ArrayList<String> possible = new ArrayList<>();
-		String out = "";
-		for (String c : keys) {
-			if (c.length() >= toComplete.length()
-					&& c.substring(0, toComplete.length()).equalsIgnoreCase(
-							toComplete)) {
-				possible.add(c);
-				if (out.equals("")) {
-					out += c;
-				} else {
-					out += ", " + c;
+		if (i == 0) {
+			Set<String> keys = Command.commands.keySet();
+			ArrayList<String> possible = new ArrayList<>();
+			String out = "";
+			for (String c : keys) {
+				if (c.length() >= toComplete.length()
+						&& c.substring(0, toComplete.length())
+								.equalsIgnoreCase(toComplete)) {
+					possible.add(c);
+					if (out.equals("")) {
+						out += c;
+					} else {
+						out += ", " + c;
+					}
 				}
 			}
+			return possible;
 		}
-		return possible;
+		return new ArrayList<>();
 	}
 }

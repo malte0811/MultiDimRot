@@ -68,7 +68,7 @@ public class CalcThread implements Runnable {
 
 		// create directories
 		String[] dirs = { "tmp", "addons", "logs", "screenshots", "videos",
-				"scripts" };
+				"scripts", "solids" };
 		for (String s : dirs) {
 			Path p = Paths.get(System.getProperty("user.dir")
 					+ System.getProperty("file.separator") + s);
@@ -179,7 +179,7 @@ public class CalcThread implements Runnable {
 	private void processCommands() {
 		while (!commands.isEmpty()) {
 			String cmd = commands.pollFirst();
-			if (!Command.processCommand(cmd, false)) {
+			if (!Command.processCommand(cmd, true)) {
 				try {
 					DimRegistry.getCalcThread().programmRunning = Programm
 							.load(cmd);

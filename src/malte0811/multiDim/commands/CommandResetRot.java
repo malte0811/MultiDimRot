@@ -12,7 +12,7 @@ public class CommandResetRot extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		DimRegistry.getCalcThread().rotations = new int[0][3];
+		DimRegistry.getCalcThread().setRotations(new int[0][3]);
 	}
 
 	@Override

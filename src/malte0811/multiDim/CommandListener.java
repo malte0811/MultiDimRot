@@ -18,15 +18,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 public class CommandListener extends JFrame {
 	public InputField input = new InputField();
-	JTextArea output = new JTextArea(100, 30);
+	public JTextArea output = new JTextArea(0, 30);
 	public TextStream out;
 	public PrintStream old;
 	boolean program = false;
 
 	public CommandListener() {
+		DefaultCaret caret = (DefaultCaret) output.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		JPanel pane = new JPanel();
 		this.setLayout(new BorderLayout());
 		this.add(pane, BorderLayout.CENTER);
@@ -40,7 +43,8 @@ public class CommandListener extends JFrame {
 		hor.addComponent(input);
 		GroupLayout.SequentialGroup ver = gl.createSequentialGroup();
 		ver.addComponent(jsp);
-		ver.addComponent(input);
+		ver.addComponent(input, GroupLayout.PREFERRED_SIZE,
+				GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
 		gl.setVerticalGroup(ver);
 		gl.setHorizontalGroup(hor);
 		pane.setLayout(gl);
@@ -111,6 +115,7 @@ public class CommandListener extends JFrame {
 			if (b == '\n') {
 				if (line.getBytes()[0] != '>') {
 					output.append(line);
+					// output.setCaretPosition(output.getText().length() - 1);
 					old.write(line.getBytes());
 				}
 				fos.write(line.getBytes());

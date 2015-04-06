@@ -22,7 +22,7 @@ public class CommandShowStatic extends Command {
 			Class<Solid> c = (Class<Solid>) Class
 					.forName("malte0811.multiDim.solids." + args[0]);
 			Constructor<Solid> con = c.getConstructor();
-			DimRegistry.getCalcThread().solid = con.newInstance();
+			DimRegistry.getCalcThread().setSolid(con.newInstance());
 		} catch (Error e) {
 			e.printStackTrace();
 		} catch (Exception x) {

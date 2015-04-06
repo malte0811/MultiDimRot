@@ -20,7 +20,7 @@ public class CommandShowOctaeder extends Command {
 		} else {
 			dims = (int) Programm.getValue(args[0]);
 		}
-		DimRegistry.getCalcThread().solid = new NDOctaeder(dims);
+		DimRegistry.getCalcThread().setSolid(new NDOctaeder(dims));
 	}
 
 	@Override

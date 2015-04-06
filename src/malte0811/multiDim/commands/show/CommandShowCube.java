@@ -20,7 +20,7 @@ public class CommandShowCube extends Command {
 		} else {
 			dims = (int) Programm.getValue(args[0]);
 		}
-		DimRegistry.getCalcThread().solid = new NDCube(dims);
+		DimRegistry.getCalcThread().setSolid(new NDCube(dims));
 	}
 
 	@Override

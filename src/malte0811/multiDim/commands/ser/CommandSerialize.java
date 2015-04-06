@@ -25,7 +25,7 @@ public class CommandSerialize extends Command {
 				+ args[0]);
 		FileOutputStream fos = new FileOutputStream(f);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
-		oos.writeObject(DimRegistry.getCalcThread().solid);
+		oos.writeObject(DimRegistry.getCalcThread().getSolid());
 		oos.close();
 	}
 

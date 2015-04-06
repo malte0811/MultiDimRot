@@ -26,8 +26,8 @@ public class CommandChangeRenderAlgo extends Command {
 			e.printStackTrace();
 			return;
 		}
-		DimRegistry.getCalcThread().algo = algo;
-		DimRegistry.getCalcThread().renderOptions = algo.getInitialParams();
+		DimRegistry.getCalcThread().setRenderAlgo(algo);
+		DimRegistry.getCalcThread().setRenderOptions(algo.getInitialParams());
 	}
 
 	@Override

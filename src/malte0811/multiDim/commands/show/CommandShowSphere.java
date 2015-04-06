@@ -20,7 +20,7 @@ public class CommandShowSphere extends Command {
 		}
 		int dim = (int) Programm.getValue(args[0]);
 		int res = (int) Programm.getValue(args[1]);
-		DimRegistry.getCalcThread().solid = new NDSphere(dim, res);
+		DimRegistry.getCalcThread().setSolid(new NDSphere(dim, res));
 	}
 
 	@Override

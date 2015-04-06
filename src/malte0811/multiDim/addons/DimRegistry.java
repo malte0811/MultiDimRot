@@ -42,7 +42,7 @@ public class DimRegistry {
 	}
 
 	public static void addTickHandler(TickHandler th) {
-		getCalcThread().handlers.add(th);
+		getCalcThread().getTickHandlers().add(th);
 	}
 
 }

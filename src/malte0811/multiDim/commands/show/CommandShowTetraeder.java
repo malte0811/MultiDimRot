@@ -19,7 +19,7 @@ public class CommandShowTetraeder extends Command {
 			return;
 		}
 		int dim = (int) Programm.getValue(args[0]);
-		DimRegistry.getCalcThread().solid = new NDTetraeder(dim);
+		DimRegistry.getCalcThread().setSolid(new NDTetraeder(dim));
 	}
 
 	@Override

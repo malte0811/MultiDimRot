@@ -35,7 +35,7 @@ public class CommandAdd extends Command {
 		oos = new ObjectInputStream(fos);
 		Solid b = (Solid) oos.readObject();
 		oos.close();
-		DimRegistry.getCalcThread().solid = Solid.add(a, b, true);
+		DimRegistry.getCalcThread().setSolid(Solid.add(a, b, true));
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class CommandRotInst extends Command {
 		int a1 = (int) Programm.getValue(args[0]);
 		int a2 = (int) Programm.getValue(args[1]);
 		int degree = (int) Programm.getValue(args[2]);
-		DimRegistry.getCalcThread().solid.rotate(a1, a2, degree);
+		DimRegistry.getCalcThread().getSolid().rotate(a1, a2, degree);
 	}
 
 	@Override

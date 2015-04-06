@@ -27,7 +27,7 @@ public class CommandDeserialize extends Command {
 				+ args[0]);
 		FileInputStream fos = new FileInputStream(f);
 		ObjectInputStream oos = new ObjectInputStream(fos);
-		DimRegistry.getCalcThread().solid = (Solid) oos.readObject();
+		DimRegistry.getCalcThread().setSolid((Solid) oos.readObject());
 		oos.close();
 	}
 
@@ -38,8 +38,6 @@ public class CommandDeserialize extends Command {
 
 	@Override
 	public ArrayList<String> getCompletion(int i, String toComplete) {
-		// DEBUG
-		System.out.println(i);
 		if (i == 0) {
 			String s = System.getProperty("file.separator");
 			return getFiles(new File(System.getProperty("user.dir") + s

@@ -10,7 +10,7 @@ public class CleaningThread extends Thread {
 			try {
 				Thread.sleep(20000);
 				int[][] newRots = new int[0][3];
-				for (int[] i : DimRegistry.getCalcThread().rotations) {
+				for (int[] i : DimRegistry.getCalcThread().getRotations()) {
 					boolean found = false;
 					for (int[] i2 : newRots) {
 						if (i2[0] == i[0] && i2[1] == i[1]) {
@@ -25,7 +25,7 @@ public class CleaningThread extends Thread {
 						newRots[index] = i;
 					}
 				}
-				DimRegistry.getCalcThread().rotations = newRots;
+				DimRegistry.getCalcThread().setRotations(newRots);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

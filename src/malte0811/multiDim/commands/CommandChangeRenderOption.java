@@ -19,7 +19,7 @@ public class CommandChangeRenderOption extends Command {
 		}
 		int i = (int) Programm.getValue(args[0]);
 		double v = Programm.getValue(args[1]);
-		DimRegistry.getCalcThread().renderOptions[i] = v;
+		DimRegistry.getCalcThread().getRenderOptions()[i] = v;
 	}
 
 	@Override

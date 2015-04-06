@@ -20,9 +20,9 @@ public class CommandResizeSolid extends Command {
 		double m = Programm.getValue(args[0]);
 		if (args.length == 2) {
 			int x = (int) Programm.getValue(args[1]);
-			DimRegistry.getCalcThread().solid.resize(x, m);
+			DimRegistry.getCalcThread().getSolid().resize(x, m);
 		} else {
-			DimRegistry.getCalcThread().solid.resize(m);
+			DimRegistry.getCalcThread().getSolid().resize(m);
 		}
 	}
 

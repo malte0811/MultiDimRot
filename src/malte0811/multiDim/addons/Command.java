@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import malte0811.multiDim.commands.CommandBackground;
 import malte0811.multiDim.commands.CommandChangeRenderAlgo;
 import malte0811.multiDim.commands.CommandChangeRenderOption;
+import malte0811.multiDim.commands.CommandClear;
 import malte0811.multiDim.commands.CommandDebugRender;
 import malte0811.multiDim.commands.CommandExit;
 import malte0811.multiDim.commands.CommandHelp;
@@ -72,6 +73,7 @@ public abstract class Command {
 		register(new CommandRecord());
 		register(new CommandSetSize());
 		register(new CommandToggleSides());
+		register(new CommandClear());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch

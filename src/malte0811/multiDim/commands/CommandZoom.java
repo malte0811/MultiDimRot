@@ -19,8 +19,8 @@ public class CommandZoom extends Command {
 		}
 		double max = Programm.getValue(args[0]);
 		double step = Programm.getValue(args[1]);
-		DimRegistry.getCalcThread().zoomMax = max;
-		DimRegistry.getCalcThread().zoomStep = step;
+		DimRegistry.getCalcThread().setZoomMax(max);
+		DimRegistry.getCalcThread().setZoomStep(step);
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class CommandShowTorus extends Command {
 		int dim = (int) Programm.getValue(args[0]);
 		double rad = Programm.getValue(args[1]);
 		int res = (int) Programm.getValue(args[2]);
-		DimRegistry.getCalcThread().solid = new NDTorus(dim, rad, res);
+		DimRegistry.getCalcThread().setSolid(new NDTorus(dim, rad, res));
 	}
 
 	@Override

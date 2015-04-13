@@ -1,6 +1,8 @@
 package malte0811.multiDim.commands.show;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import malte0811.multiDim.addons.Command;
 import malte0811.multiDim.addons.DimRegistry;
@@ -19,8 +21,8 @@ public class CommandShowStatic extends Command {
 			if (args.length != 1) {
 				System.out.println("1 argument is required");
 			}
-			Class<Solid> c = (Class<Solid>) Class
-					.forName("malte0811.multiDim.solids." + args[0]);
+			Class<Solid> c = (Class<Solid>) DimRegistry.getStaticSolids().get(
+					args[0]);
 			Constructor<Solid> con = c.getConstructor();
 			DimRegistry.getCalcThread().setSolid(con.newInstance());
 		} catch (Error e) {
@@ -35,4 +37,17 @@ public class CommandShowStatic extends Command {
 		return "\"showStatic <className>\" shows the solid defined by malte0811.multidim.solids.className. Currently only for \"HyperCube\"";
 	}
 
+	// TODO add auto-completion
+	@Override
+	public ArrayList<String> getCompletion(int i, String toComplete) {
+		ArrayList<String> ret = new ArrayList<>();
+		HashMap<String, Class<? extends Solid>> poss = DimRegistry
+				.getStaticSolids();
+		for (String k : poss.keySet()) {
+			if (k.startsWith(toComplete)) {
+				ret.add(k);
+			}
+		}
+		return ret;
+	}
 }

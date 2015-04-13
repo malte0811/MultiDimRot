@@ -22,6 +22,7 @@ import malte0811.multiDim.commands.CommandRotInst;
 import malte0811.multiDim.commands.CommandScreenShot;
 import malte0811.multiDim.commands.CommandSetSize;
 import malte0811.multiDim.commands.CommandToggleSides;
+import malte0811.multiDim.commands.CommandToggleTickHandler;
 import malte0811.multiDim.commands.CommandZoom;
 import malte0811.multiDim.commands.ser.CommandAdd;
 import malte0811.multiDim.commands.ser.CommandDeserialize;
@@ -74,6 +75,7 @@ public abstract class Command {
 		register(new CommandSetSize());
 		register(new CommandToggleSides());
 		register(new CommandClear());
+		register(new CommandToggleTickHandler());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch

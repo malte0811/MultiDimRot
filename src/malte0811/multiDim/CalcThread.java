@@ -5,8 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 import malte0811.multiDim.addons.AddonLoader;
 import malte0811.multiDim.addons.Command;
@@ -31,7 +31,7 @@ public class CalcThread implements Runnable {
 	private double zoomMax = 5;
 	private double zoomStep = 0;
 	private RenderAlgo renderAlgo = null;
-	private HashSet<TickHandler> handlers = new HashSet<>();
+	private ArrayList<TickHandler> handlers = new ArrayList<>();
 	private CommandListener c;
 	private ArrayDeque<String> commands = new ArrayDeque<>();
 	private boolean showSides = true;
@@ -91,7 +91,9 @@ public class CalcThread implements Runnable {
 		new CleaningThread().start();
 		while (!Display.isCloseRequested()) {
 			for (TickHandler th : handlers) {
-				th.handleTick(solid, renderOptions);
+				if (th.isActive()) {
+					th.handleTick(solid, renderOptions);
+				}
 			}
 			processCommands();
 			time = System.currentTimeMillis();
@@ -248,11 +250,11 @@ public class CalcThread implements Runnable {
 		this.renderAlgo = renderAlgo;
 	}
 
-	public HashSet<TickHandler> getTickHandlers() {
+	public ArrayList<TickHandler> getTickHandlers() {
 		return handlers;
 	}
 
-	public void setTickHandlers(HashSet<TickHandler> handlers) {
+	public void setTickHandlers(ArrayList<TickHandler> handlers) {
 		this.handlers = handlers;
 	}
 
@@ -270,5 +272,9 @@ public class CalcThread implements Runnable {
 
 	public boolean areSidesActive() {
 		return showSides;
+	}
+
+	public void toggleTickHandler(int id) {
+		handlers.get(id).setActive(!handlers.get(id).isActive());
 	}
 }

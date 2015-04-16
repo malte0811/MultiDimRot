@@ -221,8 +221,8 @@ public abstract class RenderAlgo {
 		GL15.glDeleteBuffers(vbocId);
 	}
 
-	public int[][] getDensity(int[][][] triangles) {
-		int[][] dens = new int[Display.getWidth()][Display.getHeight()];
+	public float[][] getDensity(int[][][] triangles, double[][] vertices) {
+		float[][] dens = new float[Display.getWidth()][Display.getHeight()];
 		for (int[][] tri : triangles) {
 			if (tri == null) {
 				continue;
@@ -291,10 +291,10 @@ public abstract class RenderAlgo {
 		return dens;
 	}
 
-	protected void renderSides(int[][] density) {
+	protected void renderSides(float[][] density) {
 		int count = 0;
-		for (int[] i : density) {
-			for (int i2 : i) {
+		for (float[] i : density) {
+			for (float i2 : i) {
 				if (i2 > 0) {
 					count++;
 				}

@@ -18,13 +18,8 @@ public class CommandDeserialize extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 1) {
-			System.out.println("1 argument is required");
-			return;
-		}
-		String s = System.getProperty("file.separator");
-		File f = new File(System.getProperty("user.dir") + s + "solids" + s
-				+ args[0]);
+		String s = DimRegistry.getFileSeperator();
+		File f = new File(DimRegistry.getUserDir() + s + "solids" + s + args[0]);
 		FileInputStream fos = new FileInputStream(f);
 		ObjectInputStream oos = new ObjectInputStream(fos);
 		DimRegistry.getCalcThread().setSolid((Solid) oos.readObject());
@@ -39,11 +34,15 @@ public class CommandDeserialize extends Command {
 	@Override
 	public ArrayList<String> getCompletion(int i, String toComplete) {
 		if (i == 0) {
-			String s = System.getProperty("file.separator");
-			return getFiles(new File(System.getProperty("user.dir") + s
-					+ "solids"), toComplete);
+			String s = DimRegistry.getFileSeperator();
+			return getFiles(new File(DimRegistry.getUserDir() + s + "solids"),
+					toComplete);
 		}
 		return new ArrayList<>();
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 1;
+	}
 }

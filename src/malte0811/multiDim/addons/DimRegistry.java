@@ -9,14 +9,17 @@ import malte0811.multiDim.render.CentralThree;
 import malte0811.multiDim.render.CentralTwo;
 import malte0811.multiDim.render.ParallelRender;
 import malte0811.multiDim.render.RenderAlgo;
-import malte0811.multiDim.solids.Solid;
 import malte0811.multiDim.solids.HyperCube;
+import malte0811.multiDim.solids.Solid;
 import malte0811.multiDim.solids.TestingSolid;
 
 public class DimRegistry {
 
 	private static HashMap<Integer, Class<? extends RenderAlgo>> renderAlgos = new HashMap<>();
 	private static HashMap<String, Class<? extends Solid>> staticSolids = new HashMap<>();
+	private static String userDir;
+	private static String sep;
+
 	public static CalcThread instance = null;
 	static {
 		renderAlgos.put(0, ParallelRender.class);
@@ -26,6 +29,9 @@ public class DimRegistry {
 		staticSolids.put("HyperCube", HyperCube.class);
 		staticSolids.put("TestingSolid", TestingSolid.class);
 
+		sep = System.getProperty("file.separator");
+		userDir = ClassLoader.getSystemClassLoader().getResource(".")
+				.toString().substring(5);
 	}
 
 	public static void addRenderAlgo(Class<? extends RenderAlgo> newAlgo,
@@ -63,5 +69,13 @@ public class DimRegistry {
 
 	public static HashMap<String, Class<? extends Solid>> getStaticSolids() {
 		return staticSolids;
+	}
+
+	public static String getUserDir() {
+		return userDir;
+	}
+
+	public static String getFileSeperator() {
+		return sep;
 	}
 }

@@ -20,4 +20,8 @@ public class CommandClear extends Command {
 		DimRegistry.getCalcThread().getCommandListener().output.setText("");
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 0;
+	}
 }

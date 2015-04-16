@@ -137,9 +137,9 @@ public class Programm {
 	}
 
 	public static Programm load(String s) throws Exception {
-		String sep = System.getProperty("file.separator");
-		Path p = Paths.get(System.getProperty("user.dir") + sep + "scripts"
-				+ sep + s);
+		String sep = DimRegistry.getFileSeperator();
+		Path p = Paths
+				.get(DimRegistry.getUserDir() + sep + "scripts" + sep + s);
 		Object[] file = new Object[0];
 		if (!Files.exists(p) || !Files.isRegularFile(p)) {
 			System.out.println("File or command does not exist");

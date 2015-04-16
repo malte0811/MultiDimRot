@@ -88,7 +88,9 @@ public class CentralThree extends ZoomableRender {
 
 			}
 			length--;
-
+			if (length == 2) {
+				vertices = oldVertices;
+			}
 		}
 
 		float[][] ret = new float[vertices.length][length];
@@ -145,7 +147,7 @@ public class CentralThree extends ZoomableRender {
 							.getHeight());
 				}
 			}
-			renderSides(getDensity(sInt));
+			renderSides(getDensity(sInt, vertices));
 		}
 
 		if (colors != null) {

@@ -15,11 +15,7 @@ public class CommandShowOctaeder extends Command {
 	@Override
 	public void processCommand(String[] args) {
 		int dims;
-		if (args.length != 1) {
-			dims = 3;
-		} else {
-			dims = (int) Programm.getValue(args[0]);
-		}
+		dims = (int) Programm.getValue(args[0]);
 		DimRegistry.getCalcThread().setSolid(new NDOctaeder(dims));
 	}
 
@@ -28,4 +24,8 @@ public class CommandShowOctaeder extends Command {
 		return "\"showoctaeder <n>\" shows an n-dimensional octahedron";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 1;
+	}
 }

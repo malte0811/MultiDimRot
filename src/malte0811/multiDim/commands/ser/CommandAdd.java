@@ -18,10 +18,6 @@ public class CommandAdd extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 2) {
-			System.out.println("2 arguments are required");
-			return;
-		}
 		String sep = System.getProperty("file.separator");
 		File f = new File(System.getProperty("user.dir") + sep + "solids" + sep
 				+ args[0]);
@@ -46,10 +42,15 @@ public class CommandAdd extends Command {
 	@Override
 	public ArrayList<String> getCompletion(int i, String toComplete) {
 		if (i == 0 || i == 1) {
-			String s = System.getProperty("file.separator");
-			return getFiles(new File(System.getProperty("user.dir") + s
-					+ "solids"), toComplete);
+			String s = DimRegistry.getFileSeperator();
+			return getFiles(new File(DimRegistry.getUserDir() + s + "solids"),
+					toComplete);
 		}
 		return new ArrayList<>();
+	}
+
+	@Override
+	public int getMinParameterCount() {
+		return 2;
 	}
 }

@@ -53,4 +53,9 @@ public class CommandHelp extends Command {
 		}
 		return new ArrayList<>();
 	}
+
+	@Override
+	public int getMinParameterCount() {
+		return 0;
+	}
 }

@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
+import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.addons.TickHandler;
 import malte0811.multiDim.solids.Solid;
 
@@ -56,17 +57,17 @@ public class MediaHandler extends TickHandler {
 
 	@Override
 	public void handleTick(Solid d, double[] renderoptions) {
-		String sep = System.getProperty("file.separator");
+		String sep = DimRegistry.getFileSeperator();
 		if (screenShot) {
-			String file = System.getProperty("user.dir") + sep + "screenshots"
-					+ sep + Long.toString(System.currentTimeMillis()) + ".jpeg";
+			String file = DimRegistry.getUserDir() + sep + "screenshots" + sep
+					+ Long.toString(System.currentTimeMillis()) + ".jpeg";
 			handleScreenShot(new File(file));
 			screenShot = false;
 		}
 		if (rec) {
 			if (framesLeft == 0) {
-				String file = System.getProperty("user.dir") + sep + "tmp"
-						+ sep + "screen";
+				String file = DimRegistry.getUserDir() + sep + "tmp" + sep
+						+ "screen";
 				for (int i = 0; i < maxFrames; i++) {
 					try {
 						BufferedImage tmp = ImageIO.read(new File(file
@@ -93,8 +94,8 @@ public class MediaHandler extends TickHandler {
 
 				rec = false;
 			} else {
-				String file = System.getProperty("user.dir") + sep + "tmp"
-						+ sep + "screen" + (maxFrames - framesLeft) + ".jpeg";
+				String file = DimRegistry.getUserDir() + sep + "tmp" + sep
+						+ "screen" + (maxFrames - framesLeft) + ".jpeg";
 				handleScreenShot(new File(file));
 				framesLeft--;
 			}

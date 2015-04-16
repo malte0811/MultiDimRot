@@ -14,10 +14,6 @@ public class CommandChangeRenderAlgo extends Command {
 
 	@Override
 	public void processCommand(String[] args) {
-		if (args.length != 1) {
-			System.out.println("1 arguments are required");
-			return;
-		}
 		int r = (int) Programm.getValue(args[0]);
 		RenderAlgo algo = null;
 		try {
@@ -33,6 +29,11 @@ public class CommandChangeRenderAlgo extends Command {
 	@Override
 	public String getCommandUsage() {
 		return "\"changerenderalgo <newAlgo>\" changes the rendering technique. 0: Orthogonal projection, 1-3: perspective rendering, increasing quality";
+	}
+
+	@Override
+	public int getMinParameterCount() {
+		return 1;
 	}
 
 }

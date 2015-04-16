@@ -20,11 +20,16 @@ public class CommandRecord extends Command {
 	}
 
 	@Override
+	public int getMinParameterCount() {
+		return 3;
+	}
+
+	@Override
 	public void processCommand(String[] args) throws Exception {
 		int ticks = Integer.parseInt(args[0]);
 		DimRegistry.getCalcThread().addCommand(args[1]);
-		String sep = System.getProperty("file.separator");
-		File f = new File(System.getProperty("user.dir") + sep + "videos" + sep
+		String sep = DimRegistry.getFileSeperator();
+		File f = new File(DimRegistry.getUserDir() + sep + "videos" + sep
 				+ args[2]);
 		MediaHandler.instance.record(ticks, f);
 	}
@@ -33,8 +38,8 @@ public class CommandRecord extends Command {
 	public ArrayList<String> getCompletion(int i, String toComplete) {
 		if (i == 1) {
 			return getFiles(
-					new File(System.getProperty("user.dir")
-							+ System.getProperty("file.separator") + "scripts"),
+					new File(DimRegistry.getUserDir()
+							+ DimRegistry.getFileSeperator() + "scripts"),
 					toComplete);
 		}
 		return new ArrayList<>();

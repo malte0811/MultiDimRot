@@ -14,10 +14,6 @@ public class CommandShowSphere extends Command {
 
 	@Override
 	public void processCommand(String[] args) {
-		if (args.length != 2) {
-			System.out.println("2 arguments are required");
-			return;
-		}
 		int dim = (int) Programm.getValue(args[0]);
 		int res = (int) Programm.getValue(args[1]);
 		DimRegistry.getCalcThread().setSolid(new NDSphere(dim, res));
@@ -28,4 +24,8 @@ public class CommandShowSphere extends Command {
 		return "\"showsphere <n> <res>\" shows an n-dimensional sphere with a resolution of res degrees";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 2;
+	}
 }

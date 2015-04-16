@@ -42,6 +42,8 @@ public abstract class Command {
 
 	public abstract String getCommandUsage();
 
+	public abstract int getMinParameterCount();
+
 	public abstract void processCommand(String[] args) throws Exception;
 
 	public ArrayList<String> getCompletion(int i, String toComplete) {
@@ -106,7 +108,15 @@ public abstract class Command {
 			return false;
 		}
 		try {
-			commands.get(cmd.toUpperCase()).processCommand(args);
+			Command c = commands.get(cmd.toUpperCase());
+			if (args.length < c.getMinParameterCount()) {
+				System.out.println("The command " + c.getCommandName()
+						+ " requires at least " + c.getMinParameterCount()
+						+ " parameters");
+				System.out.println(c.getCommandUsage());
+			} else {
+				c.processCommand(args);
+			}
 		} catch (Exception x) {
 			System.out.println(command);
 			x.printStackTrace();

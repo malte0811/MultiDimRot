@@ -20,4 +20,8 @@ public class CommandResetRot extends Command {
 		return "\"resetrot\" stops the rotation started by \"rotcon\"";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 0;
+	}
 }

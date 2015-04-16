@@ -17,11 +17,11 @@ public class CommandDebugRender extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 1) {
-			System.out.println("This command requires exactly 1 argument");
-			return;
-		}
 		DebugHandler.getInstance().newDebug(Integer.parseInt(args[0]), 4);
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 3;
+	}
 }

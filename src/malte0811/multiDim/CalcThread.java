@@ -68,8 +68,8 @@ public class CalcThread implements Runnable {
 		String[] dirs = { "tmp", "addons", "logs", "screenshots", "videos",
 				"scripts", "solids" };
 		for (String s : dirs) {
-			Path p = Paths.get(System.getProperty("user.dir")
-					+ System.getProperty("file.separator") + s);
+			Path p = Paths.get(DimRegistry.getUserDir()
+					+ DimRegistry.getFileSeperator() + s);
 			if (!Files.exists(p)) {
 				try {
 					Files.createDirectories(p);

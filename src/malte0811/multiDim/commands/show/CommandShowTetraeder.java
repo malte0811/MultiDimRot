@@ -14,10 +14,6 @@ public class CommandShowTetraeder extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 1) {
-			System.out.println("1 argument is required");
-			return;
-		}
 		int dim = (int) Programm.getValue(args[0]);
 		DimRegistry.getCalcThread().setSolid(new NDTetraeder(dim));
 	}
@@ -27,4 +23,8 @@ public class CommandShowTetraeder extends Command {
 		return "\"showTetraeder <dim>\" shows an n-dimensional tetrahedron";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 1;
+	}
 }

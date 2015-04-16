@@ -15,8 +15,8 @@ public class AddonLoader {
 
 	public static void load() throws Exception {
 		String base;
-		String sep = System.getProperty("file.separator");
-		base = System.getProperty("user.dir") + sep + "addons" + sep;
+		String sep = DimRegistry.getFileSeperator();
+		base = DimRegistry.getUserDir() + sep + "addons" + sep;
 		// URL toLoad = new File(base).toURI().toURL();
 		File folder = new File(base);
 		HashSet<String> jars = listFilesForFolder(folder);

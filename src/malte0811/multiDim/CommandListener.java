@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
+import malte0811.multiDim.addons.DimRegistry;
+
 public class CommandListener extends JFrame {
 	public InputField input = new InputField();
 	public JTextArea output = new JTextArea(0, 30);
@@ -80,15 +82,15 @@ public class CommandListener extends JFrame {
 		}
 	}
 
+	// TODO \r\n after n characters
 	class OutStream extends OutputStream {
 		File outFile;
 		FileOutputStream fos;
 		String line = "";
 
 		public OutStream() throws IOException {
-			String base = System.getProperty("user.dir")
-					+ System.getProperty("file.separator") + "logs"
-					+ System.getProperty("file.separator");
+			String s = DimRegistry.getFileSeperator();
+			String base = DimRegistry.getUserDir() + s + "logs" + s;
 			Path logLate = Paths.get(base + "latest.log");
 			Path log1 = Paths.get(base + "log1.log");
 			Path log2 = Paths.get(base + "log2.log");
@@ -103,9 +105,8 @@ public class CommandListener extends JFrame {
 			if (Files.exists(logLate)) {
 				Files.move(logLate, log1);
 			}
-			outFile = new File(System.getProperty("user.dir")
-					+ System.getProperty("file.separator") + "logs"
-					+ System.getProperty("file.separator") + "latest.log");
+			outFile = new File(DimRegistry.getUserDir() + s + "logs" + s
+					+ "latest.log");
 			fos = new FileOutputStream(outFile);
 		}
 

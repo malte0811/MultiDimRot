@@ -41,4 +41,8 @@ public class CommandShowLorenz extends Command {
 		return "\"showlorenz <res> <steps> [<x> <y> <z> [<a> <b> <c>]]\"shows the first steps steps of a lorenz system with resolution res. Optional: x, y, z: initial value, a, b, c: parameters for the system";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 2;
+	}
 }

@@ -26,4 +26,8 @@ public class CommandToggleSides extends Command {
 		}
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 0;
+	}
 }

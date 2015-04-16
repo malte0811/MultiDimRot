@@ -15,11 +15,7 @@ public class CommandShowCube extends Command {
 	@Override
 	public void processCommand(String[] args) {
 		int dims;
-		if (args.length != 1) {
-			dims = 3;
-		} else {
-			dims = (int) Programm.getValue(args[0]);
-		}
+		dims = (int) Programm.getValue(args[0]);
 		DimRegistry.getCalcThread().setSolid(new NDCube(dims));
 	}
 
@@ -28,4 +24,8 @@ public class CommandShowCube extends Command {
 		return "\"showcube <n>\" zeigt einen n-dimensionalen W\u00FCrfel";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 1;
+	}
 }

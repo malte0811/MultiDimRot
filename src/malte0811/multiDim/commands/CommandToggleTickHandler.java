@@ -17,10 +17,6 @@ public class CommandToggleTickHandler extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 1 && args.length != 2) {
-			System.out.println("This command requires 1 or 2 parameters.");
-			return;
-		}
 		int id = Integer.parseInt(args[0]);
 		if (args.length == 1) {
 			DimRegistry.getCalcThread().toggleTickHandler(id);
@@ -30,4 +26,8 @@ public class CommandToggleTickHandler extends Command {
 		}
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 0;
+	}
 }

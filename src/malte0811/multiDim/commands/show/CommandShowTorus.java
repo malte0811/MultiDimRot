@@ -14,10 +14,6 @@ public class CommandShowTorus extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 3) {
-			System.out.println("3 arguments are required");
-			return;
-		}
 		int dim = (int) Programm.getValue(args[0]);
 		double rad = Programm.getValue(args[1]);
 		int res = (int) Programm.getValue(args[2]);
@@ -29,4 +25,8 @@ public class CommandShowTorus extends Command {
 		return "\"showTorus <n> <rad> <res>\" shows an n-dimensional torus with a radius of rad and a resolution of res degrees";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 3;
+	}
 }

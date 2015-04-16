@@ -21,14 +21,14 @@ public class CommandSetSize extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 2) {
-			System.out.println("This command requires 2 arguments");
-			return;
-		}
 		int x = (int) Programm.getValue(args[0]);
 		int y = (int) Programm.getValue(args[1]);
 		Display.setDisplayMode(new DisplayMode(x, y));
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 2;
+	}
 }

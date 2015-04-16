@@ -19,4 +19,8 @@ public class CommandExit extends Command {
 		return "\"exit\" Stops MultiDimRot";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 0;
+	}
 }

@@ -52,6 +52,7 @@ public class CommandListener extends JFrame {
 		pane.setLayout(gl);
 
 		output.setEditable(false);
+		output.setLineWrap(true);
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -82,7 +83,6 @@ public class CommandListener extends JFrame {
 		}
 	}
 
-	// TODO \r\n after n characters
 	class OutStream extends OutputStream {
 		File outFile;
 		FileOutputStream fos;
@@ -116,7 +116,6 @@ public class CommandListener extends JFrame {
 			if (b == '\n') {
 				if (line.getBytes()[0] != '>') {
 					output.append(line);
-					// output.setCaretPosition(output.getText().length() - 1);
 					old.write(line.getBytes());
 				}
 				fos.write(line.getBytes());

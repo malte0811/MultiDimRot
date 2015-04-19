@@ -12,6 +12,7 @@ public class CentralThree extends ZoomableRender {
 			float[][] colors, int[][] sides) {
 		int length = vertices[0].length;
 		boolean[] extraVertices = new boolean[vertices.length];
+		double[][] vertices3d = vertices;
 		while (length > 2) {
 			double[][] oldVertices = new double[vertices.length][length];
 			for (int i = 0; i < vertices.length; i++) {
@@ -89,7 +90,7 @@ public class CentralThree extends ZoomableRender {
 			}
 			length--;
 			if (length == 2) {
-				vertices = oldVertices;
+				vertices3d = oldVertices;
 			}
 		}
 
@@ -147,7 +148,7 @@ public class CentralThree extends ZoomableRender {
 							.getHeight());
 				}
 			}
-			renderSides(getDensity(sInt, vertices));
+			renderSides(getDensity(sInt, vertices3d, sides, options[1]));
 		}
 
 		if (colors != null) {

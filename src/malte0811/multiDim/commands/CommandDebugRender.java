@@ -12,7 +12,7 @@ public class CommandDebugRender extends Command {
 
 	@Override
 	public String getCommandUsage() {
-		return "\"DEBUG\" prints out rendering debug information for on rendering tick";
+		return "\"DEBUG <t>\" prints out rendering debug information for t rendering ticks";
 	}
 
 	@Override
@@ -22,6 +22,6 @@ public class CommandDebugRender extends Command {
 
 	@Override
 	public int getMinParameterCount() {
-		return 3;
+		return 1;
 	}
 }

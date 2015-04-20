@@ -30,8 +30,7 @@ public class DimRegistry {
 		staticSolids.put("TestingSolid", TestingSolid.class);
 
 		sep = System.getProperty("file.separator");
-		userDir = ClassLoader.getSystemClassLoader().getResource(".")
-				.toString().substring(5);
+		userDir = System.getProperty("user.dir");
 	}
 
 	public static void addRenderAlgo(Class<? extends RenderAlgo> newAlgo,

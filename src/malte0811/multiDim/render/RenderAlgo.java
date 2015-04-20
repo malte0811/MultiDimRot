@@ -224,7 +224,7 @@ public abstract class RenderAlgo {
 	}
 
 	public float[][] getDensity(int[][][] triangles, double[][] vertices3d,
-			int[][] sides, double fov) {
+			int[][] sides, double fov, boolean improved) {
 		float[][] dens = new float[Display.getWidth()][Display.getHeight()];
 		for (int i = 0; i < triangles.length; i++) {
 			int[][] tri = triangles[i];
@@ -281,82 +281,95 @@ public abstract class RenderAlgo {
 					if (middleAbove) {
 						// is the current point in the triangle tri?
 						if (vOp <= y && vS1 > y && vS2 > y) {
-							// dens[x][y]++;
-							// line:
-							// y = st1*z
-							// x = st2*z
-							// FIXME unstable
-							double st1 = ((double) (y - Display.getHeight() / 2))
-									/ (double) Display.getHeight() / fov;
-							double st2 = ((double) (x - Display.getWidth() / 2))
-									/ (double) Display.getWidth() / fov;
-							// plane
-							// x = p0[0]+p*(p0[0]-p1[0])+q*(p0[0]-p2[0])
-							// ...
-							// xyzpq
-							// -1 0 st1 0 0 0
-							// 0 -1 st2 0 0 0
-							// 0 0 -1 (p0[2]-p1[2]) (p0[2]-p2[2]) -p0[2]
-							// 0 -1 0 (p0[1]-p1[1]) (p0[1]-p2[1]) -p0[1]
-							// -1 0 0 (p0[0]-p1[0]) (p0[0]-p2[0]) -p0[0]
-							double[] p0 = vertices3d[sides[i][0]];
-							double[] p1 = vertices3d[sides[i][1]];
-							double[] p2 = vertices3d[sides[i][2]];
-							double[][] eq = {
-									{ -1, 0.0001, st1, 0.0001, 0.0001, 0.0001 },
-									{ 0.0001, -1, st2, 0, 0, 0 },
-									{ 0.0001, 0.0001, -1, p0[2] - p1[2],
-											p0[2] - p2[2], -p0[2] },
-									{ 0.0001, -1, 0.0001, p0[1] - p1[1],
-											p0[1] - p2[1], -p0[1] },
-									{ -1, 0.0001, 0.0001, p0[0] - p1[0],
-											p0[0] - p2[0], -p0[0] }, };
-							double[] inter = solveLGS(eq);
-							double dist2 = inter[0] * inter[0] + inter[1]
-									* inter[1] + inter[2] * inter[2];
-							dens[x][y] += 1 / dist2;
-							// DEBUG
-							DebugHandler.getInstance().addTime(0, (int) dist2);
+							if (improved) {
+								// dens[x][y]++;
+								// line:
+								// y = st1*z
+								// x = st2*z
+								// FIXME unstable
+								double st1 = ((double) (y - Display.getHeight() / 2))
+										/ (double) Display.getHeight() / fov;
+								double st2 = ((double) (x - Display.getWidth() / 2))
+										/ (double) Display.getWidth() / fov;
+								// plane
+								// x = p0[0]+p*(p0[0]-p1[0])+q*(p0[0]-p2[0])
+								// ...
+								// xyzpq
+								// -1 0 st1 0 0 0
+								// 0 -1 st2 0 0 0
+								// 0 0 -1 (p0[2]-p1[2]) (p0[2]-p2[2]) -p0[2]
+								// 0 -1 0 (p0[1]-p1[1]) (p0[1]-p2[1]) -p0[1]
+								// -1 0 0 (p0[0]-p1[0]) (p0[0]-p2[0]) -p0[0]
+								double[] p0 = vertices3d[sides[i][0]];
+								double[] p1 = vertices3d[sides[i][1]];
+								double[] p2 = vertices3d[sides[i][2]];
+								double[][] eq = {
+										{ -1, 0.0001, st1, 0.0001, 0.0001,
+												0.0001 },
+										{ 0.0001, -1, st2, 0, 0, 0 },
+										{ 0.0001, 0.0001, -1, p0[2] - p1[2],
+												p0[2] - p2[2], -p0[2] },
+										{ 0.0001, -1, 0.0001, p0[1] - p1[1],
+												p0[1] - p2[1], -p0[1] },
+										{ -1, 0.0001, 0.0001, p0[0] - p1[0],
+												p0[0] - p2[0], -p0[0] }, };
+								double[] inter = solveLGS(eq);
+								double dist2 = inter[0] * inter[0] + inter[1]
+										* inter[1] + inter[2] * inter[2];
+								dens[x][y] += 3 / dist2;
+								// DEBUG
+								DebugHandler.getInstance().addTime(0,
+										(int) dist2);
+							} else {
+								dens[x][y]++;
+							}
 						}
 					} else {
 						// is the current point in the triangle tri?
 						if (vOp >= y && vS1 < y && vS2 < y) {
-							// TODO not ++, but inverse proportional to square
-							// of
-							// distance
-							// dens[x][y]++;
-							double st1 = ((double) (y - Display.getHeight() / 2))
-									/ (double) Display.getHeight() / fov;
-							double st2 = ((double) (x - Display.getWidth() / 2))
-									/ (double) Display.getWidth() / fov;
-							// plane
-							// x = p0[0]+p*(p0[0]-p1[0])+q*(p0[0]-p2[0])
-							// ...
-							// xyzpq
-							// -1 0 st1 0 0 0
-							// 0 -1 st2 0 0 0
-							// 0 0 -1 (p0[2]-p1[2]) (p0[2]-p2[2]) -p0[2]
-							// 0 -1 0 (p0[1]-p1[1]) (p0[1]-p2[1]) -p0[1]
-							// -1 0 0 (p0[0]-p1[0]) (p0[0]-p2[0]) -p0[0]
-							double[] p0 = vertices3d[sides[i][0]];
-							double[] p1 = vertices3d[sides[i][1]];
-							double[] p2 = vertices3d[sides[i][2]];
-							// DEBUG 0se 0 instead of 0.0001
-							double[][] eq = {
-									{ -1, 0.0001, st1, 0.0001, 0.0001, 0.0001 },
-									{ 0.0001, -1, st2, 0, 0, 0 },
-									{ 0.0001, 0.0001, -1, p0[2] - p1[2],
-											p0[2] - p2[2], -p0[2] },
-									{ 0.0001, -1, 0.0001, p0[1] - p1[1],
-											p0[1] - p2[1], -p0[1] },
-									{ -1, 0.0001, 0.0001, p0[0] - p1[0],
-											p0[0] - p2[0], -p0[0] }, };
-							double[] inter = solveLGS(eq);
-							double dist2 = inter[0] * inter[0] + inter[1]
-									* inter[1] + inter[2] * inter[2];
-							dens[x][y] += 1 / dist2;
-							// DEBUG
-							DebugHandler.getInstance().addTime(0, (int) dist2);
+							if (improved) {
+								// TODO not ++, but inverse proportional to
+								// square
+								// of
+								// distance
+								// dens[x][y]++;
+								double st1 = ((double) (y - Display.getHeight() / 2))
+										/ (double) Display.getHeight() / fov;
+								double st2 = ((double) (x - Display.getWidth() / 2))
+										/ (double) Display.getWidth() / fov;
+								// plane
+								// x = p0[0]+p*(p0[0]-p1[0])+q*(p0[0]-p2[0])
+								// ...
+								// xyzpq
+								// -1 0 st1 0 0 0
+								// 0 -1 st2 0 0 0
+								// 0 0 -1 (p0[2]-p1[2]) (p0[2]-p2[2]) -p0[2]
+								// 0 -1 0 (p0[1]-p1[1]) (p0[1]-p2[1]) -p0[1]
+								// -1 0 0 (p0[0]-p1[0]) (p0[0]-p2[0]) -p0[0]
+								double[] p0 = vertices3d[sides[i][0]];
+								double[] p1 = vertices3d[sides[i][1]];
+								double[] p2 = vertices3d[sides[i][2]];
+								// DEBUG 0se 0 instead of 0.0001
+								double[][] eq = {
+										{ -1, 0.0001, st1, 0.0001, 0.0001,
+												0.0001 },
+										{ 0.0001, -1, st2, 0, 0, 0 },
+										{ 0.0001, 0.0001, -1, p0[2] - p1[2],
+												p0[2] - p2[2], -p0[2] },
+										{ 0.0001, -1, 0.0001, p0[1] - p1[1],
+												p0[1] - p2[1], -p0[1] },
+										{ -1, 0.0001, 0.0001, p0[0] - p1[0],
+												p0[0] - p2[0], -p0[0] }, };
+								double[] inter = solveLGS(eq);
+								double dist2 = inter[0] * inter[0] + inter[1]
+										* inter[1] + inter[2] * inter[2];
+								dens[x][y] += 3 / dist2;
+								// DEBUG
+								DebugHandler.getInstance().addTime(0,
+										(int) dist2);
+							} else {
+								dens[x][y]++;
+							}
 						}
 					}
 				}

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import org.lwjgl.opengl.Display;
 
 public class CentralThree extends ZoomableRender {
+	public static boolean fancy = false;
 
 	@Override
 	public void render(double[][] vertices, int[][] edges, double[] options,
@@ -148,7 +149,7 @@ public class CentralThree extends ZoomableRender {
 							.getHeight());
 				}
 			}
-			renderSides(getDensity(sInt, vertices3d, sides, options[1]));
+			renderSides(getDensity(sInt, vertices3d, sides, options[1], fancy));
 		}
 
 		if (colors != null) {

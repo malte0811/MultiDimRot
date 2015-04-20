@@ -2,7 +2,7 @@
 
 MultiDimRot is a program used to create and render n-dimensional solids. 
 
-MultiDimRot.jar should be able to be launched on Mac, Linux and Windows and contains all the libraries required.
+MultiDimRot.jar should be able to be launched on Mac, Linux and Windows and contains all the libraries required. The folders for addons, log files, screenshots, solids and videos are created in the users personal folder on Linux and in the same folder as the jar file on windows.
 
 Required libraries (if you want to run the source code instead of the jar): 
 

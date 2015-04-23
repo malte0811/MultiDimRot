@@ -5,8 +5,8 @@ import java.util.Arrays;
 import malte0811.multiDim.solids.Solid;
 import malte0811.multiDim.solids.TMPSolid;
 
-public class NDOctaeder extends Solid {
-	public NDOctaeder(int d) {
+public class NDOctahedron extends Solid {
+	public NDOctahedron(int d) {
 		if (d == 1) {
 			vertices = new double[2][1];
 			edges = new int[1][2];
@@ -20,7 +20,7 @@ public class NDOctaeder extends Solid {
 		double[][] tV = new double[2][d];
 		tV[0][d - 1] = -1D;
 		tV[1][d - 1] = 1D;
-		Solid old = new NDOctaeder(d - 1);
+		Solid old = new NDOctahedron(d - 1);
 		Solid a = Solid.add(old,
 				new TMPSolid(new int[0][2], tV, new int[0][3]), true);
 		this.vertices = a.getCopyOfVertices(d);
@@ -51,7 +51,6 @@ public class NDOctaeder extends Solid {
 			this.edges[lE + l - 2 + i][0] = i;
 			this.edges[lE + l - 2 + i][1] = l - 1;
 		}
-		System.out.print("");
 	}
 
 	@Override

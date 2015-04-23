@@ -27,7 +27,7 @@ public class NDSphere extends Solid {
 		int oldELength = edges.length;
 		int oldSLength = sides.length;
 		sides = Arrays.copyOf(sides,
-				Math.max(sides.length + 2 * oldELength - 2 * oldLength, 0));
+				Math.max(sides.length + 2 * oldELength - 2 * oldLength + 4, 0));
 		int z = 0;
 		for (int i = 0; i < edges.length && 2 * z + oldSLength < sides.length; i++) {
 			if (edges[i][0] < vertices.length - oldLength

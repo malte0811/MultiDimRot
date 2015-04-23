@@ -3,25 +3,25 @@ package malte0811.multiDim.commands.show;
 import malte0811.multiDim.addons.Command;
 import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.commands.programs.Programm;
-import malte0811.multiDim.solids.euclidND.NDOctaeder;
+import malte0811.multiDim.solids.euclidND.NDOctahedron;
 
-public class CommandShowOctaeder extends Command {
+public class CommandShowOctahedron extends Command {
 
 	@Override
 	public String getCommandName() {
-		return "SHOWOCTAEDER";
+		return "SHOWOCTAHEDRON";
 	}
 
 	@Override
 	public void processCommand(String[] args) {
 		int dims;
 		dims = (int) Programm.getValue(args[0]);
-		DimRegistry.getCalcThread().setSolid(new NDOctaeder(dims));
+		DimRegistry.getCalcThread().setSolid(new NDOctahedron(dims));
 	}
 
 	@Override
 	public String getCommandUsage() {
-		return "\"showoctaeder <n>\" shows an n-dimensional octahedron";
+		return "\"showOctahedron <n>\" shows an n-dimensional octahedron";
 	}
 
 	@Override

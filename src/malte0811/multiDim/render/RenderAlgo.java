@@ -282,11 +282,9 @@ public abstract class RenderAlgo {
 						// is the current point in the triangle tri?
 						if (vOp <= y && vS1 > y && vS2 > y) {
 							if (improved) {
-								// dens[x][y]++;
 								// line:
 								// y = st1*z
 								// x = st2*z
-								// FIXME unstable
 								double st1 = ((double) (y - Display.getHeight() / 2))
 										/ (double) Display.getHeight() / fov;
 								double st2 = ((double) (x - Display.getWidth() / 2))
@@ -317,7 +315,6 @@ public abstract class RenderAlgo {
 								double dist2 = inter[0] * inter[0] + inter[1]
 										* inter[1] + inter[2] * inter[2];
 								dens[x][y] += 3 / dist2;
-								// DEBUG
 								DebugHandler.getInstance().addTime(0,
 										(int) dist2);
 							} else {
@@ -328,11 +325,6 @@ public abstract class RenderAlgo {
 						// is the current point in the triangle tri?
 						if (vOp >= y && vS1 < y && vS2 < y) {
 							if (improved) {
-								// TODO not ++, but inverse proportional to
-								// square
-								// of
-								// distance
-								// dens[x][y]++;
 								double st1 = ((double) (y - Display.getHeight() / 2))
 										/ (double) Display.getHeight() / fov;
 								double st2 = ((double) (x - Display.getWidth() / 2))
@@ -349,7 +341,6 @@ public abstract class RenderAlgo {
 								double[] p0 = vertices3d[sides[i][0]];
 								double[] p1 = vertices3d[sides[i][1]];
 								double[] p2 = vertices3d[sides[i][2]];
-								// DEBUG 0se 0 instead of 0.0001
 								double[][] eq = {
 										{ -1, 0.0001, st1, 0.0001, 0.0001,
 												0.0001 },
@@ -364,7 +355,6 @@ public abstract class RenderAlgo {
 								double dist2 = inter[0] * inter[0] + inter[1]
 										* inter[1] + inter[2] * inter[2];
 								dens[x][y] += 3 / dist2;
-								// DEBUG
 								DebugHandler.getInstance().addTime(0,
 										(int) dist2);
 							} else {

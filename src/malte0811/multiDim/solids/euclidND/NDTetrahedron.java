@@ -5,9 +5,9 @@ import java.util.Arrays;
 import malte0811.multiDim.solids.Solid;
 import malte0811.multiDim.solids.TMPSolid;
 
-public class NDTetraeder extends Solid {
+public class NDTetrahedron extends Solid {
 
-	public NDTetraeder(int dim) {
+	public NDTetrahedron(int dim) {
 		if (dim == 1) {
 			int[][] tmp = { { 0, 1 } };
 			double[][] tmpV = { { -0.5 }, { 0.5 } };
@@ -17,7 +17,7 @@ public class NDTetraeder extends Solid {
 			return;
 		}
 
-		Solid oldTetra = new NDTetraeder(dim - 1);
+		Solid oldTetra = new NDTetrahedron(dim - 1);
 		double[][] oldV = oldTetra.getCopyOfVertices(dim - 1);
 		double height = Math.sqrt(1 - oldV[oldV.length - 1][dim - 2]
 				* oldV[oldV.length - 1][dim - 2]);
@@ -42,11 +42,9 @@ public class NDTetraeder extends Solid {
 				sides[sideI][0] = dim;
 				sides[sideI][1] = i;
 				sides[sideI][2] = i2;
-				System.out.println(dim + "|" + i + "|" + i2);
 				sideI++;
 			}
 		}
-		System.out.print("");
 	}
 
 	@Override

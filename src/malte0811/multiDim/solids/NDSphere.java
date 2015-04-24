@@ -4,6 +4,13 @@ import java.util.Arrays;
 
 public class NDSphere extends Solid {
 	public NDSphere(int dim, int res) {
+		if (dim < 1 || res <= 0) {
+			System.out
+					.println("The dimension and resolution has to be positive.");
+			vertices = new double[0][0];
+			edges = new int[0][0];
+			return;
+		}
 		edges = new int[1][2];
 		if (dim == 1) {
 			Solid tmp = new TMPSolid(new int[0][2], new double[][] { { 1 },

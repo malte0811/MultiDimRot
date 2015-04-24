@@ -4,6 +4,13 @@ import java.util.Arrays;
 
 public class NDTorus extends Solid {
 	public NDTorus(int dim, double rad, int res) {
+		if (dim < 1 || res <= 0) {
+			System.out
+					.println("The dimension and resolution has to be positive.");
+			vertices = new double[0][0];
+			edges = new int[0][0];
+			return;
+		}
 		final Solid oldSphere = new NDSphere(dim - 1, res);
 		oldSphere.translate(0, rad);
 		Solid tmp = new TMPSolid(new int[0][2], new double[0][dim],

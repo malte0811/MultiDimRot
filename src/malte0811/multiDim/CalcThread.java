@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 
 public class CalcThread implements Runnable {
 	private Solid solid = null;
-	private int[][] rotations = new int[0][3];
+	private double[][] rotations = new double[0][3];
 	private double[] renderOptions = { 5, 3 };
 	private Programm currentProgram = null;
 	private double zoomMax = 5;
@@ -85,7 +85,8 @@ public class CalcThread implements Runnable {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-
+		System.out
+				.println("Type \"help\" to view a list of all commands. Type \"help <command name>\" to view help for a specific command.");
 		int timer = 0;
 		long time = System.currentTimeMillis();
 		new CleaningThread().start();
@@ -97,8 +98,8 @@ public class CalcThread implements Runnable {
 			}
 			processCommands();
 			time = System.currentTimeMillis();
-			for (int[] i : rotations) {
-				solid.rotate(i[0], i[1], i[2]);
+			for (double[] i : rotations) {
+				solid.rotate((int) i[0], (int) i[1], i[2]);
 			}
 			if (timer > 0) {
 				timer--;
@@ -167,7 +168,7 @@ public class CalcThread implements Runnable {
 				showSides ? solid.getSides() : null);
 	}
 
-	public void addRotCon(int[] value) {
+	public void addRotCon(double[] value) {
 		rotations = Arrays.copyOf(rotations, rotations.length + 1);
 		rotations[rotations.length - 1] = value;
 	}
@@ -202,11 +203,11 @@ public class CalcThread implements Runnable {
 		this.solid = solid;
 	}
 
-	public int[][] getRotations() {
+	public double[][] getRotations() {
 		return rotations;
 	}
 
-	public void setRotations(int[][] rotations) {
+	public void setRotations(double[][] rotations) {
 		this.rotations = rotations;
 	}
 

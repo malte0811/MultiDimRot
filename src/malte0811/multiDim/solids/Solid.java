@@ -14,7 +14,16 @@ public abstract class Solid implements Serializable {
 	public int[][] sides;
 	private HashMap<String, Object> data = new HashMap<>();
 
-	public void rotate(int firstAxis, int secondAxis, int degree) {
+	public void rotate(int firstAxis, int secondAxis, double degree) {
+		if (firstAxis < 0) {
+			System.out.println("The axis " + firstAxis
+					+ " does not exist. The smallest number for an axis is 0.");
+			return;
+		} else if (secondAxis < 0) {
+			System.out.println("The axis " + secondAxis
+					+ " does not exist. The smallest number for an axis is 0.");
+			return;
+		}
 		int maxV = firstAxis > secondAxis ? firstAxis : secondAxis;
 		maxV++;
 		double radsadd = Math.toRadians(degree);

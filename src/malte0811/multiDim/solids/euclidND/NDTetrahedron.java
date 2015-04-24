@@ -8,6 +8,12 @@ import malte0811.multiDim.solids.TMPSolid;
 public class NDTetrahedron extends Solid {
 
 	public NDTetrahedron(int dim) {
+		if (dim <= 0) {
+			System.out.println("The dimension must be positive.");
+			vertices = new double[0][0];
+			edges = new int[0][0];
+			return;
+		}
 		if (dim == 1) {
 			int[][] tmp = { { 0, 1 } };
 			double[][] tmpV = { { -0.5 }, { 0.5 } };

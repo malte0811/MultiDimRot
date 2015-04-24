@@ -6,6 +6,12 @@ import malte0811.multiDim.solids.Solid;
 
 public class NDCube extends Solid {
 	public NDCube(int d) {
+		if (d < 0) {
+			System.out.println("The dimension must be at least 0.");
+			vertices = new double[0][0];
+			edges = new int[0][0];
+			return;
+		}
 		vertices = new double[(int) Math.pow(2, d)][d];
 		boolean[] vertex = new boolean[d];
 		int ind = 0;

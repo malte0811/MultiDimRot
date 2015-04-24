@@ -7,6 +7,12 @@ import malte0811.multiDim.solids.TMPSolid;
 
 public class NDOctahedron extends Solid {
 	public NDOctahedron(int d) {
+		if (d <= 0) {
+			System.out.println("The dimension must be positive.");
+			vertices = new double[0][0];
+			edges = new int[0][0];
+			return;
+		}
 		if (d == 1) {
 			vertices = new double[2][1];
 			edges = new int[1][2];

@@ -1,13 +1,12 @@
 package malte0811.multiDim;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 import malte0811.multiDim.addons.AddonLoader;
 import malte0811.multiDim.addons.Command;
@@ -24,23 +23,18 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
-/**
- * email an niklasnickel@yahoo.de
- * 
- */
 public class CalcThread implements Runnable {
-	public Solid solid = null;
-	public int[][] rotations = new int[0][3];
-	public double[] renderOptions = { 5, 3 };
-	public Programm programmRunning = null;
-	public Color background = Color.GRAY;
-	public double zoomMax = 5;
-	public double zoomStep = 0;
-	public boolean showVertices = false;
-	public RenderAlgo algo = null;
-	public HashSet<TickHandler> handlers = new HashSet<>();
-	public CommandListener c;
-	ArrayDeque<String> commands = new ArrayDeque<>();
+	private Solid solid = null;
+	private double[][] rotations = new double[0][3];
+	private double[] renderOptions = { 5, 3 };
+	private Programm currentProgram = null;
+	private double zoomMax = 5;
+	private double zoomStep = 0;
+	private RenderAlgo renderAlgo = null;
+	private ArrayList<TickHandler> handlers = new ArrayList<>();
+	private CommandListener c;
+	private ArrayDeque<String> commands = new ArrayDeque<>();
+	private boolean showSides = true;
 
 	public CalcThread(Solid s) {
 		solid = s;
@@ -53,7 +47,7 @@ public class CalcThread implements Runnable {
 		Display.create();
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 		try {
-			algo = DimRegistry.getAlgoInstance(2);
+			renderAlgo = DimRegistry.getAlgoInstance(3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,9 +66,10 @@ public class CalcThread implements Runnable {
 
 		// create directories
 		String[] dirs = { "tmp", "addons", "logs", "screenshots", "videos",
-				"scripts" };
+				"scripts", "solids" };
 		for (String s : dirs) {
-			Path p = Paths.get(System.getProperty("user.dir") + "\\" + s);
+			Path p = Paths.get(DimRegistry.getUserDir()
+					+ DimRegistry.getFileSeperator() + s);
 			if (!Files.exists(p)) {
 				try {
 					Files.createDirectories(p);
@@ -90,36 +85,39 @@ public class CalcThread implements Runnable {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-
+		System.out
+				.println("Type \"help\" to view a list of all commands. Type \"help <command name>\" to view help for a specific command.");
 		int timer = 0;
 		long time = System.currentTimeMillis();
 		new CleaningThread().start();
 		while (!Display.isCloseRequested()) {
 			for (TickHandler th : handlers) {
-				th.handleTick(solid, renderOptions);
+				if (th.isActive()) {
+					th.handleTick(solid, renderOptions);
+				}
 			}
 			processCommands();
 			time = System.currentTimeMillis();
-			for (int[] i : rotations) {
-				solid.rotate(i[0], i[1], i[2]);
+			for (double[] i : rotations) {
+				solid.rotate((int) i[0], (int) i[1], i[2]);
 			}
 			if (timer > 0) {
 				timer--;
 			}
-			if (timer == 0 && programmRunning != null) {
-				timer = programmRunning.step();
+			if (timer == 0 && currentProgram != null) {
+				timer = currentProgram.step();
 				if (Programm.stop) {
 					timer = 0;
-					programmRunning = null;
+					currentProgram = null;
 					Programm.stop = false;
 					c.input.active = true;
 				}
 				if (timer == 0) {
-					programmRunning = null;
+					currentProgram = null;
 					c.input.active = true;
 				}
 			}
-			if (!(algo instanceof ParallelRender)
+			if (!(renderAlgo instanceof ParallelRender)
 					&& renderOptions[0] != zoomMax && zoomStep != 0) {
 				if (renderOptions[0] > zoomMax) {
 					renderOptions[0] -= zoomStep;
@@ -149,13 +147,13 @@ public class CalcThread implements Runnable {
 	}
 
 	protected void paint() {
-		if (algo == null) {
+		if (renderAlgo == null) {
 			return;
 		}
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		// GL11.glClearColor(1, 1, 1, 1);
 		int dims = 0;
-		if (algo instanceof ParallelRender) {
+		if (renderAlgo instanceof ParallelRender) {
 			dims = (int) (renderOptions[0] > renderOptions[1] ? renderOptions[0]
 					: renderOptions[1]);
 		}
@@ -165,11 +163,12 @@ public class CalcThread implements Runnable {
 		for (int i = 0; i < edges.length; i++) {
 			edges[i] = Arrays.copyOf(oldEdges[i], 2);
 		}
-		algo.render(vertices, edges, renderOptions, showVertices,
-				solid.getColors());
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		renderAlgo.render(vertices, edges, renderOptions, solid.getColors(),
+				showSides ? solid.getSides() : null);
 	}
 
-	public void addRotCon(int[] value) {
+	public void addRotCon(double[] value) {
 		rotations = Arrays.copyOf(rotations, rotations.length + 1);
 		rotations[rotations.length - 1] = value;
 	}
@@ -181,18 +180,102 @@ public class CalcThread implements Runnable {
 	private void processCommands() {
 		while (!commands.isEmpty()) {
 			String cmd = commands.pollFirst();
-			if (!Command.processCommand(cmd, false)) {
+			if (!Command.processCommand(cmd, true)) {
 				try {
-					DimRegistry.getCalcThread().programmRunning = Programm
+					DimRegistry.getCalcThread().currentProgram = Programm
 							.load(cmd);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if (DimRegistry.getCalcThread().programmRunning != null) {
+				if (DimRegistry.getCalcThread().currentProgram != null) {
 					c.input.toggle();
 					break;
 				}
 			}
 		}
+	}
+
+	public Solid getSolid() {
+		return solid;
+	}
+
+	public void setSolid(Solid solid) {
+		this.solid = solid;
+	}
+
+	public double[][] getRotations() {
+		return rotations;
+	}
+
+	public void setRotations(double[][] rotations) {
+		this.rotations = rotations;
+	}
+
+	public double[] getRenderOptions() {
+		return renderOptions;
+	}
+
+	public void setRenderOptions(double[] renderOptions) {
+		this.renderOptions = renderOptions;
+	}
+
+	public Programm getCurrentProgram() {
+		return currentProgram;
+	}
+
+	public void setCurrentProgram(Programm currentProgram) {
+		this.currentProgram = currentProgram;
+	}
+
+	public double getZoomMax() {
+		return zoomMax;
+	}
+
+	public void setZoomMax(double zoomMax) {
+		this.zoomMax = zoomMax;
+	}
+
+	public double getZoomStep() {
+		return zoomStep;
+	}
+
+	public void setZoomStep(double zoomStep) {
+		this.zoomStep = zoomStep;
+	}
+
+	public RenderAlgo getRenderAlgo() {
+		return renderAlgo;
+	}
+
+	public void setRenderAlgo(RenderAlgo renderAlgo) {
+		this.renderAlgo = renderAlgo;
+	}
+
+	public ArrayList<TickHandler> getTickHandlers() {
+		return handlers;
+	}
+
+	public void setTickHandlers(ArrayList<TickHandler> handlers) {
+		this.handlers = handlers;
+	}
+
+	public CommandListener getCommandListener() {
+		return c;
+	}
+
+	public void setCommandListener(CommandListener c) {
+		this.c = c;
+	}
+
+	public void setSidesActive(boolean active) {
+		showSides = active;
+	}
+
+	public boolean areSidesActive() {
+		return showSides;
+	}
+
+	public void toggleTickHandler(int id) {
+		handlers.get(id).setActive(!handlers.get(id).isActive());
 	}
 }

@@ -20,4 +20,8 @@ public class CommandScreenShot extends Command {
 		MediaHandler.instance.screenShot();
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 0;
+	}
 }

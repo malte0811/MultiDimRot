@@ -3,29 +3,28 @@ package malte0811.multiDim.commands.show;
 import malte0811.multiDim.addons.Command;
 import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.commands.programs.Programm;
-import malte0811.multiDim.solids.NDSphere;
+import malte0811.multiDim.solids.euclidND.NDTetrahedron;
 
-public class CommandShowSphere extends Command {
+public class CommandShowTetrahedron extends Command {
 
 	@Override
 	public String getCommandName() {
-		return "SHOWSPHERE";
+		return "SHOWTETRAHEDRON";
 	}
 
 	@Override
-	public void processCommand(String[] args) {
+	public void processCommand(String[] args) throws Exception {
 		int dim = (int) Programm.getValue(args[0]);
-		int res = (int) Programm.getValue(args[1]);
-		DimRegistry.getCalcThread().setSolid(new NDSphere(dim, res));
+		DimRegistry.getCalcThread().setSolid(new NDTetrahedron(dim));
 	}
 
 	@Override
 	public String getCommandUsage() {
-		return "\"showsphere <n> <res>\" shows an n-dimensional sphere with a resolution of res degrees";
+		return "\"showTetrahedron <dim>\" shows an n-dimensional tetrahedron";
 	}
 
 	@Override
 	public int getMinParameterCount() {
-		return 2;
+		return 1;
 	}
 }

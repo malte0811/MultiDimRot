@@ -16,14 +16,11 @@ public class CommandSerialize extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 1) {
-			System.out.println("1 argument is required");
-			return;
-		}
-		File f = new File(System.getProperty("user.dir") + "\\" + args[0]);
+		String s = DimRegistry.getFileSeperator();
+		File f = new File(DimRegistry.getUserDir() + s + "solids" + s + args[0]);
 		FileOutputStream fos = new FileOutputStream(f);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
-		oos.writeObject(DimRegistry.getCalcThread().solid);
+		oos.writeObject(DimRegistry.getCalcThread().getSolid());
 		oos.close();
 	}
 
@@ -32,4 +29,8 @@ public class CommandSerialize extends Command {
 		return "\"serialize <file>\" stores the current solid in file (relative path)";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 1;
+	}
 }

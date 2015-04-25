@@ -13,16 +13,12 @@ public class CommandResizeSolid extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length == 0) {
-			System.out.println("At least 1 argument is required");
-			return;
-		}
 		double m = Programm.getValue(args[0]);
 		if (args.length == 2) {
 			int x = (int) Programm.getValue(args[1]);
-			DimRegistry.getCalcThread().solid.resize(x, m);
+			DimRegistry.getCalcThread().getSolid().resize(x, m);
 		} else {
-			DimRegistry.getCalcThread().solid.resize(m);
+			DimRegistry.getCalcThread().getSolid().resize(m);
 		}
 	}
 
@@ -31,4 +27,8 @@ public class CommandResizeSolid extends Command {
 		return "\"resize <f> [axis]\" resizes the solid by the factor f. Optional: axis: the direction in which to stretch, otherwise all";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 1;
+	}
 }

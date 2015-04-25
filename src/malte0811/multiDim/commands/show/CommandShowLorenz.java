@@ -32,8 +32,8 @@ public class CommandShowLorenz extends Command {
 			b = Programm.getValue(args[6]);
 			c = Programm.getValue(args[7]);
 		}
-		DimRegistry.getCalcThread().solid = new LorenzSystem(x, y, z, a, b, c,
-				res, steps);
+		DimRegistry.getCalcThread().setSolid(
+				new LorenzSystem(x, y, z, a, b, c, res, steps));
 	}
 
 	@Override
@@ -41,4 +41,8 @@ public class CommandShowLorenz extends Command {
 		return "\"showlorenz <res> <steps> [<x> <y> <z> [<a> <b> <c>]]\"shows the first steps steps of a lorenz system with resolution res. Optional: x, y, z: initial value, a, b, c: parameters for the system";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 2;
+	}
 }

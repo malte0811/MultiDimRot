@@ -11,15 +11,24 @@ import java.util.HashMap;
 public abstract class Solid implements Serializable {
 	public double[][] vertices;
 	public int[][] edges;
+	public int[][] sides;
 	private HashMap<String, Object> data = new HashMap<>();
 
-	public void rotate(int firstAxis, int secondAxis, int degree) {
+	public void rotate(int firstAxis, int secondAxis, double degree) {
+		if (firstAxis < 0) {
+			System.out.println("The axis " + firstAxis
+					+ " does not exist. The smallest number for an axis is 0.");
+			return;
+		} else if (secondAxis < 0) {
+			System.out.println("The axis " + secondAxis
+					+ " does not exist. The smallest number for an axis is 0.");
+			return;
+		}
 		int maxV = firstAxis > secondAxis ? firstAxis : secondAxis;
 		maxV++;
 		double radsadd = Math.toRadians(degree);
 		double[][] vTMP = getCopyOfVertices(maxV);
 		if (vTMP.length == 0 || vTMP[0].length < maxV) {
-			System.out.println("vertices==null||length==0");
 			return;
 		}
 		for (double[] vertex : vTMP) {
@@ -102,7 +111,34 @@ public abstract class Solid implements Serializable {
 			edges[i][0] = edgesB[i - eL][0] + (intelligentEdges ? vL : 0);
 			edges[i][1] = edgesB[i - eL][1] + (intelligentEdges ? vL : 0);
 		}
-		return new TMPSolid(edges, vertices);
+		int[][] sides = new int[0][3];
+		if (a.getSides() != null) {
+			if (b.getSides() != null) {
+				int[][] sidesTMP = b.getSides();
+				sides = new int[a.getSides().length + sidesTMP.length][3];
+				for (int i = 0; i < a.getSides().length; i++) {
+					sides[i] = Arrays.copyOf(a.getSides()[i], 3);
+				}
+				if (sidesTMP.length > 0) {
+					for (int i = a.getSides().length; i < sides.length; i++) {
+						sides[i] = new int[3];
+						sides[i][0] = sidesTMP[i - a.getSides().length][0]
+								+ (intelligentEdges ? vL : 0);
+						sides[i][1] = sidesTMP[i - a.getSides().length][1]
+								+ (intelligentEdges ? vL : 0);
+						sides[i][2] = sidesTMP[i - a.getSides().length][2]
+								+ (intelligentEdges ? vL : 0);
+					}
+				}
+			} else {
+				sides = a.getSides();
+			}
+		} else {
+			if (b.getSides() != null) {
+				sides = b.getSides();
+			}
+		}
+		return new TMPSolid(edges, vertices, sides);
 	}
 
 	public void translate(int axis, double diff) {
@@ -148,5 +184,9 @@ public abstract class Solid implements Serializable {
 
 	public boolean hasProperty(String n) {
 		return data.containsKey(n);
+	}
+
+	public int[][] getSides() {
+		return sides;
 	}
 }

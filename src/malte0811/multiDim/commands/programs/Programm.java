@@ -42,14 +42,14 @@ public class Programm {
 			}
 		}
 		if (stop) {
-			DimRegistry.getCalcThread().c.input.toggle();
+			DimRegistry.getCalcThread().getCommandListener().input.toggle();
 			return 0;
 		}
 		do {
 			String cmd = (String) file[zaehler];
 			zaehler++;
 			if (cmd == null || cmd.equals("")) {
-				DimRegistry.getCalcThread().c.input.toggle();
+				DimRegistry.getCalcThread().getCommandListener().input.toggle();
 				return 0;
 			}
 			if (debug) {
@@ -90,7 +90,8 @@ public class Programm {
 								if (intE == 0) {
 									zaehler = i + 1;
 									if (zaehler >= file.length - 1) {
-										DimRegistry.getCalcThread().c.input
+										DimRegistry.getCalcThread()
+												.getCommandListener().input
 												.toggle();
 										return 0;
 									}
@@ -131,12 +132,14 @@ public class Programm {
 
 			}
 		} while (zaehler < file.length && !stop);
-		DimRegistry.getCalcThread().c.input.toggle();
+		DimRegistry.getCalcThread().getCommandListener().input.toggle();
 		return 0;
 	}
 
 	public static Programm load(String s) throws Exception {
-		Path p = Paths.get(System.getProperty("user.dir") + "\\scripts\\" + s);
+		String sep = DimRegistry.getFileSeperator();
+		Path p = Paths
+				.get(DimRegistry.getUserDir() + sep + "scripts" + sep + s);
 		Object[] file = new Object[0];
 		if (!Files.exists(p) || !Files.isRegularFile(p)) {
 			System.out.println("File or command does not exist");
@@ -187,6 +190,6 @@ public class Programm {
 	}
 
 	public static void terminate() {
-		DimRegistry.getCalcThread().programmRunning = null;
+		DimRegistry.getCalcThread().setCurrentProgram(null);
 	}
 }

@@ -13,14 +13,10 @@ public class CommandZoom extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		if (args.length != 2) {
-			System.out.println("2 arguments are required");
-			return;
-		}
 		double max = Programm.getValue(args[0]);
 		double step = Programm.getValue(args[1]);
-		DimRegistry.getCalcThread().zoomMax = max;
-		DimRegistry.getCalcThread().zoomStep = step;
+		DimRegistry.getCalcThread().setZoomMax(max);
+		DimRegistry.getCalcThread().setZoomStep(step);
 	}
 
 	@Override
@@ -28,4 +24,8 @@ public class CommandZoom extends Command {
 		return "\"zoom <max> <step>\" zooms in/out in steps of step 10 times per second until max is reached";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 2;
+	}
 }

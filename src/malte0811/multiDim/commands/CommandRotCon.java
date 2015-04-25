@@ -13,18 +13,24 @@ public class CommandRotCon extends Command {
 
 	@Override
 	public void processCommand(String[] args) {
-		if (args.length != 3) {
-			System.out.println("3 arguments are required");
-			return;
-		}
-		if (args[0] == args[1]) {
+		int a1 = (int) Programm.getValue(args[0]);
+		int a2 = (int) Programm.getValue(args[1]);
+		double deg = Programm.getValue(args[2]);
+		if (a1 == a2) {
 			System.out.println("Can not rotate with a single axis");
 			return;
 		}
-		DimRegistry.getCalcThread().addRotCon(
-				new int[] { (int) Programm.getValue(args[0]),
-						(int) Programm.getValue(args[1]),
-						(int) Programm.getValue(args[2]) });
+		if (a1 < 0) {
+			System.out.println("The axis " + a1
+					+ " does not exist. The smallest number for an axis is 0.");
+			return;
+		} else if (a2 < 0) {
+			System.out.println("The axis " + a2
+					+ " does not exist. The smallest number for an axis is 0.");
+			return;
+		}
+
+		DimRegistry.getCalcThread().addRotCon(new double[] { a1, a2, deg });
 	}
 
 	@Override
@@ -32,4 +38,8 @@ public class CommandRotCon extends Command {
 		return "\"rotcon <axis1> <axis2> <degrees>\" rotates the solid around degrees degrees in the plane defined by the axes axis1 and axis2 every 1/10 second";
 	}
 
+	@Override
+	public int getMinParameterCount() {
+		return 3;
+	}
 }

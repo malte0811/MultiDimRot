@@ -6,6 +6,12 @@ import malte0811.multiDim.solids.Solid;
 
 public class NDCube extends Solid {
 	public NDCube(int d) {
+		if (d < 0) {
+			System.out.println("The dimension must be at least 0.");
+			vertices = new double[0][0];
+			edges = new int[0][0];
+			return;
+		}
 		vertices = new double[(int) Math.pow(2, d)][d];
 		boolean[] vertex = new boolean[d];
 		int ind = 0;
@@ -15,12 +21,13 @@ public class NDCube extends Solid {
 			ind = ind + 1;
 		} while (!increment(vertex));
 		// init edges
-		int ed = 0;
-		for (int i = 0; i < d; i++) {
-			ed *= 2;
-			ed += Math.pow(2, i);
+		int[] ed = new int[d + 1];
+		for (int i = 1; i < d + 1; i++) {
+			ed[i] = 2 * ed[i - 1];
+			ed[i] = (int) (ed[i] + Math.pow(2, i - 1));
 		}
-		edges = new int[ed][2];
+		int edM = ed[d];
+		edges = new int[edM][2];
 
 		// add edges
 		vertex = new boolean[d];
@@ -38,51 +45,48 @@ public class NDCube extends Solid {
 			}
 			vID++;
 		} while (!increment(vertex));
-	}
+		// add sides
+		int sd = 0;
+		for (int i = 0; i < d; i++) {
+			sd *= 2;
+			sd += ed[i + 1];
+		}
+		sides = new int[sd][3];
+		int index = 0;
+		int l = vertices.length;
+		vertex = new boolean[d];
+		do {
+			for (int i1 = 0; i1 < d; i1++) {
+				for (int i2 = i1 + 1; i2 < d; i2++) {
+					int i = getValue(vertex);
+					int ind1 = d - i1 - 1;
+					int ind2 = d - i2 - 1;
+					if (vertex[ind1] && vertex[ind2]) {
+						sides[index][0] = i;
+						sides[index][1] = (int) (i + (vertex[ind1] ? -1 : 1)
+								* Math.pow(2, i1))
+								% l;
+						sides[index][2] = (int) (i + (vertex[ind2] ? -1 : 1)
+								* Math.pow(2, i2))
+								% l;
 
-	public void genNDCubeold(int d) {
-		edges = new int[1][2];
-		edges[0][0] = 0;
-		edges[0][0] = 1;
-
-		double[][] vtmp = { { -1 }, { 1 } };
-
-		for (int i = 1; i < d; i++) {
-			double[][] tmp = new double[2 * vtmp.length][i + 1];
-			for (int i2 = 0; i2 < vtmp.length; i2++) {
-				for (int i3 = 0; i3 < i; i3++) {
-					tmp[i2][i3] = vtmp[i2][i3];
-					tmp[i2 + vtmp.length][i3] = vtmp[i2][i3];
+						sides[index + 1][0] = (int) (i
+								+ (vertex[ind1] ? -1 : 1) * Math.pow(2, i1) + (vertex[ind2] ? -1
+								: 1)
+								* Math.pow(2, i2))
+								% l;
+						sides[index + 1][1] = (int) (i + (vertex[ind1] ? -1 : 1)
+								* Math.pow(2, i1))
+								% l;
+						sides[index + 1][2] = (int) (i + (vertex[ind2] ? -1 : 1)
+								* Math.pow(2, i2))
+								% l;
+						index += 2;
+					}
 				}
-				tmp[i2][i] = -1;
-				tmp[i2 + vtmp.length][i] = 1;
 			}
-			// edges
-			int[][] nedges = new int[2 * edges.length + tmp.length / 2][2];
-			for (int i2 = 0; i2 < edges.length; i2++) {
-				nedges[i2] = edges[i2];
-				nedges[i2 + edges.length][0] = edges[i2][0] + vtmp.length;
-				nedges[i2 + edges.length][1] = edges[i2][1] + vtmp.length;
-			}
-			for (int i2 = 0; i2 < vtmp.length; i2++) {
-				nedges[2 * edges.length + i2][0] = i2;
-				nedges[2 * edges.length + i2][1] = vtmp.length + i2;
-			}
-			edges = nedges;
-			vtmp = tmp;
-		}
-		vertices = vtmp;
-		for (double[] i : vertices) {
-			String coords = "" + i[0];
-			for (double i2 : i) {
-				coords += "|" + i2;
-			}
-			System.out.println(coords);
-		}
-		for (int[] i : edges) {
-			System.out.println(i[0] + "|" + i[1]);
-		}
-
+		} while (!increment(vertex));
+		System.out.print("");
 	}
 
 	@Override

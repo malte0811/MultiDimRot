@@ -9,21 +9,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
+
+import malte0811.multiDim.addons.DimRegistry;
 
 public class CommandListener extends JFrame {
 	public InputField input = new InputField();
-	JTextArea output = new JTextArea(100, 30);
+	public JTextArea output = new JTextArea(0, 30);
 	public TextStream out;
 	public PrintStream old;
 	boolean program = false;
 
 	public CommandListener() {
+		DefaultCaret caret = (DefaultCaret) output.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		JPanel pane = new JPanel();
 		this.setLayout(new BorderLayout());
 		this.add(pane, BorderLayout.CENTER);
@@ -37,12 +45,14 @@ public class CommandListener extends JFrame {
 		hor.addComponent(input);
 		GroupLayout.SequentialGroup ver = gl.createSequentialGroup();
 		ver.addComponent(jsp);
-		ver.addComponent(input);
+		ver.addComponent(input, GroupLayout.PREFERRED_SIZE,
+				GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
 		gl.setVerticalGroup(ver);
 		gl.setHorizontalGroup(hor);
 		pane.setLayout(gl);
 
 		output.setEditable(false);
+		output.setLineWrap(true);
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -69,8 +79,7 @@ public class CommandListener extends JFrame {
 		}
 
 		public TextStream() throws IOException {
-			super(new OutStream(new File(System.getProperty("user.dir")
-					+ "\\logs\\" + System.currentTimeMillis() + ".log")));
+			super(new OutStream());
 		}
 	}
 
@@ -79,8 +88,25 @@ public class CommandListener extends JFrame {
 		FileOutputStream fos;
 		String line = "";
 
-		public OutStream(File f) throws IOException {
-			outFile = f;
+		public OutStream() throws IOException {
+			String s = DimRegistry.getFileSeperator();
+			String base = DimRegistry.getUserDir() + s + "logs" + s;
+			Path logLate = Paths.get(base + "latest.log");
+			Path log1 = Paths.get(base + "log1.log");
+			Path log2 = Paths.get(base + "log2.log");
+			Path log3 = Paths.get(base + "log3.log");
+			Files.deleteIfExists(log3);
+			if (Files.exists(log2)) {
+				Files.move(log2, log3);
+			}
+			if (Files.exists(log1)) {
+				Files.move(log1, log2);
+			}
+			if (Files.exists(logLate)) {
+				Files.move(logLate, log1);
+			}
+			outFile = new File(DimRegistry.getUserDir() + s + "logs" + s
+					+ "latest.log");
 			fos = new FileOutputStream(outFile);
 		}
 

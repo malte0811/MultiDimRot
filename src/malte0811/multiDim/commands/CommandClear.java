@@ -1,27 +1,27 @@
 package malte0811.multiDim.commands;
 
 import malte0811.multiDim.addons.Command;
-import malte0811.multiDim.tickHandlers.DebugHandler;
+import malte0811.multiDim.addons.DimRegistry;
 
-public class CommandDebugRender extends Command {
+public class CommandClear extends Command {
 
 	@Override
 	public String getCommandName() {
-		return "DEBUG";
+		return "CLEAR";
 	}
 
 	@Override
 	public String getCommandUsage() {
-		return "\"DEBUG <t>\" prints out rendering debug information for t rendering ticks";
+		return "\"clear\" clears the output from the gui. The log file will not be cleared.";
 	}
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		DebugHandler.getInstance().newDebug(Integer.parseInt(args[0]), 4);
+		DimRegistry.getCalcThread().getCommandListener().output.setText("");
 	}
 
 	@Override
 	public int getMinParameterCount() {
-		return 1;
+		return 0;
 	}
 }

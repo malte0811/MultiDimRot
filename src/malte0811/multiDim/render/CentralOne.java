@@ -6,7 +6,7 @@ public class CentralOne extends ZoomableRender {
 
 	@Override
 	public void render(double[][] vertices, int[][] edges, double[] options,
-			boolean renderVertices, float[][] colors) {
+			float[][] colors, int[][] sides) {
 		for (double[] d : vertices) {
 			while (d.length > 2) {
 				d = zentralDownOne(d, false, options);

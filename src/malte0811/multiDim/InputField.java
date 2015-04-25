@@ -2,8 +2,10 @@ package malte0811.multiDim;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -93,8 +95,20 @@ public class InputField extends JTextField {
 							Set<String> keys = Command.commands.keySet();
 							if (!lastComp.equals(toComplete)) {
 								lastPossible = new ArrayList<>();
+								ArrayList<String> a = getFiles(
+										new File(DimRegistry.getUserDir()
+												+ DimRegistry
+														.getFileSeperator()
+												+ "scripts"), toComplete);
+								for (String s : a) {
+									lastPossible.add(s);
+									if (out.equals("")) {
+										out += s;
+									} else {
+										out += ", " + s;
+									}
+								}
 							}
-							out = "";
 							for (String c : keys) {
 								if (c.length() >= toComplete.length()
 										&& c.substring(0, toComplete.length())
@@ -116,8 +130,8 @@ public class InputField extends JTextField {
 							for (char i : txt) {
 								if (i == ' ' && lastI != ' ') {
 									wordI++;
-									lastI = ' ';
 								}
+								lastI = i;
 							}
 							StringTokenizer st = new StringTokenizer(getText());
 							String cmd = st.nextToken();
@@ -173,4 +187,28 @@ public class InputField extends JTextField {
 		active = !active;
 	}
 
+	protected ArrayList<String> getFiles(File base, String startsWith) {
+		HashSet<String> files = listFilesForFolder(base);
+		ArrayList<String> possible = new ArrayList<>();
+		int startLength = startsWith.length();
+		for (String s : files) {
+			if (startLength <= s.length()
+					&& s.substring(0, startLength).equalsIgnoreCase(startsWith)) {
+				possible.add(s);
+			}
+		}
+		return possible;
+	}
+
+	private HashSet<String> listFilesForFolder(File folder) {
+		HashSet<String> ret = new HashSet<>();
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				listFilesForFolder(fileEntry);
+			} else {
+				ret.add(fileEntry.getName());
+			}
+		}
+		return ret;
+	}
 }

@@ -29,7 +29,6 @@ public abstract class Solid implements Serializable {
 		double radsadd = Math.toRadians(degree);
 		double[][] vTMP = getCopyOfVertices(maxV);
 		if (vTMP.length == 0 || vTMP[0].length < maxV) {
-			System.out.println("vertices==null||length==0");
 			return;
 		}
 		for (double[] vertex : vTMP) {

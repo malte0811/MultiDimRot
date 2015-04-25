@@ -43,7 +43,6 @@ public class TMPSolid extends Solid {
 	@Override
 	public void setMinDim(int dim) {
 		if (vertices == null || vertices.length == 0) {
-			System.out.println("vertices==null||length==0");
 			return;
 		}
 		if (vertices[0].length < dim) {

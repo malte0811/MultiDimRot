@@ -74,6 +74,8 @@ public class CalcThread implements Runnable {
 				try {
 					Files.createDirectories(p);
 				} catch (IOException e) {
+					System.out
+							.println("Could not create directories for logs etc. :");
 					e.printStackTrace();
 				}
 			}
@@ -83,6 +85,8 @@ public class CalcThread implements Runnable {
 		try {
 			AddonLoader.load();
 		} catch (Exception e1) {
+			System.out
+					.println("An exception was thrown while loading addons: ");
 			e1.printStackTrace();
 		}
 		System.out

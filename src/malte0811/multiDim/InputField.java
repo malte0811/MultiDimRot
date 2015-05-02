@@ -38,13 +38,9 @@ public class InputField extends JTextField {
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 						DimRegistry.getCalcThread().getCommandListener().out
 								.println(">" + getText());
-						try {
-							DimRegistry.getCalcThread().addCommand(getText());
-							comms.addFirst(getText());
-							setText("");
-						} catch (Exception e1) {
-							e1.printStackTrace();
-						}
+						DimRegistry.getCalcThread().addCommand(getText());
+						comms.addFirst(getText());
+						setText("");
 					}
 					if (e.getKeyCode() == KeyEvent.VK_UP) {
 						if (currCmd != null) {

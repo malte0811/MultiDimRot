@@ -120,7 +120,9 @@ public abstract class Command {
 				c.processCommand(args);
 			}
 		} catch (Exception x) {
-			System.out.println(command);
+			System.out
+					.println("The following exception was thrown while running command: "
+							+ command);
 			x.printStackTrace();
 		}
 		return true;

@@ -89,14 +89,14 @@ public class MathHelper {
 				if (term.charAt(i) == ')') {
 					ebene--;
 					if (ebene < 0) {
-						System.out.println("Termfehler: zu viele Klammern");
+						System.out.println("Too many brackets");
 						Programm.terminate();
 					}
 				}
 			}
 		}
 		if (ebene != 0) {
-			System.out.println("Klammerfehler");
+			System.out.println("Wrong amount of brackets");
 			Programm.terminate();
 		}
 		return s;
@@ -126,7 +126,6 @@ public class MathHelper {
 			first += st.nextToken();
 		}
 		secondValue = calculate(p, second);
-		// System.out.println(firstValue+vergleiche[vergleich]+secondValue);
 		switch (vergleiche[vergleich]) {
 		case "==":
 			ret = firstValue == secondValue;

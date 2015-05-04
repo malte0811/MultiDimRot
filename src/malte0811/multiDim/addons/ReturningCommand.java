@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import malte0811.multiDim.commands.ret.RetCommandGetDimensions;
+
 public abstract class ReturningCommand {
 	public static HashMap<String, ReturningCommand> retCommands = new HashMap<>();
 
@@ -14,6 +16,14 @@ public abstract class ReturningCommand {
 	public abstract double processCommand(String[] args);
 
 	public abstract int getMinParameterCount();
+
+	static {
+		register(new RetCommandGetDimensions());
+	}
+
+	public static void register(ReturningCommand c) {
+		retCommands.put(c.getRetCommandName(), c);
+	}
 
 	public static double processCommand(String s)
 			throws IllegalArgumentException {
@@ -42,6 +52,9 @@ public abstract class ReturningCommand {
 				layer++;
 			} else if (ch == ')') {
 				layer--;
+				if (layer < 0) {
+					return false;
+				}
 			}
 		}
 		return layer == 0;
@@ -61,8 +74,7 @@ public abstract class ReturningCommand {
 			if (cChar != ',' && cChar != ' ' && cChar != '	') {
 				int layer = 0;
 				String c = "";
-				while ((cChar != ',' && cChar != ' ' && cChar != '	' && cChar != ')')
-						|| layer != 0) {
+				while ((cChar != ',' && cChar != ')') || layer != 0) {
 					c += cChar;
 					if (cChar == '(') {
 						layer++;

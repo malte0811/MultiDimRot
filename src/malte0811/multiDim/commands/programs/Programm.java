@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 
 import malte0811.multiDim.addons.Command;
 import malte0811.multiDim.addons.DimRegistry;
+import malte0811.multiDim.addons.ReturningCommand;
 
 public class Programm {
 	public Programm innerProgramm = null;
@@ -171,6 +172,13 @@ public class Programm {
 	}
 
 	public static double getValue(String name) throws NumberFormatException {
+		if (name.contains("(")) {
+			try {
+				return ReturningCommand.processCommand(name);
+			} catch (IllegalArgumentException x) {
+				System.out.println(x.getMessage());
+			}
+		}
 		if (getCurrentProgramm() == null) {
 			return Double.parseDouble(name);
 		}

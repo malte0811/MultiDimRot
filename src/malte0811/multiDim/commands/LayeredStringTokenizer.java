@@ -33,13 +33,13 @@ public class LayeredStringTokenizer {
 
 	public String nextToken() {
 		String ret = "";
-		if (pos == s.length()) {
-			return null;
-		}
 		char c = s.charAt(pos);
-		while (c == ' ' || c == '	') {
+		while ((c == ' ' || c == '	') && pos < s.length() - 1) {
 			pos++;
 			c = s.charAt(pos);
+		}
+		if (pos == s.length()) {
+			return null;
 		}
 		int layer = 0;
 		while (((c != ' ' && c != '	') || layer != 0) && pos < s.length() - 1) {
@@ -58,7 +58,7 @@ public class LayeredStringTokenizer {
 		return ret;
 	}
 
-	public boolean hasNext() {
+	public boolean hasMoreTokens() {
 		return pos < s.length() - 1;
 	}
 }

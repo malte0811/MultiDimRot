@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.StringTokenizer;
 
 import malte0811.multiDim.commands.CommandBackground;
 import malte0811.multiDim.commands.CommandChangeRenderAlgo;
@@ -14,6 +13,7 @@ import malte0811.multiDim.commands.CommandClear;
 import malte0811.multiDim.commands.CommandDebugRender;
 import malte0811.multiDim.commands.CommandExit;
 import malte0811.multiDim.commands.CommandHelp;
+import malte0811.multiDim.commands.CommandPrint;
 import malte0811.multiDim.commands.CommandRecord;
 import malte0811.multiDim.commands.CommandResetRot;
 import malte0811.multiDim.commands.CommandResizeSolid;
@@ -25,6 +25,7 @@ import malte0811.multiDim.commands.CommandToggleFancyRender;
 import malte0811.multiDim.commands.CommandToggleSides;
 import malte0811.multiDim.commands.CommandToggleTickHandler;
 import malte0811.multiDim.commands.CommandZoom;
+import malte0811.multiDim.commands.LayeredStringTokenizer;
 import malte0811.multiDim.commands.ser.CommandAdd;
 import malte0811.multiDim.commands.ser.CommandDeserialize;
 import malte0811.multiDim.commands.ser.CommandSerialize;
@@ -80,6 +81,7 @@ public abstract class Command {
 		register(new CommandClear());
 		register(new CommandToggleTickHandler());
 		register(new CommandToggleFancyRender());
+		register(new CommandPrint());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch
@@ -96,7 +98,7 @@ public abstract class Command {
 		if (command == null || command.equals("")) {
 			return false;
 		}
-		StringTokenizer st = new StringTokenizer(command);
+		LayeredStringTokenizer st = new LayeredStringTokenizer(command);
 		String cmd = st.nextToken();
 		String[] args = new String[0];
 		while (st.hasMoreTokens()) {

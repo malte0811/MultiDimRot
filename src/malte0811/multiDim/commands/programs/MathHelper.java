@@ -5,32 +5,39 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.StringTokenizer;
 
+import malte0811.multiDim.addons.ReturningCommand;
+
 public class MathHelper {
-	public static double calculate(Programm p, String term) {
+	public static double calculate(String term) throws IllegalArgumentException {
 		Deque<String> s = parse(term);
-		return getValue(s, p);
+		return getValue(s);
 	}
 
-	private static double getValue(Deque<String> d, Programm p) {
+	private static double getValue(Deque<String> d) {
+		if (d.size() == 1) {
+			String next = d.peekLast();
+			if (next.contains("(")) {
+				return ReturningCommand.processCommand(next);
+			}
+		}
 		double ret = 0;
 		String next = d.pollLast();
 		switch (next) {
 		case "*":
-			ret = getValue(d, p) * getValue(d, p);
+			ret = getValue(d) * getValue(d);
 			break;
 		case "/":
-			ret = getValue(d, p) / getValue(d, p);
+			ret = getValue(d) / getValue(d);
 			break;
 		case "-":
-			ret = getValue(d, p) - getValue(d, p);
+			ret = getValue(d) - getValue(d);
 			break;
 		case "+":
-			ret = getValue(d, p) + getValue(d, p);
+			ret = getValue(d) + getValue(d);
 			break;
 		default:
 			ret = Programm.getValue(next);
 		}
-
 		return ret;
 	}
 
@@ -113,7 +120,7 @@ public class MathHelper {
 		while (st.hasMoreTokens()) {
 			String tmp = st.nextToken();
 			if (Arrays.binarySearch(vergleiche, tmp) >= 0) {
-				firstValue = calculate(p, first);
+				firstValue = calculate(first);
 				vergleich = Arrays.binarySearch(vergleiche, tmp);
 				break;
 			} else {
@@ -125,7 +132,7 @@ public class MathHelper {
 		while (st.hasMoreTokens()) {
 			first += st.nextToken();
 		}
-		secondValue = calculate(p, second);
+		secondValue = calculate(second);
 		switch (vergleiche[vergleich]) {
 		case "==":
 			ret = firstValue == secondValue;

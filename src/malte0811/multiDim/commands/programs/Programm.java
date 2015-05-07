@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 import malte0811.multiDim.addons.Command;
 import malte0811.multiDim.addons.DimRegistry;
-import malte0811.multiDim.addons.ReturningCommand;
+import malte0811.multiDim.commands.LayeredStringTokenizer;
 
 public class Programm {
 	public Programm innerProgramm = null;
@@ -57,7 +57,7 @@ public class Programm {
 				System.out.println(cmd);
 			}
 			if (!Command.processCommand(cmd, true)) {
-				StringTokenizer st = new StringTokenizer(cmd);
+				LayeredStringTokenizer st = new LayeredStringTokenizer(cmd);
 				String tmp = st.nextToken();
 				if (tmp.toUpperCase().equals("SLEEP")) {
 					if (!st.hasMoreTokens()) {
@@ -122,7 +122,7 @@ public class Programm {
 							System.err.println("No term");
 							System.exit(-10);
 						}
-						setValue(tmp, MathHelper.calculate(this, term));
+						setValue(tmp, MathHelper.calculate(term));
 					} else {
 						try {
 							innerProgramm = load(cmd);
@@ -174,7 +174,7 @@ public class Programm {
 	public static double getValue(String name) throws NumberFormatException {
 		if (name.contains("(")) {
 			try {
-				return ReturningCommand.processCommand(name);
+				return MathHelper.calculate(name);
 			} catch (IllegalArgumentException x) {
 				System.out.println(x.getMessage());
 			}

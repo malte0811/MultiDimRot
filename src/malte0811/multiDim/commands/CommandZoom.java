@@ -13,8 +13,8 @@ public class CommandZoom extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		double max = Programm.getValue(args[0]);
-		double step = Programm.getValue(args[1]);
+		double max = Programm.getDoubleValue(args[0]);
+		double step = Programm.getDoubleValue(args[1]);
 		DimRegistry.getCalcThread().setZoomMax(max);
 		DimRegistry.getCalcThread().setZoomStep(step);
 	}

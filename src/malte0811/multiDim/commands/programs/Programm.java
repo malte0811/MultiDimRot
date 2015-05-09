@@ -64,7 +64,7 @@ public class Programm {
 						System.out.println("1 argument is required");
 						continue;
 					}
-					int i = (int) Programm.getValue(st.nextToken());
+					int i = (int) Programm.getDoubleValue(st.nextToken());
 					return i;
 				} else if (tmp.equalsIgnoreCase("while")) {
 					String t = st.nextToken();
@@ -122,7 +122,7 @@ public class Programm {
 							System.err.println("No term");
 							System.exit(-10);
 						}
-						setValue(tmp, MathHelper.calculate(term));
+						setDoubleValue(tmp, MathHelper.calculate(term));
 					} else {
 						try {
 							innerProgramm = load(cmd);
@@ -171,8 +171,14 @@ public class Programm {
 		return progr;
 	}
 
-	public static double getValue(String name) throws NumberFormatException {
-		if (name.contains("(")) {
+	public static double getDoubleValue(String name)
+			throws NumberFormatException, IllegalArgumentException {
+		if (name.contains("\"")) {
+			throw new IllegalArgumentException(
+					"This is not a number, maybe a string?");
+		}
+		if (name.contains("(") || name.contains("+") || name.contains("-")
+				|| name.contains("*") || name.contains("/")) {
 			try {
 				return MathHelper.calculate(name);
 			} catch (IllegalArgumentException x) {
@@ -189,8 +195,17 @@ public class Programm {
 		return getCurrentProgramm().numbers.get(name);
 	}
 
-	public void setValue(String name, double value) {
+	public void setDoubleValue(String name, double value) {
 		numbers.put(name, value);
+	}
+
+	// TODO not only hardcoded strings, add string variables
+	public static String getStringValue(String name)
+			throws IllegalArgumentException {
+		if (!name.contains("+") && !name.contains("\"")) {
+			return StringHelper.replace(name);
+		}
+		return StringHelper.parse(name);
 	}
 
 	public static Programm getCurrentProgramm() {

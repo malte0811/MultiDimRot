@@ -15,7 +15,7 @@ public class CommandShowOctahedron extends Command {
 	@Override
 	public void processCommand(String[] args) {
 		int dims;
-		dims = (int) Programm.getValue(args[0]);
+		dims = (int) Programm.getDoubleValue(args[0]);
 		DimRegistry.getCalcThread().setSolid(new NDOctahedron(dims));
 	}
 

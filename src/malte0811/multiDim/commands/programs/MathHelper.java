@@ -36,7 +36,7 @@ public class MathHelper {
 			ret = getValue(d) + getValue(d);
 			break;
 		default:
-			ret = Programm.getValue(next);
+			ret = Programm.getDoubleValue(next);
 		}
 		return ret;
 	}

@@ -15,7 +15,7 @@ public class CommandChangeRenderAlgo extends Command {
 	@Override
 	public void processCommand(String[] args) {
 		try {
-			int r = (int) Programm.getValue(args[0]);
+			int r = (int) Programm.getDoubleValue(args[0]);
 			RenderAlgo algo = null;
 			algo = DimRegistry.getAlgoInstance(r);
 			DimRegistry.getCalcThread().setRenderAlgo(algo);

@@ -13,8 +13,8 @@ public class CommandChangeRenderOption extends Command {
 
 	@Override
 	public void processCommand(String[] args) {
-		int i = (int) Programm.getValue(args[0]);
-		double v = Programm.getValue(args[1]);
+		int i = (int) Programm.getDoubleValue(args[0]);
+		double v = Programm.getDoubleValue(args[1]);
 		DimRegistry.getCalcThread().getRenderOptions()[i] = v;
 	}
 

@@ -14,7 +14,7 @@ public class CommandShowTetrahedron extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		int dim = (int) Programm.getValue(args[0]);
+		int dim = (int) Programm.getDoubleValue(args[0]);
 		DimRegistry.getCalcThread().setSolid(new NDTetrahedron(dim));
 	}
 

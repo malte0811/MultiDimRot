@@ -23,7 +23,7 @@ public class CommandPrint extends Command {
 	@Override
 	public void processCommand(String[] args) throws Exception {
 		System.out.println(args[0]);
-		System.out.println(Programm.getValue(args[0]));
+		System.out.println(Programm.getDoubleValue(args[0]));
 	}
 
 }

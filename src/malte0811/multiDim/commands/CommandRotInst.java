@@ -17,9 +17,9 @@ public class CommandRotInst extends Command {
 			System.out.println("Can not rotate with a single axis");
 			return;
 		}
-		int a1 = (int) Programm.getValue(args[0]);
-		int a2 = (int) Programm.getValue(args[1]);
-		int degree = (int) Programm.getValue(args[2]);
+		int a1 = (int) Programm.getDoubleValue(args[0]);
+		int a2 = (int) Programm.getDoubleValue(args[1]);
+		int degree = (int) Programm.getDoubleValue(args[2]);
 		DimRegistry.getCalcThread().getSolid().rotate(a1, a2, degree);
 	}
 

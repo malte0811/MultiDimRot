@@ -14,9 +14,9 @@ public class CommandBackground extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		float r = (float) Programm.getValue(args[0]);
-		float g = (float) Programm.getValue(args[1]);
-		float b = (float) Programm.getValue(args[2]);
+		float r = (float) Programm.getDoubleValue(args[0]);
+		float g = (float) Programm.getDoubleValue(args[1]);
+		float b = (float) Programm.getDoubleValue(args[2]);
 		GL11.glClearColor(r, g, b, 1);
 	}
 

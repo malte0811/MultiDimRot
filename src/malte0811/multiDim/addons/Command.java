@@ -19,6 +19,7 @@ import malte0811.multiDim.commands.CommandResetRot;
 import malte0811.multiDim.commands.CommandResizeSolid;
 import malte0811.multiDim.commands.CommandRotCon;
 import malte0811.multiDim.commands.CommandRotInst;
+import malte0811.multiDim.commands.CommandRun;
 import malte0811.multiDim.commands.CommandScreenShot;
 import malte0811.multiDim.commands.CommandSetSize;
 import malte0811.multiDim.commands.CommandToggleFancyRender;
@@ -82,6 +83,7 @@ public abstract class Command {
 		register(new CommandToggleTickHandler());
 		register(new CommandToggleFancyRender());
 		register(new CommandPrint());
+		register(new CommandRun());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch
@@ -98,7 +100,8 @@ public abstract class Command {
 		if (command == null || command.equals("")) {
 			return false;
 		}
-		LayeredStringTokenizer st = new LayeredStringTokenizer(command);
+		LayeredStringTokenizer st = new LayeredStringTokenizer(command, '(',
+				')', new char[] { ' ', '	' });
 		String cmd = st.nextToken();
 		String[] args = new String[0];
 		while (st.hasMoreTokens()) {

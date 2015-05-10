@@ -20,8 +20,10 @@ public class Programm {
 	final boolean debug = false;
 	static private Programm instance = null;
 	private HashMap<String, Double> numbers = new HashMap<>();
-	private int zaehler = 0;
-	private int[] ebenen = new int[0];
+	private HashMap<String, String> strings = new HashMap<>();
+
+	private int currLine = 0;
+	private int[] layers = new int[0];
 	public static boolean stop = false;
 
 	public Programm(Object[] data) {
@@ -29,7 +31,7 @@ public class Programm {
 	}
 
 	public int step() {
-		if (file.length - 1 == zaehler) {
+		if (file.length - 1 <= currLine) {
 			instance = null;
 			return 0;
 		}
@@ -47,8 +49,8 @@ public class Programm {
 			return 0;
 		}
 		do {
-			String cmd = (String) file[zaehler];
-			zaehler++;
+			String cmd = (String) file[currLine];
+			currLine++;
 			if (cmd == null || cmd.equals("")) {
 				DimRegistry.getCalcThread().getCommandListener().input.toggle();
 				return 0;
@@ -57,7 +59,8 @@ public class Programm {
 				System.out.println(cmd);
 			}
 			if (!Command.processCommand(cmd, true)) {
-				LayeredStringTokenizer st = new LayeredStringTokenizer(cmd);
+				LayeredStringTokenizer st = new LayeredStringTokenizer(cmd,
+						'(', ')', new char[] { ' ', '	' });
 				String tmp = st.nextToken();
 				if (tmp.toUpperCase().equals("SLEEP")) {
 					if (!st.hasMoreTokens()) {
@@ -71,15 +74,15 @@ public class Programm {
 					while (st.hasMoreTokens()) {
 						t += " " + st.nextToken();
 					}
-					if (ebenen.length == 0
-							|| ebenen[ebenen.length - 1] != zaehler) {
-						ebenen = Arrays.copyOf(ebenen, ebenen.length + 1);
-						ebenen[ebenen.length - 1] = zaehler;
+					if (layers.length == 0
+							|| layers[layers.length - 1] != currLine) {
+						layers = Arrays.copyOf(layers, layers.length + 1);
+						layers[layers.length - 1] = currLine;
 					}
 					if (!MathHelper.isTrue(t, this)) {
-						int oldI = zaehler;
+						int oldI = currLine;
 						int intE = 1;
-						for (int i = zaehler; i < file.length; i++) {
+						for (int i = currLine; i < file.length; i++) {
 							StringTokenizer temp = new StringTokenizer(
 									(String) file[i]);
 							if (!temp.hasMoreTokens()) {
@@ -89,31 +92,33 @@ public class Programm {
 							if (fT.equalsIgnoreCase("end")) {
 								intE--;
 								if (intE == 0) {
-									zaehler = i + 1;
-									if (zaehler >= file.length - 1) {
+									currLine = i + 1;
+									if (currLine >= file.length - 1) {
 										DimRegistry.getCalcThread()
 												.getCommandListener().input
 												.toggle();
 										return 0;
 									}
-									ebenen = Arrays.copyOf(ebenen,
-											ebenen.length - 1);
+									layers = Arrays.copyOf(layers,
+											layers.length - 1);
 									break;
 								}
 							} else if (fT.equalsIgnoreCase("while")) {
 								intE++;
 							}
 						}
-						if (zaehler == oldI) {
+						if (currLine == oldI) {
 							System.exit(13);
 						}
 					}
 				} else if (tmp.equalsIgnoreCase("end")) {
-					zaehler = ebenen[ebenen.length - 1] - 1;
-				} else if (tmp.equalsIgnoreCase("else")) {
-
+					currLine = layers[layers.length - 1] - 1;
 				} else {
 					if (st.nextToken().equals("=")) {
+						st = new LayeredStringTokenizer(cmd, '\"', '\"',
+								new char[] { ' ', '	' });
+						st.nextToken();
+						st.nextToken();
 						String term = st.nextToken();
 						while (st.hasMoreTokens()) {
 							term += st.nextToken();
@@ -122,7 +127,16 @@ public class Programm {
 							System.err.println("No term");
 							System.exit(-10);
 						}
-						setDoubleValue(tmp, MathHelper.calculate(term));
+						try {
+							setDoubleValue(tmp, MathHelper.calculate(term));
+						} catch (IllegalArgumentException x) {
+							try {
+								setStringValue(tmp, getStringValue(term));
+							} catch (IllegalArgumentException x2) {
+								System.out.println(x.getMessage());
+								System.out.println(x2.getMessage());
+							}
+						}
 					} else {
 						try {
 							innerProgramm = load(cmd);
@@ -132,7 +146,7 @@ public class Programm {
 				}
 
 			}
-		} while (zaehler < file.length && !stop);
+		} while (currLine < file.length && !stop);
 		DimRegistry.getCalcThread().getCommandListener().input.toggle();
 		return 0;
 	}
@@ -195,15 +209,39 @@ public class Programm {
 		return getCurrentProgramm().numbers.get(name);
 	}
 
-	public void setDoubleValue(String name, double value) {
-		numbers.put(name, value);
+	public void setDoubleValue(String name, double value)
+			throws IllegalArgumentException {
+		if (!strings.containsKey(name)) {
+			numbers.put(name, value);
+		} else {
+			throw new IllegalArgumentException(name + "is a string variable");
+		}
 	}
 
-	// TODO not only hardcoded strings, add string variables
+	public void setStringValue(String name, String value)
+			throws IllegalArgumentException {
+		if (!numbers.containsKey(name)) {
+			strings.put(name, value);
+		} else {
+			throw new IllegalArgumentException(name
+					+ "is a double/number variable");
+		}
+	}
+
 	public static String getStringValue(String name)
 			throws IllegalArgumentException {
-		if (!name.contains("+") && !name.contains("\"")) {
-			return StringHelper.replace(name);
+		if (!name.contains("+")) {
+			if (!name.contains("\"") && getCurrentProgramm() != null) {
+				HashMap<String, String> var = getCurrentProgramm().strings;
+				if (var.containsKey(name)) {
+					return var.get(name);
+				} else {
+					throw new IllegalArgumentException("The string variable "
+							+ name + "does not exist");
+				}
+			} else {
+				return StringHelper.replace(name);
+			}
 		}
 		return StringHelper.parse(name);
 	}

@@ -3,23 +3,30 @@ package malte0811.multiDim.commands;
 public class LayeredStringTokenizer {
 	String s;
 	int pos = 0;
+	char op;
+	char cl;
+	char[] separators;
 
-	public LayeredStringTokenizer(String c) throws IllegalArgumentException {
+	public LayeredStringTokenizer(String c, char open, char close, char[] sep)
+			throws IllegalArgumentException {
 		if (!isValid(c)) {
 			throw new IllegalArgumentException(
 					"Too many opening or closing brackets");
 		}
 		s = c;
+		op = open;
+		cl = close;
+		separators = sep;
 	}
 
 	public boolean isValid(String f) {
 		int layer = 0;
 		char[] c = f.toCharArray();
 		for (char a : c) {
-			if (a == '(') {
+			if (a == op) {
 				layer++;
 			}
-			if (a == ')') {
+			if (a == cl) {
 				layer--;
 				if (layer < 0) {
 					return false;
@@ -34,7 +41,7 @@ public class LayeredStringTokenizer {
 	public String nextToken() {
 		String ret = "";
 		char c = s.charAt(pos);
-		while ((c == ' ' || c == '	') && pos < s.length() - 1) {
+		while (isSeparator(c) && pos < s.length() - 1) {
 			pos++;
 			c = s.charAt(pos);
 		}
@@ -42,17 +49,17 @@ public class LayeredStringTokenizer {
 			return null;
 		}
 		int layer = 0;
-		while (((c != ' ' && c != '	') || layer != 0) && pos < s.length() - 1) {
-			if (c == '(') {
+		while ((!isSeparator(c) || layer != 0) && pos < s.length() - 1) {
+			if (c == op) {
 				layer++;
-			} else if (c == ')') {
+			} else if (c == cl) {
 				layer--;
 			}
 			ret += c;
 			pos++;
 			c = s.charAt(pos);
 		}
-		if (pos == s.length() - 1 && c != ' ' && c != '	') {
+		if (pos == s.length() - 1 && !isSeparator(c)) {
 			ret += c;
 		}
 		return ret;
@@ -60,5 +67,14 @@ public class LayeredStringTokenizer {
 
 	public boolean hasMoreTokens() {
 		return pos < s.length() - 1;
+	}
+
+	private boolean isSeparator(char c) {
+		for (char s : separators) {
+			if (c == s) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

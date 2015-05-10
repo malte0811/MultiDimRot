@@ -3,8 +3,7 @@ package malte0811.multiDim.commands.programs;
 public class StringHelper {
 	public static String parse(String s) throws IllegalArgumentException {
 		if (!s.contains("+")) {
-			if (s.charAt(0) == '\"' && s.charAt(s.length() - 1) == '\"'
-					&& !s.substring(1, s.length() - 1).contains("\"")) {
+			if (s.charAt(0) == '\"' && s.charAt(s.length() - 1) == '\"') {
 				return replace(s.substring(1, s.length() - 1));
 			}
 			return Programm.getStringValue(s);
@@ -20,6 +19,9 @@ public class StringHelper {
 	}
 
 	public static String replace(String s) throws IllegalArgumentException {
+		if (s.charAt(0) == '\"' && s.charAt(s.length() - 1) == '\"') {
+			s = s.substring(1, s.length() - 1);
+		}
 		String ret = "";
 		char[] ch = s.toCharArray();
 		for (int i = 0; i < ch.length; i++) {

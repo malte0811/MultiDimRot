@@ -22,8 +22,16 @@ public class CommandPrint extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		System.out.println(args[0]);
-		System.out.println(Programm.getDoubleValue(args[0]));
+		try {
+			System.out.println(Programm.getDoubleValue(args[0]));
+		} catch (IllegalArgumentException x) {
+			try {
+				System.out.println(Programm.getStringValue(args[0]));
+			} catch (IllegalArgumentException x2) {
+				System.out.println(x.getMessage());
+				System.out.println(x2.getMessage());
+			}
+		}
 	}
 
 }

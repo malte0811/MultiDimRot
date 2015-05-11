@@ -32,15 +32,13 @@ public class CommandRun extends Command {
 		while (st.hasMoreTokens()) {
 			c = Arrays.copyOf(c, c.length + 1);
 			c[c.length - 1] = st.nextToken();
-			// DEBUG
-			System.out.println(c[c.length - 1]);
 		}
 		Programm p = new Programm(c);
-		// if (DimRegistry.getCalcThread().getCurrentProgram() == null) {
-		DimRegistry.getCalcThread().setCurrentProgram(p);
-		// } else {
-		// DimRegistry.getCalcThread().getCurrentProgram().innerProgramm = p;
-		// }
+		if (DimRegistry.getCalcThread().getCurrentProgram() == null) {
+			DimRegistry.getCalcThread().setCurrentProgram(p);
+		} else {
+			DimRegistry.getCalcThread().getCurrentProgram().innerProgramm = p;
+		}
 	}
 
 }

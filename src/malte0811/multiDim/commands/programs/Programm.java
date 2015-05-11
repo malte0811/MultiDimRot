@@ -15,8 +15,7 @@ import malte0811.multiDim.commands.LayeredStringTokenizer;
 
 public class Programm {
 	public Programm innerProgramm = null;
-	// sollte string sein
-	final Object[] file;
+	final String[] file;
 	final boolean debug = false;
 	static private Programm instance = null;
 	private HashMap<String, Double> numbers = new HashMap<>();
@@ -26,30 +25,30 @@ public class Programm {
 	private int[] layers = new int[0];
 	public static boolean stop = false;
 
-	public Programm(Object[] data) {
+	public Programm(String[] data) {
 		file = data;
 	}
 
 	public int step() {
-		if (file.length - 1 <= currLine) {
+		if (file.length <= currLine && innerProgramm == null) {
 			instance = null;
 			return 0;
 		}
 		instance = this;
-		if (innerProgramm != null) {
-			int s = innerProgramm.step();
-			if (s == 0) {
-				innerProgramm = null;
-			} else {
-				return s;
-			}
-		}
 		if (stop) {
 			DimRegistry.getCalcThread().getCommandListener().input.toggle();
 			return 0;
 		}
-		do {
-			String cmd = (String) file[currLine];
+		while (currLine < file.length && !stop) {
+			if (innerProgramm != null) {
+				int s = innerProgramm.step();
+				if (s == 0) {
+					innerProgramm = null;
+				} else {
+					return s;
+				}
+			}
+			String cmd = file[currLine];
 			currLine++;
 			if (cmd == null || cmd.equals("")) {
 				DimRegistry.getCalcThread().getCommandListener().input.toggle();
@@ -60,7 +59,7 @@ public class Programm {
 			}
 			if (!Command.processCommand(cmd, true)) {
 				LayeredStringTokenizer st = new LayeredStringTokenizer(cmd,
-						'(', ')', new char[] { ' ', '	' });
+						'(', ')', new char[] { ' ', '	' }, true);
 				String tmp = st.nextToken();
 				if (tmp.toUpperCase().equals("SLEEP")) {
 					if (!st.hasMoreTokens()) {
@@ -116,7 +115,7 @@ public class Programm {
 				} else {
 					if (st.nextToken().equals("=")) {
 						st = new LayeredStringTokenizer(cmd, '\"', '\"',
-								new char[] { ' ', '	' });
+								new char[] { ' ', '	' }, false);
 						st.nextToken();
 						st.nextToken();
 						String term = st.nextToken();
@@ -146,7 +145,15 @@ public class Programm {
 				}
 
 			}
-		} while (currLine < file.length && !stop);
+		}
+		if (innerProgramm != null) {
+			int s = innerProgramm.step();
+			if (s == 0) {
+				innerProgramm = null;
+			} else {
+				return s;
+			}
+		}
 		DimRegistry.getCalcThread().getCommandListener().input.toggle();
 		return 0;
 	}
@@ -155,7 +162,7 @@ public class Programm {
 		String sep = DimRegistry.getFileSeperator();
 		Path p = Paths
 				.get(DimRegistry.getUserDir() + sep + "scripts" + sep + s);
-		Object[] file = new Object[0];
+		String[] file = new String[0];
 		if (!Files.exists(p) || !Files.isRegularFile(p)) {
 			System.out.println("File or command does not exist");
 			return null;

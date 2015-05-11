@@ -6,22 +6,25 @@ public class LayeredStringTokenizer {
 	char op;
 	char cl;
 	char[] separators;
+	boolean kS;
 
-	public LayeredStringTokenizer(String c, char open, char close, char[] sep)
-			throws IllegalArgumentException {
-		if (!isValid(c)) {
-			throw new IllegalArgumentException(
-					"Too many opening or closing brackets");
-		}
+	public LayeredStringTokenizer(String c, char open, char close, char[] sep,
+			boolean keepStrings) throws IllegalArgumentException {
 		s = c;
 		op = open;
 		cl = close;
 		separators = sep;
+		if (!isValid(c)) {
+			throw new IllegalArgumentException(
+					"Too many opening or closing brackets");
+		}
+		kS = keepStrings;
 	}
 
 	public boolean isValid(String f) {
 		int layer = 0;
 		char[] c = f.toCharArray();
+		boolean inString = false;
 		for (char a : c) {
 			if (a == op) {
 				layer++;
@@ -32,7 +35,13 @@ public class LayeredStringTokenizer {
 					return false;
 				}
 			}
+			if (a == '\"') {
+				inString = !inString;
+			}
 
+		}
+		if (kS && inString) {
+			return false;
 		}
 		return layer == 0;
 
@@ -40,6 +49,7 @@ public class LayeredStringTokenizer {
 
 	public String nextToken() {
 		String ret = "";
+		boolean inString = false;
 		char c = s.charAt(pos);
 		while (isSeparator(c) && pos < s.length() - 1) {
 			pos++;
@@ -49,11 +59,15 @@ public class LayeredStringTokenizer {
 			return null;
 		}
 		int layer = 0;
-		while ((!isSeparator(c) || layer != 0) && pos < s.length() - 1) {
+		while ((!isSeparator(c) || layer != 0 || !((!inString && kS) || !kS))
+				&& pos < s.length() - 1) {
 			if (c == op) {
 				layer++;
 			} else if (c == cl) {
 				layer--;
+			}
+			if (c == '\"') {
+				inString = !inString;
 			}
 			ret += c;
 			pos++;

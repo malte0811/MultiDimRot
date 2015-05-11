@@ -101,7 +101,7 @@ public abstract class Command {
 			return false;
 		}
 		LayeredStringTokenizer st = new LayeredStringTokenizer(command, '(',
-				')', new char[] { ' ', '	' });
+				')', new char[] { ' ', '	' }, true);
 		String cmd = st.nextToken();
 		String[] args = new String[0];
 		while (st.hasMoreTokens()) {

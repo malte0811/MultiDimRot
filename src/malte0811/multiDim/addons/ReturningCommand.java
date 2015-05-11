@@ -6,6 +6,7 @@ import java.util.StringTokenizer;
 
 import malte0811.multiDim.commands.ret.RetCommandGetDimensions;
 import malte0811.multiDim.commands.ret.RetCommandRandom;
+import malte0811.multiDim.commands.ret.RetCommandToDouble;
 
 public abstract class ReturningCommand {
 	public static HashMap<String, ReturningCommand> retCommands = new HashMap<>();
@@ -21,7 +22,7 @@ public abstract class ReturningCommand {
 	static {
 		register(new RetCommandGetDimensions());
 		register(new RetCommandRandom());
-
+		register(new RetCommandToDouble());
 	}
 
 	public static void register(ReturningCommand c) {

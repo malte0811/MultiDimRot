@@ -68,7 +68,8 @@ public class Programm {
 					}
 					int i = (int) Programm.getDoubleValue(st.nextToken());
 					return i;
-				} else if (tmp.equalsIgnoreCase("while")) {
+				} else if (tmp.equalsIgnoreCase("while")
+						|| tmp.equalsIgnoreCase("if")) {
 					String t = st.nextToken();
 					while (st.hasMoreTokens()) {
 						t += " " + st.nextToken();
@@ -88,7 +89,9 @@ public class Programm {
 								continue;
 							}
 							String fT = temp.nextToken();
-							if (fT.equalsIgnoreCase("end")) {
+							if (fT.equalsIgnoreCase("end")
+									|| (tmp.equalsIgnoreCase("if") && fT
+											.equalsIgnoreCase("else"))) {
 								intE--;
 								if (intE == 0) {
 									currLine = i + 1;
@@ -98,11 +101,15 @@ public class Programm {
 												.toggle();
 										return 0;
 									}
-									layers = Arrays.copyOf(layers,
-											layers.length - 1);
+									if (tmp.equalsIgnoreCase("while")) {
+										layers = Arrays.copyOf(layers,
+												layers.length - 1);
+									}
+
 									break;
 								}
-							} else if (fT.equalsIgnoreCase("while")) {
+							} else if (fT.equalsIgnoreCase("while")
+									|| fT.equalsIgnoreCase("if")) {
 								intE++;
 							}
 						}
@@ -111,8 +118,44 @@ public class Programm {
 						}
 					}
 				} else if (tmp.equalsIgnoreCase("end")) {
-					currLine = layers[layers.length - 1] - 1;
+					if (layers.length > 0) {
+						int lastLayer = layers[layers.length - 1];
+						if (new StringTokenizer(file[lastLayer]).nextToken()
+								.equalsIgnoreCase("while")) {
+							currLine = layers[layers.length - 1] - 1;
+						}
+					} else {
+						System.out.println("Line " + currLine
+								+ ": end whithout while/if");
+					}
+				} else if (tmp.equalsIgnoreCase("else")) {
+					int intE = 0;
+					for (int i = currLine; i < file.length; i++) {
+						StringTokenizer temp = new StringTokenizer(
+								(String) file[i]);
+						if (!temp.hasMoreTokens()) {
+							continue;
+						}
+						String fT = temp.nextToken();
+						if (fT.equalsIgnoreCase("end")) {
+							intE--;
+							if (intE == 0) {
+								currLine = i + 1;
+								if (currLine >= file.length - 1) {
+									DimRegistry.getCalcThread()
+											.getCommandListener().input
+											.toggle();
+									return 0;
+								}
+								break;
+							}
+						} else if (fT.equalsIgnoreCase("while")
+								|| fT.equalsIgnoreCase("if")) {
+							intE++;
+						}
+					}
 				} else {
+
 					if (st.nextToken().equals("=")) {
 						st = new LayeredStringTokenizer(cmd, '\"', '\"',
 								new char[] { ' ', '	' }, false);
@@ -160,8 +203,10 @@ public class Programm {
 
 	public static Programm load(String s) throws Exception {
 		String sep = DimRegistry.getFileSeperator();
-		Path p = Paths
-				.get(DimRegistry.getUserDir() + sep + "scripts" + sep + s);
+		LayeredStringTokenizer lst = new LayeredStringTokenizer(s, '(', ')',
+				new char[] { ' ', '	' }, true);
+		Path p = Paths.get(DimRegistry.getUserDir() + sep + "scripts" + sep
+				+ lst.nextToken());
 		String[] file = new String[0];
 		if (!Files.exists(p) || !Files.isRegularFile(p)) {
 			System.out.println("File or command does not exist");
@@ -189,6 +234,12 @@ public class Programm {
 		}
 		fr.close();
 		Programm progr = new Programm(file);
+		int i = 0;
+		while (lst.hasMoreTokens()) {
+			progr.setStringValue("args" + i, lst.nextToken());
+			i++;
+		}
+		progr.setDoubleValue("argsLength", i);
 		return progr;
 	}
 
@@ -244,7 +295,7 @@ public class Programm {
 					return var.get(name);
 				} else {
 					throw new IllegalArgumentException("The string variable "
-							+ name + "does not exist");
+							+ name + " does not exist");
 				}
 			} else {
 				return StringHelper.replace(name);

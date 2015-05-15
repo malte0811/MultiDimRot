@@ -1,6 +1,7 @@
 package malte0811.multiDim.commands.ret;
 
 import malte0811.multiDim.addons.ReturningCommand;
+import malte0811.multiDim.commands.programs.Programm;
 
 public class RetCommandToDouble extends ReturningCommand {
 
@@ -16,7 +17,7 @@ public class RetCommandToDouble extends ReturningCommand {
 
 	@Override
 	public double processCommand(String[] args) {
-		return Double.parseDouble(args[0]);
+		return Double.parseDouble(Programm.getStringValue(args[0]));
 	}
 
 	@Override

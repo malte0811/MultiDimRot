@@ -55,7 +55,7 @@ public class Programm {
 				return 0;
 			}
 			if (debug) {
-				System.out.println(cmd);
+				System.out.println(currLine + " " + cmd);
 			}
 			if (!Command.processCommand(cmd, true)) {
 				LayeredStringTokenizer st = new LayeredStringTokenizer(cmd,
@@ -120,13 +120,14 @@ public class Programm {
 				} else if (tmp.equalsIgnoreCase("end")) {
 					if (layers.length > 0) {
 						int lastLayer = layers[layers.length - 1];
-						if (new StringTokenizer(file[lastLayer]).nextToken()
-								.equalsIgnoreCase("while")) {
+						if (new StringTokenizer(file[lastLayer - 1])
+								.nextToken().equalsIgnoreCase("while")) {
 							currLine = layers[layers.length - 1] - 1;
 						}
 					} else {
 						System.out.println("Line " + currLine
 								+ ": end whithout while/if");
+						return 0;
 					}
 				} else if (tmp.equalsIgnoreCase("else")) {
 					int intE = 0;

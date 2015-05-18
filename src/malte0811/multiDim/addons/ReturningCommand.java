@@ -4,9 +4,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import malte0811.multiDim.commands.ret.RetCommandCos;
 import malte0811.multiDim.commands.ret.RetCommandGetDimensions;
 import malte0811.multiDim.commands.ret.RetCommandRandom;
+import malte0811.multiDim.commands.ret.RetCommandSin;
+import malte0811.multiDim.commands.ret.RetCommandSqrt;
+import malte0811.multiDim.commands.ret.RetCommandTan;
+import malte0811.multiDim.commands.ret.RetCommandToDegrees;
 import malte0811.multiDim.commands.ret.RetCommandToDouble;
+import malte0811.multiDim.commands.ret.RetCommandToRadians;
 
 public abstract class ReturningCommand {
 	public static HashMap<String, ReturningCommand> retCommands = new HashMap<>();
@@ -23,6 +29,13 @@ public abstract class ReturningCommand {
 		register(new RetCommandGetDimensions());
 		register(new RetCommandRandom());
 		register(new RetCommandToDouble());
+		register(new RetCommandSin());
+		register(new RetCommandCos());
+		register(new RetCommandTan());
+		register(new RetCommandToDegrees());
+		register(new RetCommandToRadians());
+		register(new RetCommandSqrt());
+
 	}
 
 	public static void register(ReturningCommand c) {

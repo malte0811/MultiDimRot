@@ -66,7 +66,8 @@ public class Programm {
 						System.out.println("1 argument is required");
 						continue;
 					}
-					int i = (int) Programm.getDoubleValue(st.nextToken());
+					int i = (int) MathHelper.getDoubleValue(st.nextToken(),
+							numbers);
 					return i;
 				} else if (tmp.equalsIgnoreCase("while")
 						|| tmp.equalsIgnoreCase("if")) {
@@ -79,7 +80,7 @@ public class Programm {
 						layers = Arrays.copyOf(layers, layers.length + 1);
 						layers[layers.length - 1] = currLine;
 					}
-					if (!MathHelper.isTrue(t, this)) {
+					if (!MathHelper.isTrue(t, this, numbers)) {
 						int oldI = currLine;
 						int intE = 1;
 						for (int i = currLine; i < file.length; i++) {
@@ -171,7 +172,8 @@ public class Programm {
 							System.exit(-10);
 						}
 						try {
-							setDoubleValue(tmp, MathHelper.calculate(term));
+							setDoubleValue(tmp,
+									MathHelper.calculate(term, numbers));
 						} catch (IllegalArgumentException x) {
 							try {
 								setStringValue(tmp, getStringValue(term));
@@ -244,30 +246,6 @@ public class Programm {
 		return progr;
 	}
 
-	public static double getDoubleValue(String name)
-			throws NumberFormatException, IllegalArgumentException {
-		if (name.contains("\"")) {
-			throw new IllegalArgumentException(
-					"This is not a number, maybe a string?");
-		}
-		if (name.contains("(") || name.contains("+") || name.contains("-")
-				|| name.contains("*") || name.contains("/")) {
-			try {
-				return MathHelper.calculate(name);
-			} catch (IllegalArgumentException x) {
-				System.out.println(x.getMessage());
-			}
-		}
-		if (getCurrentProgramm() == null) {
-			return Double.parseDouble(name);
-		}
-
-		if (!getCurrentProgramm().numbers.containsKey(name)) {
-			return Double.parseDouble(name);
-		}
-		return getCurrentProgramm().numbers.get(name);
-	}
-
 	public void setDoubleValue(String name, double value)
 			throws IllegalArgumentException {
 		if (!strings.containsKey(name)) {
@@ -275,6 +253,11 @@ public class Programm {
 		} else {
 			throw new IllegalArgumentException(name + "is a string variable");
 		}
+	}
+
+	public static double getDoubleValue(String name) {
+		return MathHelper.getDoubleValue(name, instance == null ? null
+				: instance.getDoubleVariables());
 	}
 
 	public void setStringValue(String name, String value)
@@ -287,22 +270,9 @@ public class Programm {
 		}
 	}
 
-	public static String getStringValue(String name)
-			throws IllegalArgumentException {
-		if (!name.contains("+")) {
-			if (!name.contains("\"") && getCurrentProgramm() != null) {
-				HashMap<String, String> var = getCurrentProgramm().strings;
-				if (var.containsKey(name)) {
-					return var.get(name);
-				} else {
-					throw new IllegalArgumentException("The string variable "
-							+ name + " does not exist");
-				}
-			} else {
-				return StringHelper.replace(name);
-			}
-		}
-		return StringHelper.parse(name);
+	public static String getStringValue(String name) {
+		return StringHelper.getStringValue(name, instance == null ? null
+				: instance.getStringVariables());
 	}
 
 	public static Programm getCurrentProgramm() {
@@ -311,5 +281,13 @@ public class Programm {
 
 	public static void terminate() {
 		DimRegistry.getCalcThread().setCurrentProgram(null);
+	}
+
+	public HashMap<String, Double> getDoubleVariables() {
+		return numbers;
+	}
+
+	public HashMap<String, String> getStringVariables() {
+		return strings;
 	}
 }

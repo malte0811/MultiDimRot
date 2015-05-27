@@ -22,7 +22,6 @@ public class Main {
 		panel = new CalcThread(c);
 		Thread t = new Thread(panel);
 		t.start();
-
 	}
 
 	public static void main(String[] args) {

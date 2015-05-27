@@ -1,7 +1,10 @@
 package malte0811.multiDim.commands.programs;
 
+import java.util.HashMap;
+
 public class StringHelper {
-	public static String parse(String s) throws IllegalArgumentException {
+	public static String parse(String s, HashMap<String, String> variables)
+			throws IllegalArgumentException {
 		if (!s.contains("+")) {
 			if (s.charAt(0) == '\"' && s.charAt(s.length() - 1) == '\"') {
 				return replace(s.substring(1, s.length() - 1));
@@ -12,7 +15,8 @@ public class StringHelper {
 		char[] ch = s.toCharArray();
 		for (int i = 0; i < ch.length; i++) {
 			if (ch[i] == '+') {
-				return parse(s.substring(0, i)) + parse(s.substring(i + 1));
+				return parse(s.substring(0, i), variables)
+						+ parse(s.substring(i + 1), variables);
 			}
 		}
 		return ret;
@@ -76,4 +80,22 @@ public class StringHelper {
 		}
 		return ret;
 	}
+
+	public static String getStringValue(String name,
+			HashMap<String, String> variables) throws IllegalArgumentException {
+		if (!name.contains("+")) {
+			if (!name.contains("\"")) {
+				if (variables.containsKey(name)) {
+					return variables.get(name);
+				} else {
+					throw new IllegalArgumentException("The string variable "
+							+ name + " does not exist");
+				}
+			} else {
+				return StringHelper.replace(name);
+			}
+		}
+		return StringHelper.parse(name, variables);
+	}
+
 }

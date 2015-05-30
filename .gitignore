@@ -1,15 +1,7 @@
 /bin
-/addons
-/solids
-/logs
-/screenshots
-/tmp
-/videos
-/scripts
-/src/build.bat
-/src/run.bat
 *.class
 # Package Files #
 .classpath
 .project
 .settings/
+/MultiDimRot/

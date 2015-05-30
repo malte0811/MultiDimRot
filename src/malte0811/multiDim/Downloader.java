@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -26,9 +26,10 @@ public class Downloader {
 
 	public static void main(String[] args) {
 		String base = ClassLoader.getSystemResource("").toExternalForm()
-				+ "lib/";
+				+ "MultiDimRot/lib/";
 		try {
 			start(base);
+			return;
 		} catch (Exception x) {
 			x.printStackTrace();
 		} catch (Error r) {
@@ -36,7 +37,6 @@ public class Downloader {
 		}
 		// download and unzip libraries
 
-		System.out.println("starting download");
 		try {
 			if (!Files.exists(Paths.get(new URI(base + "JCodec"))))
 				Files.createDirectories(Paths.get(new URI(base + "JCodec")));
@@ -64,7 +64,7 @@ public class Downloader {
 			Path out = Paths.get(new URI(base + "JCodec/jcodec.jar"));
 			URL website = new URL(
 					"http://jcodec.org/downloads/jcodec-0.1.5.jar");
-			download(website, out, pro, 913);
+			download(website, out, pro, 912);
 
 			// lwjgl:
 			info.setText("Downloading LWJGL...");
@@ -111,7 +111,7 @@ public class Downloader {
 			extr.close();
 			downloadDone = true;
 			progressFrame.dispose();
-			start(base);
+			restartApplication();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -146,29 +146,35 @@ public class Downloader {
 	}
 
 	private static void start(String base) throws Exception, Error {
-		if (Files.exists(Paths.get(new URI(base)))
-				&& Files.exists(Paths.get(new URI(base + "JCodec")))
-				&& Files.exists(Paths.get(new URI(base + "lwjgl")))) {
-			URLClassLoader loader = new URLClassLoader(new URL[] {
-					new URL(base + "JCodec/jcodec.jar"),
-					new URL(base + "lwjgl/jar/lwjgl.jar"),
-					new URL(base + "lwjgl/jar/lwjgl_util.jar") });
+		if (System.getProperty("MultiDimRot.glLinked") == null) {
 			System.setProperty("org.lwjgl.librarypath",
 					Paths.get(new URI(base + "lwjgl/native")).toFile()
 							.getAbsolutePath());
-			loader.loadClass("org.lwjgl.Sys");
-			// DEBUG
-			loader.loadClass("org.lwjgl.LWJGLException");
-			loader.loadClass("org.jcodec.common.model.Picture");
-			// both jcodec and lwjgl are installed
-			Class<?> main = loader.loadClass("malte0811.multiDim.Main");
-			Class<?> solid = loader
-					.loadClass("malte0811.multiDim.solids.Solid");
-			Class<?> hyperCube = loader
-					.loadClass("malte0811.multiDim.solids.HyperCube");
-
-			main.getConstructor(solid).newInstance(hyperCube.newInstance());
-			return;
 		}
+		Class.forName("org.lwjgl.Sys");
+		Class.forName("org.jcodec.common.model.Picture");
+		// both jcodec and lwjgl are installed
+		Class<?> main = Class.forName("malte0811.multiDim.Main");
+		Class<?> solid = Class.forName("malte0811.multiDim.solids.Solid");
+		Class<?> hyperCube = Class
+				.forName("malte0811.multiDim.solids.HyperCube");
+
+		main.getConstructor(solid).newInstance(hyperCube.newInstance());
+		return;
+	}
+
+	public static void restartApplication() throws Exception {
+		final String javaBin = System.getProperty("java.home") + File.separator
+				+ "bin" + File.separator + "java";
+		final File currentJar = new File(Downloader.class.getProtectionDomain()
+				.getCodeSource().getLocation().toURI());
+		final ArrayList<String> command = new ArrayList<String>();
+		command.add(javaBin);
+		command.add("-jar");
+		command.add(currentJar.getPath());
+
+		final ProcessBuilder builder = new ProcessBuilder(command);
+		builder.start();
+		System.exit(0);
 	}
 }

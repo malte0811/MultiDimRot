@@ -50,6 +50,7 @@ public class Downloader {
 			progressFrame.add(info, BorderLayout.NORTH);
 			progressFrame.add(pro, BorderLayout.SOUTH);
 			progressFrame.setSize(300, 80);
+			progressFrame.setResizable(false);
 			progressFrame.setVisible(true);
 			progressFrame.addWindowListener(new WindowAdapter() {
 				@Override

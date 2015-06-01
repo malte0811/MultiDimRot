@@ -27,16 +27,24 @@ public class MathHelper {
 		String next = d.pollLast();
 		switch (next) {
 		case "*":
-			ret = getValue(d, variables) * getValue(d, variables);
+			double b = getValue(d, variables);
+			double a = getValue(d, variables);
+			ret = a * b;
 			break;
 		case "/":
-			ret = getValue(d, variables) / getValue(d, variables);
+			b = getValue(d, variables);
+			a = getValue(d, variables);
+			ret = a / b;
 			break;
 		case "-":
-			ret = getValue(d, variables) - getValue(d, variables);
+			b = getValue(d, variables);
+			a = getValue(d, variables);
+			ret = a - b;
 			break;
 		case "+":
-			ret = getValue(d, variables) + getValue(d, variables);
+			b = getValue(d, variables);
+			a = getValue(d, variables);
+			ret = a + b;
 			break;
 		default:
 			ret = Programm.getDoubleValue(next);

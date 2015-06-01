@@ -85,11 +85,17 @@ public class StringHelper {
 			HashMap<String, String> variables) throws IllegalArgumentException {
 		if (!name.contains("+")) {
 			if (!name.contains("\"")) {
-				if (variables.containsKey(name)) {
+				if (variables != null && variables.containsKey(name)) {
 					return variables.get(name);
 				} else {
-					throw new IllegalArgumentException("The string variable "
-							+ name + " does not exist");
+					if (!name.contains(" ")) {
+						throw new IllegalArgumentException(
+								"The string variable \"" + name
+										+ "\" does not exist");
+					} else {
+						throw new IllegalArgumentException("The string \""
+								+ name + "\" is not valid");
+					}
 				}
 			} else {
 				return StringHelper.replace(name);

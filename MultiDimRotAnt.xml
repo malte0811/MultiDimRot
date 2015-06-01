@@ -8,7 +8,7 @@
                 <attribute name="Main-Class" value="malte0811.multiDim.Downloader"/>
                 <attribute name="Class-Path" value=". MultiDimRot/lib/JCodec/jcodec.jar MultiDimRot/lib/lwjgl/jar/lwjgl.jar MultiDimRot/lib/lwjgl/jar/lwjgl_util.jar"/>
             </manifest>
-            <fileset dir="${basedir}/bin"/>
+            <fileset dir="${basedir}/bin" excludes="MultiDimRot/**"/>
         </jar>
     </target>
 </project>

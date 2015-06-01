@@ -6,6 +6,8 @@ import java.util.StringTokenizer;
 
 import malte0811.multiDim.commands.ret.RetCommandCos;
 import malte0811.multiDim.commands.ret.RetCommandGetDimensions;
+import malte0811.multiDim.commands.ret.RetCommandLn;
+import malte0811.multiDim.commands.ret.RetCommandPow;
 import malte0811.multiDim.commands.ret.RetCommandRandom;
 import malte0811.multiDim.commands.ret.RetCommandSin;
 import malte0811.multiDim.commands.ret.RetCommandSqrt;
@@ -35,6 +37,8 @@ public abstract class ReturningCommand {
 		register(new RetCommandToDegrees());
 		register(new RetCommandToRadians());
 		register(new RetCommandSqrt());
+		register(new RetCommandPow());
+		register(new RetCommandLn());
 
 	}
 

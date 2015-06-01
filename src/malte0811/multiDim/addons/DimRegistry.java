@@ -1,6 +1,8 @@
 package malte0811.multiDim.addons;
 
 import java.lang.reflect.Constructor;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import malte0811.multiDim.CalcThread;
@@ -30,7 +32,13 @@ public class DimRegistry {
 		staticSolids.put("TestingSolid", TestingSolid.class);
 
 		sep = System.getProperty("file.separator");
-		userDir = ClassLoader.getSystemResource(".").getFile() + "MultiDimRot";
+		try {
+			userDir = Paths.get(ClassLoader.getSystemResource(".").toURI())
+					.toFile().getAbsolutePath()
+					+ sep + "MultiDimRot";
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void addRenderAlgo(Class<? extends RenderAlgo> newAlgo,

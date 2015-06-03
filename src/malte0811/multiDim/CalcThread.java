@@ -1,6 +1,8 @@
 package malte0811.multiDim;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -89,6 +91,25 @@ public class CalcThread implements Runnable {
 					.println("An exception was thrown while loading addons: ");
 			e1.printStackTrace();
 		}
+		// version check - master
+		try {
+			if (isNewerVersion("master")) {
+				System.out.println("A new version is available");
+			}
+		} catch (IOException x) {
+			// DEBUG
+			x.printStackTrace();
+		}
+		// version check - dev
+		try {
+			if (isNewerVersion("dev")) {
+				System.out.println("A new development version is available");
+			}
+		} catch (IOException x) {
+			// DEBUG
+			x.printStackTrace();
+		}
+
 		System.out
 				.println("Type \"help\" to view a list of all commands. Type \"help <command name>\" to view help for a specific command.");
 		int timer = 0;
@@ -197,6 +218,50 @@ public class CalcThread implements Runnable {
 				}
 			}
 		}
+	}
+
+	public boolean isNewerVersion(String branch) throws IOException {
+		URL oldV = ClassLoader.getSystemResource("version");
+		if (oldV == null) {
+			System.out
+					.println("No version file for the current version was found. Not checking for updates from branch: "
+							+ branch);
+			return false;
+		}
+		URL in = new URL(
+				"https://raw.githubusercontent.com/malte0811/MultiDimRot/"
+						+ branch + "/version");
+		InputStream inStN = in.openStream();
+		InputStream inStO = oldV.openStream();
+		int last = inStN.read();
+		String lastN = "0";
+		while (last != -1) {
+			char l = (char) last;
+			if (l == '.') {
+				String lastO = "0";
+				last = inStO.read();
+				while (last != -1) {
+					l = (char) last;
+					if (l == '.') {
+						break;
+					}
+					lastO += l;
+
+					last = inStO.read();
+				}
+				if (last == -1) {
+					return true;
+				}
+				if (Integer.parseInt(lastN) > Integer.parseInt(lastO)) {
+					return true;
+				}
+				lastN = "0";
+			} else {
+				lastN += l;
+			}
+			last = inStN.read();
+		}
+		return inStO.read() == -1;
 	}
 
 	public Solid getSolid() {

@@ -3,13 +3,18 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
+    	<delete>
+    		<fileset file="${basedir}/MultiDimRot.jar"/>
+    	</delete>
         <jar destfile="${basedir}/MultiDimRot.jar">
             <manifest>
                 <attribute name="Main-Class" value="malte0811.multiDim.Downloader"/>
                 <attribute name="Class-Path" value=". MultiDimRot/lib/JCodec/jcodec.jar MultiDimRot/lib/lwjgl/jar/lwjgl.jar MultiDimRot/lib/lwjgl/jar/lwjgl_util.jar"/>
             </manifest>
             <fileset dir="${basedir}/bin" excludes="MultiDimRot/**"/>
+            <fileset file="${basedir}/version"/>
+        	
         </jar>
-    	<echo>Please update the version number</echo>
+    	<echo>Did you update the version number?</echo>
     </target>
 </project>

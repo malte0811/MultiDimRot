@@ -10,5 +10,6 @@
             </manifest>
             <fileset dir="${basedir}/bin" excludes="MultiDimRot/**"/>
         </jar>
+    	<echo>Please update the version number</echo>
     </target>
 </project>

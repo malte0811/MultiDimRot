@@ -40,6 +40,8 @@ public class CommandUpdate extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
+		downloadDone = false;
+		cancelDownload = false;
 		try {
 			File currentJar = new File(Downloader.class.getProtectionDomain()
 					.getCodeSource().getLocation().toURI());
@@ -104,15 +106,21 @@ public class CommandUpdate extends Command {
 		FileOutputStream fos = new FileOutputStream(out.toFile());
 		int in;
 		int pos = 0;
+		final int bufferSize = 1024;
+		byte[] buffer = new byte[bufferSize];
 		pro.setIndeterminate(true);
-		pro.setStringPainted(true);
 		do {
 			in = inSt.read();
 			if (in != -1) {
-				fos.write(in);
+				buffer[pos % bufferSize] = (byte) in;
+				if (pos % bufferSize == bufferSize - 1) {
+					fos.write(buffer);
+					buffer = new byte[bufferSize];
+				}
 			}
 			pos++;
 		} while (in != -1 && !cancelDownload);
+		fos.write(buffer, 0, pos % bufferSize);
 		fos.flush();
 		fos.close();
 	}

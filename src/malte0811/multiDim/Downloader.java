@@ -129,19 +129,26 @@ public class Downloader {
 		FileOutputStream fos = new FileOutputStream(out.toFile());
 		int in;
 		int pos = 0;
+		final int bufferSize = 1024;
+		byte[] buffer = new byte[bufferSize];
 		pro.setMinimum(0);
 		pro.setMaximum(size);
 		pro.setStringPainted(true);
 		do {
 			in = inSt.read();
 			if (in != -1) {
-				fos.write(in);
+				buffer[pos % bufferSize] = (byte) in;
+				if (pos % bufferSize == bufferSize - 1) {
+					fos.write(buffer);
+					buffer = new byte[bufferSize];
+				}
 			}
 			pos++;
 			// Update progress bar
 			pro.setValue(pos / 1024);
 			pro.setString((pos / 10) / size + "%");
 		} while (in != -1);
+		fos.write(buffer, 0, pos % bufferSize);
 		fos.flush();
 		fos.close();
 	}

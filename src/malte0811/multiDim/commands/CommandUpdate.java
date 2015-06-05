@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
+import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.Downloader;
 import malte0811.multiDim.addons.Command;
 
@@ -92,7 +93,7 @@ public class CommandUpdate extends Command {
 			}
 		} catch (Exception x) {
 			System.out.println("Update failed.");
-			x.printStackTrace();
+			CommandListener.out.logException(x);
 		}
 	}
 
@@ -106,21 +107,20 @@ public class CommandUpdate extends Command {
 		FileOutputStream fos = new FileOutputStream(out.toFile());
 		int in;
 		int pos = 0;
-		final int bufferSize = 1024;
-		byte[] buffer = new byte[bufferSize];
+		byte[] buffer = new byte[Downloader.bufferSize];
 		pro.setIndeterminate(true);
 		do {
 			in = inSt.read();
 			if (in != -1) {
-				buffer[pos % bufferSize] = (byte) in;
-				if (pos % bufferSize == bufferSize - 1) {
+				buffer[pos % Downloader.bufferSize] = (byte) in;
+				if (pos % Downloader.bufferSize == Downloader.bufferSize - 1) {
 					fos.write(buffer);
-					buffer = new byte[bufferSize];
+					buffer = new byte[Downloader.bufferSize];
 				}
 			}
 			pos++;
 		} while (in != -1 && !cancelDownload);
-		fos.write(buffer, 0, pos % bufferSize);
+		fos.write(buffer, 0, pos % Downloader.bufferSize);
 		fos.flush();
 		fos.close();
 	}

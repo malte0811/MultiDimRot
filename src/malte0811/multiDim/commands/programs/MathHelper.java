@@ -174,8 +174,9 @@ public class MathHelper {
 			throw new IllegalArgumentException(
 					"This is not a number, maybe a string?");
 		}
-		if (name.contains("(") || name.contains("+") || name.contains("-")
-				|| name.contains("*") || name.contains("/")) {
+		if (name.contains("(") || name.contains("+")
+				|| name.substring(1).contains("-") || name.contains("*")
+				|| name.contains("/")) {
 			try {
 				return MathHelper.calculate(name, variables);
 			} catch (IllegalArgumentException x) {

@@ -36,7 +36,7 @@ public class InputField extends JTextField {
 
 				if (active) {
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						DimRegistry.getCalcThread().getCommandListener().out
+						DimRegistry.getCalcThread().getCommandListener().textOut
 								.println(">" + getText());
 						DimRegistry.getCalcThread().addCommand(getText());
 						comms.addFirst(getText());

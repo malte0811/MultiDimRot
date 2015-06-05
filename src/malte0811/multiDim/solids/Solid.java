@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import malte0811.multiDim.CommandListener;
+
 public abstract class Solid implements Serializable {
 	public double[][] vertices;
 	public int[][] edges;
@@ -57,7 +59,7 @@ public abstract class Solid implements Serializable {
 						new ByteArrayInputStream(bStream));
 				return (Solid) ois.readObject();
 			} catch (Exception e) {
-				e.printStackTrace();
+				CommandListener.out.logException(e);
 			}
 		}
 		if (b.getCopyOfVertices(0).length == 0) {
@@ -71,7 +73,7 @@ public abstract class Solid implements Serializable {
 						new ByteArrayInputStream(bStream));
 				return (Solid) ois.readObject();
 			} catch (Exception e) {
-				e.printStackTrace();
+				CommandListener.out.logException(e);
 			}
 		}
 		int[][] edgesTMP = a.getEdges();

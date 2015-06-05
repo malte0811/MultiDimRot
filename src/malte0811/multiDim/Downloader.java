@@ -23,6 +23,7 @@ import javax.swing.JProgressBar;
 
 public class Downloader {
 	private static boolean downloadDone = false;
+	public static final int bufferSize = 102400;
 
 	public static void main(String[] args) {
 		String base = ClassLoader.getSystemResource("").toExternalForm()
@@ -36,7 +37,10 @@ public class Downloader {
 			r.printStackTrace();
 		}
 		// download and unzip libraries
-
+		if (System.getProperty("MultiDimRot.dontDownload") != null) {
+			System.out
+					.println("Download is disabled (This instance was probably launched after a different instance completed a download)");
+		}
 		try {
 			if (!Files.exists(Paths.get(new URI(base + "JCodec"))))
 				Files.createDirectories(Paths.get(new URI(base + "JCodec")));
@@ -100,11 +104,19 @@ public class Downloader {
 					}
 					FileOutputStream fos = new FileOutputStream(out.toFile());
 					InputStream in = extr.getInputStream(entry);
+					byte[] buffer = new byte[bufferSize];
 					int r = in.read();
+					int pos = 0;
 					while (r != -1) {
-						fos.write(r);
+						buffer[pos % bufferSize] = (byte) r;
+						if (pos % bufferSize == bufferSize - 1) {
+							fos.write(buffer, 0, bufferSize);
+							buffer = new byte[bufferSize];
+						}
 						r = in.read();
+						pos++;
 					}
+					fos.write(buffer, 0, pos % bufferSize);
 					fos.flush();
 					fos.close();
 				}
@@ -129,7 +141,6 @@ public class Downloader {
 		FileOutputStream fos = new FileOutputStream(out.toFile());
 		int in;
 		int pos = 0;
-		final int bufferSize = 1024;
 		byte[] buffer = new byte[bufferSize];
 		pro.setMinimum(0);
 		pro.setMaximum(size);
@@ -179,6 +190,7 @@ public class Downloader {
 		final ArrayList<String> command = new ArrayList<String>();
 		command.add(javaBin);
 		command.add("-jar");
+		command.add("-DMultiDimRot.dontDownload=true");
 		command.add(currentJar.getPath());
 
 		final ProcessBuilder builder = new ProcessBuilder(command);

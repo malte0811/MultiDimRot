@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.commands.CommandBackground;
 import malte0811.multiDim.commands.CommandChangeRenderAlgo;
 import malte0811.multiDim.commands.CommandChangeRenderOption;
@@ -127,10 +128,9 @@ public abstract class Command {
 				c.processCommand(args);
 			}
 		} catch (Exception x) {
-			System.out
-					.println("The following exception was thrown while running command: "
-							+ command);
-			x.printStackTrace();
+			System.out.println("An error occured while running command: "
+					+ command);
+			CommandListener.out.logException(x);
 		}
 		return true;
 	}

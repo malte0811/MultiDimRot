@@ -2,13 +2,21 @@ package malte0811.multiDim;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import malte0811.multiDim.addons.AddonLoader;
 import malte0811.multiDim.addons.Command;
@@ -51,7 +59,7 @@ public class CalcThread implements Runnable {
 		try {
 			renderAlgo = DimRegistry.getAlgoInstance(3);
 		} catch (Exception e) {
-			e.printStackTrace();
+			CommandListener.out.logException(e);
 		}
 		Display.setTitle("MultiDimRot");
 	}
@@ -61,7 +69,8 @@ public class CalcThread implements Runnable {
 		try {
 			init();
 		} catch (LWJGLException e1) {
-			e1.printStackTrace();
+			System.out.println("An error occured while initializing LWJGL");
+			CommandListener.out.logException(e1);
 			System.exit(0);
 		}
 		RenderAlgo.init();
@@ -78,7 +87,7 @@ public class CalcThread implements Runnable {
 				} catch (IOException e) {
 					System.out
 							.println("Could not create directories for logs etc. :");
-					e.printStackTrace();
+					CommandListener.out.logException(e);
 				}
 			}
 		}
@@ -87,9 +96,8 @@ public class CalcThread implements Runnable {
 		try {
 			AddonLoader.load();
 		} catch (Exception e1) {
-			System.out
-					.println("An exception was thrown while loading addons: ");
-			e1.printStackTrace();
+			System.out.println("An error occured while loading addons");
+			CommandListener.out.logException(e1);
 		}
 		// version check - master
 		try {
@@ -97,8 +105,7 @@ public class CalcThread implements Runnable {
 				System.out.println("A new version is available");
 			}
 		} catch (IOException x) {
-			// DEBUG
-			x.printStackTrace();
+			CommandListener.out.logException(x);
 		}
 		// version check - dev
 		try {
@@ -106,8 +113,7 @@ public class CalcThread implements Runnable {
 				System.out.println("A new development version is available");
 			}
 		} catch (IOException x) {
-			// DEBUG
-			x.printStackTrace();
+			CommandListener.out.logException(x);
 		}
 
 		System.out
@@ -163,7 +169,7 @@ public class CalcThread implements Runnable {
 				DebugHandler.getInstance().addTime(3, (int) tDiff);
 				Thread.sleep(100 - (tDiff > 100 ? 0 : tDiff));
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				CommandListener.out.logException(e);
 			}
 
 		}
@@ -210,7 +216,7 @@ public class CalcThread implements Runnable {
 					DimRegistry.getCalcThread().currentProgram = Programm
 							.load(cmd);
 				} catch (Exception e) {
-					e.printStackTrace();
+					CommandListener.out.logException(e);
 				}
 				if (DimRegistry.getCalcThread().currentProgram != null) {
 					c.input.toggle();
@@ -231,8 +237,15 @@ public class CalcThread implements Runnable {
 		URL in = new URL(
 				"https://raw.githubusercontent.com/malte0811/MultiDimRot/"
 						+ branch + "/version");
-		InputStream inStN = in.openStream();
+		Proxy proxy = getProxy();
+		InputStream inStN;
 		InputStream inStO = oldV.openStream();
+		if (proxy != null) {
+			URLConnection conn = in.openConnection(proxy);
+			inStN = conn.getInputStream();
+		} else {
+			inStN = in.openStream();
+		}
 		int last = inStN.read();
 		String lastN = "0";
 		while (last != -1) {
@@ -262,6 +275,26 @@ public class CalcThread implements Runnable {
 			last = inStN.read();
 		}
 		return inStO.read() == -1;
+	}
+
+	public Proxy getProxy() {
+		System.setProperty("java.net.useSystemProxies", "true");
+		List l = null;
+		try {
+			l = ProxySelector.getDefault().select(new URI("http://github.com"));
+		} catch (URISyntaxException e) {
+			CommandListener.out.logException(e);
+		}
+		if (l != null) {
+			for (Iterator iter = l.iterator(); iter.hasNext();) {
+				java.net.Proxy proxy = (java.net.Proxy) iter.next();
+				InetSocketAddress addr = (InetSocketAddress) proxy.address();
+				if (addr != null) {
+					return proxy;
+				}
+			}
+		}
+		return null;
 	}
 
 	public Solid getSolid() {

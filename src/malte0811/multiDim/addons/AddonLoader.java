@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import malte0811.multiDim.CommandListener;
+
 public class AddonLoader {
 
 	public static void load() throws Exception {
@@ -68,7 +70,7 @@ public class AddonLoader {
 			file.close();
 			return c.asSubclass(Addon.class);
 		} catch (Exception e) {
-			e.printStackTrace();
+			CommandListener.out.logException(e);
 		}
 		return null;
 	}

@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
+import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.addons.TickHandler;
 import malte0811.multiDim.solids.Solid;
@@ -74,13 +75,18 @@ public class MediaHandler extends TickHandler {
 								+ Integer.toString(i) + ".jpeg"));
 						encodeImage(tmp);
 					} catch (IOException e) {
-						e.printStackTrace();
+						System.out
+								.println("An error occured while encoding image "
+										+ i);
+						CommandListener.out.logException(e);
 					}
 				}
 				try {
 					finish();
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					System.out
+							.println("An error occured while creating the video");
+					CommandListener.out.logException(e1);
 				}
 				// delete files
 				for (int i = 0; i < maxFrames; i++) {
@@ -88,7 +94,7 @@ public class MediaHandler extends TickHandler {
 						Files.delete(Paths.get(file + Integer.toString(i)
 								+ ".jpeg"));
 					} catch (IOException e) {
-						e.printStackTrace();
+						CommandListener.out.logException(e);
 					}
 				}
 
@@ -132,7 +138,9 @@ public class MediaHandler extends TickHandler {
 		try {
 			ImageIO.write(image, format, save);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out
+					.println("An error occured while saving a screenshot/frame");
+			CommandListener.out.logException(e);
 		}
 	}
 

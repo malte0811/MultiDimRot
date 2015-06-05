@@ -25,7 +25,8 @@ import malte0811.multiDim.addons.DimRegistry;
 public class CommandListener extends JFrame {
 	public InputField input = new InputField();
 	public JTextArea output = new JTextArea(0, 30);
-	public TextStream out;
+	public TextStream textOut;
+	public static OutStream out = null;
 	public PrintStream old;
 	boolean program = false;
 
@@ -61,9 +62,10 @@ public class CommandListener extends JFrame {
 		});
 		old = System.out;
 		try {
-			out = new TextStream();
-			System.setOut(out);
-			System.setErr(out);
+			out = new OutStream();
+			textOut = new TextStream(out);
+			System.setOut(textOut);
+			System.setErr(textOut);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -78,12 +80,16 @@ public class CommandListener extends JFrame {
 			super(fileName);
 		}
 
+		public TextStream(OutStream os) {
+			super(os);
+		}
+
 		public TextStream() throws IOException {
 			super(new OutStream());
 		}
 	}
 
-	class OutStream extends OutputStream {
+	public class OutStream extends OutputStream {
 		File outFile;
 		FileOutputStream fos;
 		String line = "";
@@ -125,8 +131,27 @@ public class CommandListener extends JFrame {
 		}
 
 		public void logFile(String s) throws IOException {
+			old.print(s);
 			fos.write(s.getBytes());
 			fos.flush();
+		}
+
+		public void logException(Throwable x) {
+			String out = x.toString() + "\r\n";
+			StackTraceElement[] trace = x.getStackTrace();
+			for (StackTraceElement t : trace) {
+				out += "\tat " + t.toString() + "\r\n";
+			}
+			try {
+				logFile(out);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Throwable[] suppressed = x.getSuppressed();
+			for (Throwable t : suppressed) {
+				System.out.println("Suppressed exception:");
+				logException(t);
+			}
 		}
 	}
 

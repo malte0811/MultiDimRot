@@ -9,7 +9,7 @@ public class StringHelper {
 			if (s.charAt(0) == '\"' && s.charAt(s.length() - 1) == '\"') {
 				return replace(s.substring(1, s.length() - 1));
 			}
-			return Programm.getStringValue(s);
+			return getStringValue(s, variables);
 		}
 		String ret = "";
 		char[] ch = s.toCharArray();

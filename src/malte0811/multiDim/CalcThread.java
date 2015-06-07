@@ -99,6 +99,12 @@ public class CalcThread implements Runnable {
 			System.out.println("An error occured while loading addons");
 			CommandListener.out.logException(e1);
 		}
+		try {
+			System.out.println("This is MultiDimRot version " + getVersion());
+		} catch (IOException e1) {
+			System.out.println("Could not check version.");
+			CommandListener.out.logException(e1);
+		}
 		// version check - master
 		try {
 			if (isNewerVersion("master")) {
@@ -275,6 +281,21 @@ public class CalcThread implements Runnable {
 			last = inStN.read();
 		}
 		return inStO.read() == -1;
+	}
+
+	public String getVersion() throws IOException {
+		String ret = "";
+		URL url = ClassLoader.getSystemResource("version");
+		if (url == null) {
+			throw new IOException("No version file was found.");
+		}
+		InputStream in = url.openStream();
+		int r = in.read();
+		while (r != -1) {
+			ret += (char) r;
+			r = in.read();
+		}
+		return ret;
 	}
 
 	public Proxy getProxy() {

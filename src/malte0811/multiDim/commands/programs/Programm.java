@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import malte0811.multiDim.addons.Command;
@@ -20,6 +22,7 @@ public class Programm {
 	static private Programm instance = null;
 	private HashMap<String, Double> numbers = new HashMap<>();
 	private HashMap<String, String> strings = new HashMap<>();
+	private static Set<String> banned = new HashSet<>();
 
 	private int currLine = 0;
 	private int[] layers = new int[0];
@@ -249,7 +252,11 @@ public class Programm {
 	public void setDoubleValue(String name, double value)
 			throws IllegalArgumentException {
 		if (!strings.containsKey(name)) {
-			numbers.put(name, value);
+			if (!banned.contains(name)) {
+				numbers.put(name, value);
+			} else {
+
+			}
 		} else {
 			throw new IllegalArgumentException(name + "is a string variable");
 		}
@@ -289,5 +296,13 @@ public class Programm {
 
 	public HashMap<String, String> getStringVariables() {
 		return strings;
+	}
+
+	public static Set<String> getBannedVariableNames() {
+		return banned;
+	}
+
+	public static void addBannedVariableName(String s) {
+		banned.add(s);
 	}
 }

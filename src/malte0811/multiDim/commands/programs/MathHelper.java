@@ -15,7 +15,7 @@ public class MathHelper {
 		return getValue(s, variables);
 	}
 
-	private static double getValue(Deque<String> d,
+	public static double getValue(Deque<String> d,
 			HashMap<String, Double> variables) {
 		if (d.size() == 1) {
 			String next = d.peekLast();
@@ -47,12 +47,12 @@ public class MathHelper {
 			ret = a + b;
 			break;
 		default:
-			ret = Programm.getDoubleValue(next);
+			ret = getDoubleValue(next, variables);
 		}
 		return ret;
 	}
 
-	private static Deque<String> parse(String term) {
+	public static Deque<String> parse(String term) {
 		int ebene = 0;
 		Deque<String> s = new ArrayDeque<>();
 		if (term.charAt(0) == '(' && term.charAt(term.length() - 1) == ')') {
@@ -107,8 +107,8 @@ public class MathHelper {
 				if (term.charAt(i) == ')') {
 					ebene--;
 					if (ebene < 0) {
-						System.out.println("Too many brackets");
-						Programm.terminate();
+						throw new IllegalArgumentException(
+								"To many closing brackets");
 					}
 				}
 			}

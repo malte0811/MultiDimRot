@@ -8,9 +8,11 @@ import malte0811.multiDim.commands.ret.RetCommandCos;
 import malte0811.multiDim.commands.ret.RetCommandGetDimensions;
 import malte0811.multiDim.commands.ret.RetCommandLn;
 import malte0811.multiDim.commands.ret.RetCommandPow;
+import malte0811.multiDim.commands.ret.RetCommandProd;
 import malte0811.multiDim.commands.ret.RetCommandRandom;
 import malte0811.multiDim.commands.ret.RetCommandSin;
 import malte0811.multiDim.commands.ret.RetCommandSqrt;
+import malte0811.multiDim.commands.ret.RetCommandSum;
 import malte0811.multiDim.commands.ret.RetCommandTan;
 import malte0811.multiDim.commands.ret.RetCommandToDegrees;
 import malte0811.multiDim.commands.ret.RetCommandToDouble;
@@ -39,6 +41,8 @@ public abstract class ReturningCommand {
 		register(new RetCommandSqrt());
 		register(new RetCommandPow());
 		register(new RetCommandLn());
+		register(new RetCommandSum());
+		register(new RetCommandProd());
 
 	}
 

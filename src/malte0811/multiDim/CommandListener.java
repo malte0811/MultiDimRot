@@ -131,8 +131,8 @@ public class CommandListener extends JFrame {
 		}
 
 		public void logFile(String s) throws IOException {
-			old.print(s);
-			fos.write(s.getBytes());
+			old.print(s + "\r\n");
+			fos.write((s + "\r\n").getBytes());
 			fos.flush();
 		}
 

@@ -114,8 +114,7 @@ public class MathHelper {
 			}
 		}
 		if (ebene != 0) {
-			System.out.println("Wrong amount of brackets");
-			Programm.terminate();
+			throw new IllegalArgumentException("Not enough closing brackets");
 		}
 		return s;
 	}
@@ -170,18 +169,10 @@ public class MathHelper {
 	public static double getDoubleValue(String name,
 			HashMap<String, Double> variables) throws NumberFormatException,
 			IllegalArgumentException {
-		if (name.contains("\"")) {
-			throw new IllegalArgumentException(
-					"This is not a number, maybe a string?");
-		}
 		if (name.contains("(") || name.contains("+")
 				|| name.substring(1).contains("-") || name.contains("*")
 				|| name.contains("/")) {
-			try {
-				return MathHelper.calculate(name, variables);
-			} catch (IllegalArgumentException x) {
-				System.out.println(x.getMessage());
-			}
+			return MathHelper.calculate(name, variables);
 		}
 		if (variables == null) {
 			return Double.parseDouble(name);

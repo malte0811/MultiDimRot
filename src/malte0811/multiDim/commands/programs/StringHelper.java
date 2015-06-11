@@ -84,7 +84,7 @@ public class StringHelper {
 	public static String getStringValue(String name,
 			HashMap<String, String> variables) throws IllegalArgumentException {
 		if (!name.contains("+")) {
-			if (!name.contains("\"")) {
+			if (!(name.charAt(0) == '\"' && name.charAt(name.length() - 1) == '\"')) {
 				if (variables != null && variables.containsKey(name)) {
 					return variables.get(name);
 				} else {

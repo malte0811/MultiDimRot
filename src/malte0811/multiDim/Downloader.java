@@ -105,18 +105,11 @@ public class Downloader {
 					FileOutputStream fos = new FileOutputStream(out.toFile());
 					InputStream in = extr.getInputStream(entry);
 					byte[] buffer = new byte[bufferSize];
-					int r = in.read();
-					int pos = 0;
-					while (r != -1) {
-						buffer[pos % bufferSize] = (byte) r;
-						if (pos % bufferSize == bufferSize - 1) {
-							fos.write(buffer, 0, bufferSize);
-							buffer = new byte[bufferSize];
-						}
-						r = in.read();
-						pos++;
+					int pos = in.read(buffer);
+					while (pos != -1) {
+						fos.write(buffer, 0, pos);
+						pos = in.read(buffer);
 					}
-					fos.write(buffer, 0, pos % bufferSize);
 					fos.flush();
 					fos.close();
 				}

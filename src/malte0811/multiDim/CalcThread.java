@@ -268,10 +268,13 @@ public class CalcThread implements Runnable {
 
 					last = inStO.read();
 				}
-				if (last == -1) {
+				if (Integer.parseInt(lastN) > Integer.parseInt(lastO)) {
 					return true;
 				}
-				if (Integer.parseInt(lastN) > Integer.parseInt(lastO)) {
+				if (Integer.parseInt(lastN) < Integer.parseInt(lastO)) {
+					return false;
+				}
+				if (last == -1) {
 					return true;
 				}
 				lastN = "0";
@@ -300,14 +303,14 @@ public class CalcThread implements Runnable {
 
 	public Proxy getProxy() {
 		System.setProperty("java.net.useSystemProxies", "true");
-		List l = null;
+		List<Proxy> l = null;
 		try {
 			l = ProxySelector.getDefault().select(new URI("http://github.com"));
 		} catch (URISyntaxException e) {
 			CommandListener.out.logException(e);
 		}
 		if (l != null) {
-			for (Iterator iter = l.iterator(); iter.hasNext();) {
+			for (Iterator<Proxy> iter = l.iterator(); iter.hasNext();) {
 				java.net.Proxy proxy = (java.net.Proxy) iter.next();
 				InetSocketAddress addr = (InetSocketAddress) proxy.address();
 				if (addr != null) {

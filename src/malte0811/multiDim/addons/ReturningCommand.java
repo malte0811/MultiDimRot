@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import malte0811.multiDim.commands.ret.RetCommandCos;
-import malte0811.multiDim.commands.ret.RetCommandGetDimensions;
+import malte0811.multiDim.commands.ret.RetCommandGetSolidInfo;
 import malte0811.multiDim.commands.ret.RetCommandLn;
 import malte0811.multiDim.commands.ret.RetCommandPow;
 import malte0811.multiDim.commands.ret.RetCommandProd;
@@ -30,7 +30,6 @@ public abstract class ReturningCommand {
 	public abstract int getMinParameterCount();
 
 	static {
-		register(new RetCommandGetDimensions());
 		register(new RetCommandRandom());
 		register(new RetCommandToDouble());
 		register(new RetCommandSin());
@@ -43,6 +42,7 @@ public abstract class ReturningCommand {
 		register(new RetCommandLn());
 		register(new RetCommandSum());
 		register(new RetCommandProd());
+		register(new RetCommandGetSolidInfo());
 
 	}
 

@@ -14,9 +14,9 @@ public class CommandShowTorus extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		int dim = (int) Programm.getValue(args[0]);
-		double rad = Programm.getValue(args[1]);
-		int res = (int) Programm.getValue(args[2]);
+		int dim = (int) Programm.getDoubleValue(args[0]);
+		double rad = Programm.getDoubleValue(args[1]);
+		int res = (int) Programm.getDoubleValue(args[2]);
 		DimRegistry.getCalcThread().setSolid(new NDTorus(dim, rad, res));
 	}
 

@@ -21,8 +21,8 @@ public class CommandSetSize extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		int x = (int) Programm.getValue(args[0]);
-		int y = (int) Programm.getValue(args[1]);
+		int x = (int) Programm.getDoubleValue(args[0]);
+		int y = (int) Programm.getDoubleValue(args[1]);
 		Display.setDisplayMode(new DisplayMode(x, y));
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 	}

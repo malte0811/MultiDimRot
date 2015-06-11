@@ -1,12 +1,22 @@
 package malte0811.multiDim;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import malte0811.multiDim.addons.AddonLoader;
 import malte0811.multiDim.addons.Command;
@@ -49,7 +59,7 @@ public class CalcThread implements Runnable {
 		try {
 			renderAlgo = DimRegistry.getAlgoInstance(3);
 		} catch (Exception e) {
-			e.printStackTrace();
+			CommandListener.out.logException(e);
 		}
 		Display.setTitle("MultiDimRot");
 	}
@@ -59,7 +69,8 @@ public class CalcThread implements Runnable {
 		try {
 			init();
 		} catch (LWJGLException e1) {
-			e1.printStackTrace();
+			System.out.println("An error occured while initializing LWJGL");
+			CommandListener.out.logException(e1);
 			System.exit(0);
 		}
 		RenderAlgo.init();
@@ -74,7 +85,9 @@ public class CalcThread implements Runnable {
 				try {
 					Files.createDirectories(p);
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out
+							.println("Could not create directories for logs etc. :");
+					CommandListener.out.logException(e);
 				}
 			}
 		}
@@ -83,8 +96,32 @@ public class CalcThread implements Runnable {
 		try {
 			AddonLoader.load();
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			System.out.println("An error occured while loading addons");
+			CommandListener.out.logException(e1);
 		}
+		try {
+			System.out.println("This is MultiDimRot version " + getVersion());
+		} catch (IOException e1) {
+			System.out.println("Could not check version.");
+			CommandListener.out.logException(e1);
+		}
+		// version check - master
+		try {
+			if (isNewerVersion("master")) {
+				System.out.println("A new version is available");
+			}
+		} catch (IOException x) {
+			CommandListener.out.logException(x);
+		}
+		// version check - dev
+		try {
+			if (isNewerVersion("dev")) {
+				System.out.println("A new development version is available");
+			}
+		} catch (IOException x) {
+			CommandListener.out.logException(x);
+		}
+
 		System.out
 				.println("Type \"help\" to view a list of all commands. Type \"help <command name>\" to view help for a specific command.");
 		int timer = 0;
@@ -138,7 +175,7 @@ public class CalcThread implements Runnable {
 				DebugHandler.getInstance().addTime(3, (int) tDiff);
 				Thread.sleep(100 - (tDiff > 100 ? 0 : tDiff));
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				CommandListener.out.logException(e);
 			}
 
 		}
@@ -185,7 +222,7 @@ public class CalcThread implements Runnable {
 					DimRegistry.getCalcThread().currentProgram = Programm
 							.load(cmd);
 				} catch (Exception e) {
-					e.printStackTrace();
+					CommandListener.out.logException(e);
 				}
 				if (DimRegistry.getCalcThread().currentProgram != null) {
 					c.input.toggle();
@@ -193,6 +230,95 @@ public class CalcThread implements Runnable {
 				}
 			}
 		}
+	}
+
+	public boolean isNewerVersion(String branch) throws IOException {
+		URL oldV = ClassLoader.getSystemResource("version");
+		if (oldV == null) {
+			System.out
+					.println("No version file for the current version was found. Not checking for updates from branch: "
+							+ branch);
+			return false;
+		}
+		URL in = new URL(
+				"https://raw.githubusercontent.com/malte0811/MultiDimRot/"
+						+ branch + "/version");
+		Proxy proxy = getProxy();
+		InputStream inStN;
+		InputStream inStO = oldV.openStream();
+		if (proxy != null) {
+			URLConnection conn = in.openConnection(proxy);
+			inStN = conn.getInputStream();
+		} else {
+			inStN = in.openStream();
+		}
+		int last = inStN.read();
+		String lastN = "0";
+		while (last != -1) {
+			char l = (char) last;
+			if (l == '.') {
+				String lastO = "0";
+				last = inStO.read();
+				while (last != -1) {
+					l = (char) last;
+					if (l == '.') {
+						break;
+					}
+					lastO += l;
+
+					last = inStO.read();
+				}
+				if (Integer.parseInt(lastN) > Integer.parseInt(lastO)) {
+					return true;
+				}
+				if (Integer.parseInt(lastN) < Integer.parseInt(lastO)) {
+					return false;
+				}
+				if (last == -1) {
+					return true;
+				}
+				lastN = "0";
+			} else {
+				lastN += l;
+			}
+			last = inStN.read();
+		}
+		return inStO.read() == -1;
+	}
+
+	public String getVersion() throws IOException {
+		String ret = "";
+		URL url = ClassLoader.getSystemResource("version");
+		if (url == null) {
+			throw new IOException("No version file was found.");
+		}
+		InputStream in = url.openStream();
+		int r = in.read();
+		while (r != -1) {
+			ret += (char) r;
+			r = in.read();
+		}
+		return ret;
+	}
+
+	public Proxy getProxy() {
+		System.setProperty("java.net.useSystemProxies", "true");
+		List<Proxy> l = null;
+		try {
+			l = ProxySelector.getDefault().select(new URI("http://github.com"));
+		} catch (URISyntaxException e) {
+			CommandListener.out.logException(e);
+		}
+		if (l != null) {
+			for (Iterator<Proxy> iter = l.iterator(); iter.hasNext();) {
+				java.net.Proxy proxy = (java.net.Proxy) iter.next();
+				InetSocketAddress addr = (InetSocketAddress) proxy.address();
+				if (addr != null) {
+					return proxy;
+				}
+			}
+		}
+		return null;
 	}
 
 	public Solid getSolid() {

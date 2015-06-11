@@ -27,7 +27,7 @@ public class CleaningThread extends Thread {
 				}
 				DimRegistry.getCalcThread().setRotations(newRots);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				CommandListener.out.logException(e);
 			}
 
 		}

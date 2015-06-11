@@ -14,16 +14,20 @@ public class CommandChangeRenderAlgo extends Command {
 
 	@Override
 	public void processCommand(String[] args) {
-		int r = (int) Programm.getValue(args[0]);
-		RenderAlgo algo = null;
 		try {
+			int r = (int) Programm.getDoubleValue(args[0]);
+			RenderAlgo algo = null;
 			algo = DimRegistry.getAlgoInstance(r);
+			DimRegistry.getCalcThread().setRenderAlgo(algo);
+			DimRegistry.getCalcThread().setRenderOptions(
+					algo.getInitialParams());
+		} catch (NumberFormatException x) {
+			System.out.println(args[0] + " is not a number");
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("The renderalgo " + args[0] + " does not exist");
 			return;
 		}
-		DimRegistry.getCalcThread().setRenderAlgo(algo);
-		DimRegistry.getCalcThread().setRenderOptions(algo.getInitialParams());
+
 	}
 
 	@Override

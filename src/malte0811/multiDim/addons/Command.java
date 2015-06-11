@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.StringTokenizer;
 
+import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.commands.CommandBackground;
 import malte0811.multiDim.commands.CommandChangeRenderAlgo;
 import malte0811.multiDim.commands.CommandChangeRenderOption;
@@ -14,17 +14,21 @@ import malte0811.multiDim.commands.CommandClear;
 import malte0811.multiDim.commands.CommandDebugRender;
 import malte0811.multiDim.commands.CommandExit;
 import malte0811.multiDim.commands.CommandHelp;
+import malte0811.multiDim.commands.CommandPrint;
 import malte0811.multiDim.commands.CommandRecord;
 import malte0811.multiDim.commands.CommandResetRot;
 import malte0811.multiDim.commands.CommandResizeSolid;
 import malte0811.multiDim.commands.CommandRotCon;
 import malte0811.multiDim.commands.CommandRotInst;
+import malte0811.multiDim.commands.CommandRun;
 import malte0811.multiDim.commands.CommandScreenShot;
 import malte0811.multiDim.commands.CommandSetSize;
 import malte0811.multiDim.commands.CommandToggleFancyRender;
 import malte0811.multiDim.commands.CommandToggleSides;
 import malte0811.multiDim.commands.CommandToggleTickHandler;
+import malte0811.multiDim.commands.CommandUpdate;
 import malte0811.multiDim.commands.CommandZoom;
+import malte0811.multiDim.commands.LayeredStringTokenizer;
 import malte0811.multiDim.commands.ser.CommandAdd;
 import malte0811.multiDim.commands.ser.CommandDeserialize;
 import malte0811.multiDim.commands.ser.CommandSerialize;
@@ -80,6 +84,9 @@ public abstract class Command {
 		register(new CommandClear());
 		register(new CommandToggleTickHandler());
 		register(new CommandToggleFancyRender());
+		register(new CommandPrint());
+		register(new CommandRun());
+		register(new CommandUpdate());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch
@@ -96,7 +103,8 @@ public abstract class Command {
 		if (command == null || command.equals("")) {
 			return false;
 		}
-		StringTokenizer st = new StringTokenizer(command);
+		LayeredStringTokenizer st = new LayeredStringTokenizer(command, '(',
+				')', new char[] { ' ', '	' }, true);
 		String cmd = st.nextToken();
 		String[] args = new String[0];
 		while (st.hasMoreTokens()) {
@@ -120,8 +128,9 @@ public abstract class Command {
 				c.processCommand(args);
 			}
 		} catch (Exception x) {
-			System.out.println(command);
-			x.printStackTrace();
+			System.out.println("An error occured while running command: "
+					+ command);
+			CommandListener.out.logException(x);
 		}
 		return true;
 	}

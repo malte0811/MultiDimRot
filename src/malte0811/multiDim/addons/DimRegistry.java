@@ -1,6 +1,8 @@
 package malte0811.multiDim.addons;
 
 import java.lang.reflect.Constructor;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import malte0811.multiDim.CalcThread;
@@ -30,7 +32,13 @@ public class DimRegistry {
 		staticSolids.put("TestingSolid", TestingSolid.class);
 
 		sep = System.getProperty("file.separator");
-		userDir = System.getProperty("user.dir");
+		try {
+			userDir = Paths.get(ClassLoader.getSystemResource(".").toURI())
+					.toFile().getAbsolutePath()
+					+ sep + "MultiDimRot";
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void addRenderAlgo(Class<? extends RenderAlgo> newAlgo,
@@ -49,7 +57,20 @@ public class DimRegistry {
 		if (!Command.commands.containsKey(c.getCommandName()) || forceOverride) {
 			Command.register(c);
 		} else {
-			System.out.println("This command already exists.");
+			System.out.println("This command already exists: "
+					+ c.getCommandName());
+			System.exit(1);
+		}
+	}
+
+	public static void addRetCommand(ReturningCommand c, boolean forceOverride) {
+		if (!ReturningCommand.retCommands.containsKey(c.getRetCommandName())
+				|| forceOverride) {
+			ReturningCommand.register(c);
+		} else {
+			System.out
+					.println("This command with return value already exists: "
+							+ c.getRetCommandName());
 			System.exit(1);
 		}
 	}

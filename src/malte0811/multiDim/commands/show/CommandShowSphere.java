@@ -14,8 +14,8 @@ public class CommandShowSphere extends Command {
 
 	@Override
 	public void processCommand(String[] args) {
-		int dim = (int) Programm.getValue(args[0]);
-		int res = (int) Programm.getValue(args[1]);
+		int dim = (int) Programm.getDoubleValue(args[0]);
+		int res = (int) Programm.getDoubleValue(args[1]);
 		DimRegistry.getCalcThread().setSolid(new NDSphere(dim, res));
 	}
 

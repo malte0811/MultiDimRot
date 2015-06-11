@@ -13,9 +13,9 @@ public class CommandRotCon extends Command {
 
 	@Override
 	public void processCommand(String[] args) {
-		int a1 = (int) Programm.getValue(args[0]);
-		int a2 = (int) Programm.getValue(args[1]);
-		double deg = Programm.getValue(args[2]);
+		int a1 = (int) Programm.getDoubleValue(args[0]);
+		int a2 = (int) Programm.getDoubleValue(args[1]);
+		double deg = Programm.getDoubleValue(args[2]);
 		if (a1 == a2) {
 			System.out.println("Can not rotate with a single axis");
 			return;

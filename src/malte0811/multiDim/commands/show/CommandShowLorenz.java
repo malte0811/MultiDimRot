@@ -18,19 +18,19 @@ public class CommandShowLorenz extends Command {
 			System.out.println("2, 5 or 8 argumets are required");
 			return;
 		}
-		double res = Programm.getValue(args[0]);
-		int steps = (int) Programm.getValue(args[1]);
+		double res = Programm.getDoubleValue(args[0]);
+		int steps = (int) Programm.getDoubleValue(args[1]);
 		double a = 28, b = 10, c = 8D / 3D;
 		double x = 0, y = 1, z = 0;
 		if (args.length >= 5) {
-			x = Programm.getValue(args[2]);
-			y = Programm.getValue(args[3]);
-			z = Programm.getValue(args[4]);
+			x = Programm.getDoubleValue(args[2]);
+			y = Programm.getDoubleValue(args[3]);
+			z = Programm.getDoubleValue(args[4]);
 		}
 		if (args.length == 8) {
-			a = Programm.getValue(args[5]);
-			b = Programm.getValue(args[6]);
-			c = Programm.getValue(args[7]);
+			a = Programm.getDoubleValue(args[5]);
+			b = Programm.getDoubleValue(args[6]);
+			c = Programm.getDoubleValue(args[7]);
 		}
 		DimRegistry.getCalcThread().setSolid(
 				new LorenzSystem(x, y, z, a, b, c, res, steps));

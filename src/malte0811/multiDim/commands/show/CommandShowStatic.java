@@ -22,10 +22,9 @@ public class CommandShowStatic extends Command {
 					args[0]);
 			Constructor<Solid> con = c.getConstructor();
 			DimRegistry.getCalcThread().setSolid(con.newInstance());
-		} catch (Error e) {
-			e.printStackTrace();
 		} catch (Exception x) {
-			x.printStackTrace();
+			System.out.println("The static solid " + args[0]
+					+ " does not exist.");
 		}
 	}
 

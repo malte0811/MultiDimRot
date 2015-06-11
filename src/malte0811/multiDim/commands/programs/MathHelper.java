@@ -3,38 +3,56 @@ package malte0811.multiDim.commands.programs;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import malte0811.multiDim.addons.ReturningCommand;
+
 public class MathHelper {
-	public static double calculate(Programm p, String term) {
+	public static double calculate(String term,
+			HashMap<String, Double> variables) throws IllegalArgumentException {
 		Deque<String> s = parse(term);
-		return getValue(s, p);
+		return getValue(s, variables);
 	}
 
-	private static double getValue(Deque<String> d, Programm p) {
+	public static double getValue(Deque<String> d,
+			HashMap<String, Double> variables) {
+		if (d.size() == 1) {
+			String next = d.peekLast();
+			if (next.contains("(")) {
+				return ReturningCommand.processCommand(next);
+			}
+		}
 		double ret = 0;
 		String next = d.pollLast();
 		switch (next) {
 		case "*":
-			ret = getValue(d, p) * getValue(d, p);
+			double b = getValue(d, variables);
+			double a = getValue(d, variables);
+			ret = a * b;
 			break;
 		case "/":
-			ret = getValue(d, p) / getValue(d, p);
+			b = getValue(d, variables);
+			a = getValue(d, variables);
+			ret = a / b;
 			break;
 		case "-":
-			ret = getValue(d, p) - getValue(d, p);
+			b = getValue(d, variables);
+			a = getValue(d, variables);
+			ret = a - b;
 			break;
 		case "+":
-			ret = getValue(d, p) + getValue(d, p);
+			b = getValue(d, variables);
+			a = getValue(d, variables);
+			ret = a + b;
 			break;
 		default:
-			ret = Programm.getValue(next);
+			ret = getDoubleValue(next, variables);
 		}
-
 		return ret;
 	}
 
-	private static Deque<String> parse(String term) {
+	public static Deque<String> parse(String term) {
 		int ebene = 0;
 		Deque<String> s = new ArrayDeque<>();
 		if (term.charAt(0) == '(' && term.charAt(term.length() - 1) == ')') {
@@ -89,20 +107,20 @@ public class MathHelper {
 				if (term.charAt(i) == ')') {
 					ebene--;
 					if (ebene < 0) {
-						System.out.println("Termfehler: zu viele Klammern");
-						Programm.terminate();
+						throw new IllegalArgumentException(
+								"To many closing brackets");
 					}
 				}
 			}
 		}
 		if (ebene != 0) {
-			System.out.println("Klammerfehler");
-			Programm.terminate();
+			throw new IllegalArgumentException("Not enough closing brackets");
 		}
 		return s;
 	}
 
-	public static boolean isTrue(String s, Programm p) {
+	public static boolean isTrue(String s, Programm p,
+			HashMap<String, Double> variables) {
 		boolean ret = false;
 		StringTokenizer st = new StringTokenizer(s);
 		String[] vergleiche = { "==", "<", ">", ">=", "<=", "!=" };
@@ -113,7 +131,7 @@ public class MathHelper {
 		while (st.hasMoreTokens()) {
 			String tmp = st.nextToken();
 			if (Arrays.binarySearch(vergleiche, tmp) >= 0) {
-				firstValue = calculate(p, first);
+				firstValue = calculate(first, variables);
 				vergleich = Arrays.binarySearch(vergleiche, tmp);
 				break;
 			} else {
@@ -125,8 +143,7 @@ public class MathHelper {
 		while (st.hasMoreTokens()) {
 			first += st.nextToken();
 		}
-		secondValue = calculate(p, second);
-		// System.out.println(firstValue+vergleiche[vergleich]+secondValue);
+		secondValue = calculate(second, variables);
 		switch (vergleiche[vergleich]) {
 		case "==":
 			ret = firstValue == secondValue;
@@ -147,5 +164,23 @@ public class MathHelper {
 			ret = firstValue != secondValue;
 		}
 		return ret;
+	}
+
+	public static double getDoubleValue(String name,
+			HashMap<String, Double> variables) throws NumberFormatException,
+			IllegalArgumentException {
+		if (name.contains("(") || name.contains("+")
+				|| name.substring(1).contains("-") || name.contains("*")
+				|| name.contains("/")) {
+			return MathHelper.calculate(name, variables);
+		}
+		if (variables == null) {
+			return Double.parseDouble(name);
+		}
+
+		if (!variables.containsKey(name)) {
+			return Double.parseDouble(name);
+		}
+		return variables.get(name);
 	}
 }

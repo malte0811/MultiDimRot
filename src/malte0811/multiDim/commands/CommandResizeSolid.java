@@ -13,9 +13,9 @@ public class CommandResizeSolid extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		double m = Programm.getValue(args[0]);
+		double m = Programm.getDoubleValue(args[0]);
 		if (args.length == 2) {
-			int x = (int) Programm.getValue(args[1]);
+			int x = (int) Programm.getDoubleValue(args[1]);
 			DimRegistry.getCalcThread().getSolid().resize(x, m);
 		} else {
 			DimRegistry.getCalcThread().getSolid().resize(m);

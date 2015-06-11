@@ -152,6 +152,9 @@ public abstract class RenderAlgo {
 		vboI.flip();
 		float[][] renderV = new float[rV.length][4];
 		for (int i = 0; i < rV.length; i++) {
+			if (rV[i] == null) {
+				continue;
+			}
 			renderV[i][0] = rV[i][0];
 			renderV[i][1] = rV[i][1];
 			renderV[i][3] = 1;

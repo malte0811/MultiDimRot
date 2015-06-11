@@ -36,15 +36,11 @@ public class InputField extends JTextField {
 
 				if (active) {
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						DimRegistry.getCalcThread().getCommandListener().out
+						DimRegistry.getCalcThread().getCommandListener().textOut
 								.println(">" + getText());
-						try {
-							DimRegistry.getCalcThread().addCommand(getText());
-							comms.addFirst(getText());
-							setText("");
-						} catch (Exception e1) {
-							e1.printStackTrace();
-						}
+						DimRegistry.getCalcThread().addCommand(getText());
+						comms.addFirst(getText());
+						setText("");
 					}
 					if (e.getKeyCode() == KeyEvent.VK_UP) {
 						if (currCmd != null) {

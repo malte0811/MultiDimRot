@@ -7,13 +7,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -126,7 +133,14 @@ public class Downloader {
 
 	private static void download(URL web, Path out, JProgressBar pro, int size)
 			throws IOException {
-		InputStream inSt = web.openStream();
+		Proxy p = getProxy(web);
+		InputStream inSt;
+		if (p != null) {
+			URLConnection c = web.openConnection(p);
+			inSt = c.getInputStream();
+		} else {
+			inSt = web.openStream();
+		}
 		if (!Files.exists(out)) {
 			Files.createDirectories(out.getParent());
 			Files.createFile(out);
@@ -155,6 +169,26 @@ public class Downloader {
 		fos.write(buffer, 0, pos % bufferSize);
 		fos.flush();
 		fos.close();
+	}
+
+	public static Proxy getProxy(URL in) {
+		System.setProperty("java.net.useSystemProxies", "true");
+		List<Proxy> l = null;
+		try {
+			l = ProxySelector.getDefault().select(in.toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		if (l != null) {
+			for (Iterator<Proxy> iter = l.iterator(); iter.hasNext();) {
+				java.net.Proxy proxy = (java.net.Proxy) iter.next();
+				InetSocketAddress addr = (InetSocketAddress) proxy.address();
+				if (addr != null) {
+					return proxy;
+				}
+			}
+		}
+		return null;
 	}
 
 	private static void start(String base) throws Exception, Error {

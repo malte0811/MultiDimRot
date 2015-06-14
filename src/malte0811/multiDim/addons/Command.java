@@ -33,6 +33,7 @@ import malte0811.multiDim.commands.ser.CommandAdd;
 import malte0811.multiDim.commands.ser.CommandDeserialize;
 import malte0811.multiDim.commands.ser.CommandSerialize;
 import malte0811.multiDim.commands.show.CommandShowCube;
+import malte0811.multiDim.commands.show.CommandShowFunction;
 import malte0811.multiDim.commands.show.CommandShowLorenz;
 import malte0811.multiDim.commands.show.CommandShowOctahedron;
 import malte0811.multiDim.commands.show.CommandShowSphere;
@@ -87,6 +88,7 @@ public abstract class Command {
 		register(new CommandPrint());
 		register(new CommandRun());
 		register(new CommandUpdate());
+		register(new CommandShowFunction());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch

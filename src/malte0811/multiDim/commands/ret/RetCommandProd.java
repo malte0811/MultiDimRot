@@ -9,10 +9,6 @@ import malte0811.multiDim.commands.programs.Programm;
 
 public class RetCommandProd extends ReturningCommand {
 
-	static {
-		Programm.addBannedVariableName("prodI");
-	}
-
 	@Override
 	public String getRetCommandName() {
 		return "PROD";
@@ -21,7 +17,7 @@ public class RetCommandProd extends ReturningCommand {
 	@Override
 	public String getRetCommandUsage() {
 		return "\"prod(start, end, term)\" returns the value of the product defined by these three values. "
-				+ "prodI is used as an index variable "
+				+ "_prodI is used as an index variable "
 				+ "(this command works similiar to \"sum\")";
 	}
 
@@ -34,10 +30,10 @@ public class RetCommandProd extends ReturningCommand {
 		HashMap<String, Double> var = (c == null) ? new HashMap<String, Double>()
 				: c.getDoubleVariables();
 		for (double i = start; i <= max; i++) {
-			var.put("prodI", i);
+			var.put("_prodI", i);
 			ret *= MathHelper.calculate(args[2], var);
 		}
-		var.remove("prodI");
+		var.remove("_prodI");
 		return ret;
 	}
 

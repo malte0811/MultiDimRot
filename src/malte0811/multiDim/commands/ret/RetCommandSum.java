@@ -9,10 +9,6 @@ import malte0811.multiDim.commands.programs.Programm;
 
 public class RetCommandSum extends ReturningCommand {
 
-	static {
-		Programm.addBannedVariableName("sumI");
-	}
-
 	@Override
 	public String getRetCommandName() {
 		return "SUM";
@@ -21,7 +17,7 @@ public class RetCommandSum extends ReturningCommand {
 	@Override
 	public String getRetCommandUsage() {
 		return "\"sum(start, end, term)\" returns the value of the sum defined by these three values. "
-				+ "sumI is used as an index variable "
+				+ "_sumI is used as an index variable "
 				+ "(see http://en.wikipedia.org/wiki/Summation, start is the value below the sigma, "
 				+ "end the value above the sigma and term is what is right of the sigma)";
 	}
@@ -35,10 +31,10 @@ public class RetCommandSum extends ReturningCommand {
 		HashMap<String, Double> var = (c == null) ? new HashMap<String, Double>()
 				: c.getDoubleVariables();
 		for (double i = start; i <= max; i++) {
-			var.put("sumI", i);
+			var.put("_sumI", i);
 			ret += MathHelper.calculate(args[2], var);
 		}
-		var.remove("sumI");
+		var.remove("_sumI");
 		return ret;
 	}
 

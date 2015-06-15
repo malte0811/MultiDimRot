@@ -36,6 +36,7 @@ import malte0811.multiDim.commands.show.CommandShowCube;
 import malte0811.multiDim.commands.show.CommandShowFunction;
 import malte0811.multiDim.commands.show.CommandShowLorenz;
 import malte0811.multiDim.commands.show.CommandShowOctahedron;
+import malte0811.multiDim.commands.show.CommandShowRecursiveFunction;
 import malte0811.multiDim.commands.show.CommandShowSphere;
 import malte0811.multiDim.commands.show.CommandShowStatic;
 import malte0811.multiDim.commands.show.CommandShowTetrahedron;
@@ -89,6 +90,7 @@ public abstract class Command {
 		register(new CommandRun());
 		register(new CommandUpdate());
 		register(new CommandShowFunction());
+		register(new CommandShowRecursiveFunction());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch

@@ -22,7 +22,7 @@ public class Programm {
 	static private Programm instance = null;
 	private HashMap<String, Double> numbers = new HashMap<>();
 	private HashMap<String, String> strings = new HashMap<>();
-	private static Set<String> banned = new HashSet<>();
+	private static Set<String> bannedPrefixes = new HashSet<>();
 
 	private int currLine = 0;
 	private int[] layers = new int[0];
@@ -252,11 +252,12 @@ public class Programm {
 	public void setDoubleValue(String name, double value)
 			throws IllegalArgumentException {
 		if (!strings.containsKey(name)) {
-			if (!banned.contains(name)) {
-				numbers.put(name, value);
-			} else {
-
+			for (String b : bannedPrefixes) {
+				if (name.startsWith(b)) {
+					return;
+				}
 			}
+			numbers.put(name, value);
 		} else {
 			throw new IllegalArgumentException(name + "is a string variable");
 		}
@@ -298,11 +299,11 @@ public class Programm {
 		return strings;
 	}
 
-	public static Set<String> getBannedVariableNames() {
-		return banned;
+	public static Set<String> getBannedVariablePrefixes() {
+		return bannedPrefixes;
 	}
 
-	public static void addBannedVariableName(String s) {
-		banned.add(s);
+	public static void addBannedVariablePrefix(String s) {
+		bannedPrefixes.add(s);
 	}
 }

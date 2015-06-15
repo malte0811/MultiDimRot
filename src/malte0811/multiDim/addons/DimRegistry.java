@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 import malte0811.multiDim.CalcThread;
+import malte0811.multiDim.commands.programs.Programm;
 import malte0811.multiDim.render.CentralOne;
 import malte0811.multiDim.render.CentralThree;
 import malte0811.multiDim.render.CentralTwo;
@@ -30,7 +31,7 @@ public class DimRegistry {
 		renderAlgos.put(3, CentralThree.class);
 		staticSolids.put("HyperCube", HyperCube.class);
 		staticSolids.put("TestingSolid", TestingSolid.class);
-
+		Programm.addBannedVariablePrefix("_");
 		sep = System.getProperty("file.separator");
 		try {
 			userDir = Paths.get(ClassLoader.getSystemResource(".").toURI())

@@ -68,6 +68,13 @@ public class MathHelper {
 				case 2:
 					if ((term.charAt(i) == '+' || term.charAt(i) == '-')
 							&& ebene == 0) {
+						if (term.charAt(i) == '-'
+								&& (i == 0 || term.charAt(i - 1) == '+'
+										|| term.charAt(i - 1) == '-'
+										|| term.charAt(i - 1) == '*' || term
+										.charAt(i - 1) == '/')) {
+							break;
+						}
 						Deque<String> l = parse(term.substring(0, i));
 						Deque<String> r = parse(term.substring(i + 1,
 								term.length()));

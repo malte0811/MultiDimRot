@@ -18,9 +18,12 @@ public class CommandShowRecursiveFunction extends Command {
 
 	@Override
 	public String getCommandUsage() {
-		// TODO dims, [start], iterations, keep, dims*{term}
-		// variables: _[ticks before]_[dimension]
-		return null;
+		return "\"showRecursiveFunction <dimensions> |dimensions|*{<start>} <iterations> <keep> |dimensions|*{<term>}\" shows the first iteration iterartions of an n-dimensional recursive function. \r\n"
+				+ "dimensions: the amount of variables this function has\r\n"
+				+ "|dimensions|*{start}: the initial value of each variable\r\n"
+				+ "iterations: the number of iterations to show\r\n"
+				+ "keep: how many previous values to store in variables\r\n"
+				+ "|dimensions|*{term}: the formulas for calculating the new values from the old values. The old values (<tick> ticks ago, the variable with the id dimension) are stored in the variables _<tick>_<dimension>.";
 	}
 
 	@Override

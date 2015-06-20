@@ -149,7 +149,8 @@ public class CentralThree extends ZoomableRender {
 							.getHeight());
 				}
 			}
-			renderSides(getDensity(sInt, vertices3d, sides, options[1], fancy));
+			renderSides(getDensity(sInt, vertices3d, sides, options[1],
+					options[0], fancy));
 		}
 
 		if (colors != null) {

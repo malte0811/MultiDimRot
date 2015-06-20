@@ -47,10 +47,10 @@ public class NDCube extends Solid {
 		} while (!increment(vertex));
 		// add sides
 		int sd = 0;
-		for (int i = 0; i < d; i++) {
-			sd *= 2;
-			sd += ed[i + 1];
+		for (int i = 1; i < d; i++) {
+			sd += i;
 		}
+		sd *= (int) Math.pow(2, d - 1);
 		sides = new int[sd][3];
 		int index = 0;
 		int l = vertices.length;
@@ -86,7 +86,6 @@ public class NDCube extends Solid {
 				}
 			}
 		} while (!increment(vertex));
-		System.out.print("");
 	}
 
 	@Override

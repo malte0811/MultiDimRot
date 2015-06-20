@@ -18,8 +18,13 @@ public class CommandShowFunction extends Command {
 
 	@Override
 	public String getCommandUsage() {
-		// TODO add description
-		return "\"showFunction <dimensions> <variables> |variables|*{min, max, step} |dimensions-variables|*{term}\"";
+		return "\"showFunction <dimensions> <variables> |variables|*{min max step} |dimensions-variables|*{term}\""
+				+ "shows an n-dimensional function. Parameters:\r\n"
+				+ "dimensions: the amount of dimensions this function has.\r\n"
+				+ "variables: how many variables the function has/how many dimensions the grid the function is calculated on has\r\n"
+				+ "|variables|*{min max step}: the parameters for the grid, therefore where the grid begins, ends and what resolution it has in each direction\r\n"
+				+ "|dimensions-variables|*{term}: the formulas to calculate the positions on the other axes based on the position in the grid. The variables _0, _1, ..., _(dimensions-1) store the position in the grid.\r\n"
+				+ "Example: showFunction 3 2 -1 1 0.1 -2 2 0.1 _0*_1";
 	}
 
 	@Override

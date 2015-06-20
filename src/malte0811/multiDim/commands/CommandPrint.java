@@ -1,6 +1,11 @@
 package malte0811.multiDim.commands;
 
+import java.util.ArrayList;
+import java.util.Set;
+
+import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.addons.Command;
+import malte0811.multiDim.addons.ReturningCommand;
 import malte0811.multiDim.commands.programs.Programm;
 
 public class CommandPrint extends Command {
@@ -28,10 +33,37 @@ public class CommandPrint extends Command {
 			try {
 				System.out.println(Programm.getStringValue(args[0]));
 			} catch (IllegalArgumentException x2) {
-				System.out.println(x.getMessage());
+				if (!(x instanceof NumberFormatException)) {
+					System.out.println(x.getMessage());
+				} else {
+					System.out.println(x.getMessage().substring(18)
+							+ " is not a number.");
+				}
+				CommandListener.out.logException(x);
 				System.out.println(x2.getMessage());
+				CommandListener.out.logException(x2);
 			}
 		}
 	}
 
+	@Override
+	public ArrayList<String> getCompletion(int i, String toComplete) {
+		ArrayList<String> possible = new ArrayList<>();
+		Set<String> keys = ReturningCommand.retCommands.keySet();
+		String out = "";
+		for (String c : keys) {
+			if (c.length() >= toComplete.length()
+					&& c.substring(0, toComplete.length()).equalsIgnoreCase(
+							toComplete)) {
+				possible.add(c + "(");
+				if (out.equals("")) {
+					out += c;
+				} else {
+					out += ", " + c;
+				}
+			}
+		}
+		System.out.println(out);
+		return possible;
+	}
 }

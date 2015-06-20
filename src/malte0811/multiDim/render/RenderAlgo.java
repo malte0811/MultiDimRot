@@ -3,8 +3,6 @@ package malte0811.multiDim.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import malte0811.multiDim.tickHandlers.DebugHandler;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -227,7 +225,7 @@ public abstract class RenderAlgo {
 	}
 
 	public float[][] getDensity(int[][][] triangles, double[][] vertices3d,
-			int[][] sides, double fov, boolean improved) {
+			int[][] sides, double fov, double dist, boolean improved) {
 		float[][] dens = new float[Display.getWidth()][Display.getHeight()];
 		for (int i = 0; i < triangles.length; i++) {
 			int[][] tri = triangles[i];
@@ -316,10 +314,10 @@ public abstract class RenderAlgo {
 												p0[0] - p2[0], -p0[0] }, };
 								double[] inter = solveLGS(eq);
 								double dist2 = inter[0] * inter[0] + inter[1]
-										* inter[1] + inter[2] * inter[2];
-								dens[x][y] += 3 / dist2;
-								DebugHandler.getInstance().addTime(0,
-										(int) dist2);
+										* inter[1] + (inter[2] + dist)
+										* (inter[2] + dist);
+								// DEBUG
+								dens[x][y] += 6 / (dist2);
 							} else {
 								dens[x][y]++;
 							}
@@ -356,10 +354,10 @@ public abstract class RenderAlgo {
 												p0[0] - p2[0], -p0[0] }, };
 								double[] inter = solveLGS(eq);
 								double dist2 = inter[0] * inter[0] + inter[1]
-										* inter[1] + inter[2] * inter[2];
-								dens[x][y] += 3 / dist2;
-								DebugHandler.getInstance().addTime(0,
-										(int) dist2);
+										* inter[1] + (inter[2] + dist)
+										* (inter[2] + dist);
+								// DEBUG
+								dens[x][y] += 6 / (dist2);
 							} else {
 								dens[x][y]++;
 							}

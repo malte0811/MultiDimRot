@@ -29,6 +29,7 @@ import malte0811.multiDim.solids.Solid;
 import malte0811.multiDim.tickHandlers.DebugHandler;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -52,8 +53,10 @@ public class CalcThread implements Runnable {
 	}
 
 	private void init() throws LWJGLException {
+		System.out.println("Inkompetent");
 		Display.setVSyncEnabled(true);
 		Display.setDisplayMode(new DisplayMode(800, 600));
+		Display.setTitle("MultiDimRot");
 		Display.create();
 		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 		try {
@@ -61,7 +64,8 @@ public class CalcThread implements Runnable {
 		} catch (Exception e) {
 			CommandListener.out.logException(e);
 		}
-		Display.setTitle("MultiDimRot");
+		Mouse.create();
+		Mouse.getDWheel();
 	}
 
 	@Override
@@ -100,7 +104,8 @@ public class CalcThread implements Runnable {
 			CommandListener.out.logException(e1);
 		}
 		try {
-			System.out.println("This is MultiDimRot version " + getVersion());
+			String v = getVersion();
+			System.out.println("This is MultiDimRot version " + v);
 		} catch (IOException e1) {
 			System.out.println("Could not check version.");
 			CommandListener.out.logException(e1);
@@ -188,7 +193,6 @@ public class CalcThread implements Runnable {
 			return;
 		}
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-		// GL11.glClearColor(1, 1, 1, 1);
 		int dims = 0;
 		if (renderAlgo instanceof ParallelRender) {
 			dims = (int) (renderOptions[0] > renderOptions[1] ? renderOptions[0]

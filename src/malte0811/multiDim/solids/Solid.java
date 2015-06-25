@@ -119,17 +119,22 @@ public abstract class Solid implements Serializable {
 				int[][] sidesTMP = b.getSides();
 				sides = new int[a.getSides().length + sidesTMP.length][3];
 				for (int i = 0; i < a.getSides().length; i++) {
-					sides[i] = Arrays.copyOf(a.getSides()[i], 3);
+					if (a.getSides()[i] != null) {
+						sides[i] = Arrays.copyOf(a.getSides()[i], 3);
+					}
 				}
 				if (sidesTMP.length > 0) {
 					for (int i = a.getSides().length; i < sides.length; i++) {
-						sides[i] = new int[3];
-						sides[i][0] = sidesTMP[i - a.getSides().length][0]
-								+ (intelligentEdges ? vL : 0);
-						sides[i][1] = sidesTMP[i - a.getSides().length][1]
-								+ (intelligentEdges ? vL : 0);
-						sides[i][2] = sidesTMP[i - a.getSides().length][2]
-								+ (intelligentEdges ? vL : 0);
+						if (sides[0] != null && a.getSides()[0] != null
+								&& sidesTMP[i - a.getSides().length] != null) {
+							sides[i] = new int[3];
+							sides[i][0] = sidesTMP[i - a.getSides().length][0]
+									+ (intelligentEdges ? vL : 0);
+							sides[i][1] = sidesTMP[i - a.getSides().length][1]
+									+ (intelligentEdges ? vL : 0);
+							sides[i][2] = sidesTMP[i - a.getSides().length][2]
+									+ (intelligentEdges ? vL : 0);
+						}
 					}
 				}
 			} else {
@@ -190,5 +195,9 @@ public abstract class Solid implements Serializable {
 
 	public int[][] getSides() {
 		return sides;
+	}
+
+	public double[][] getVertices() {
+		return vertices;
 	}
 }

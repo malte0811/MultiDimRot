@@ -3,12 +3,15 @@ package malte0811.multiDim.addons;
 import malte0811.multiDim.solids.Solid;
 import malte0811.multiDim.tickHandlers.DebugHandler;
 import malte0811.multiDim.tickHandlers.MediaHandler;
+import malte0811.multiDim.tickHandlers.MouseHandler;
 
 public abstract class TickHandler {
 	private boolean active = true;
 	static {
 		DimRegistry.addTickHandler(new DebugHandler());
 		DimRegistry.addTickHandler(new MediaHandler());
+		DimRegistry.addTickHandler(new MouseHandler());
+
 	}
 
 	/**

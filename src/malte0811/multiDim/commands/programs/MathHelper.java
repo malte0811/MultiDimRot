@@ -20,7 +20,7 @@ public class MathHelper {
 		if (d.size() == 1) {
 			String next = d.peekLast();
 			if (next.contains("(")) {
-				return ReturningCommand.processCommand(next);
+				return ReturningCommand.processCommand(next, variables);
 			}
 		}
 		double ret = 0;

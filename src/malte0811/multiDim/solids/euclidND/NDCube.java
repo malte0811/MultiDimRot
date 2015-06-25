@@ -31,7 +31,7 @@ public class NDCube extends Solid {
 
 		// add edges
 		vertex = new boolean[d];
-		ind = 0;
+		ind = 0; // Counting-variable for the next for-loop
 		int vID = 0;
 		do {
 			for (int i = d - 1; i >= 0; i--) {
@@ -45,6 +45,7 @@ public class NDCube extends Solid {
 			}
 			vID++;
 		} while (!increment(vertex));
+
 		// add sides
 		int sd = 0;
 		for (int i = 1; i < d; i++) {

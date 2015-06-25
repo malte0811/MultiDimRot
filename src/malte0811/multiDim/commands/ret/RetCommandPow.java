@@ -1,7 +1,9 @@
 package malte0811.multiDim.commands.ret;
 
+import java.util.HashMap;
+
 import malte0811.multiDim.addons.ReturningCommand;
-import malte0811.multiDim.commands.programs.Programm;
+import malte0811.multiDim.commands.programs.MathHelper;
 
 public class RetCommandPow extends ReturningCommand {
 
@@ -16,9 +18,9 @@ public class RetCommandPow extends ReturningCommand {
 	}
 
 	@Override
-	public double processCommand(String[] args) {
-		return Math.pow(Programm.getDoubleValue(args[0]),
-				Programm.getDoubleValue(args[1]));
+	public double processCommand(String[] args, HashMap<String, Double> var) {
+		return Math.pow(MathHelper.calculate(args[0], var),
+				MathHelper.calculate(args[1], var));
 	}
 
 	@Override

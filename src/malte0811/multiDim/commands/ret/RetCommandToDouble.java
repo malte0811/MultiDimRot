@@ -1,5 +1,7 @@
 package malte0811.multiDim.commands.ret;
 
+import java.util.HashMap;
+
 import malte0811.multiDim.addons.ReturningCommand;
 import malte0811.multiDim.commands.programs.Programm;
 
@@ -16,7 +18,7 @@ public class RetCommandToDouble extends ReturningCommand {
 	}
 
 	@Override
-	public double processCommand(String[] args) {
+	public double processCommand(String[] args, HashMap<String, Double> var) {
 		return Double.parseDouble(Programm.getStringValue(args[0]));
 	}
 

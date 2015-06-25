@@ -1,7 +1,10 @@
 package malte0811.multiDim.commands.ret;
 
+import java.util.HashMap;
+
 import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.addons.ReturningCommand;
+import malte0811.multiDim.commands.programs.MathHelper;
 import malte0811.multiDim.commands.programs.Programm;
 
 public class RetCommandGetSolidInfo extends ReturningCommand {
@@ -23,7 +26,7 @@ public class RetCommandGetSolidInfo extends ReturningCommand {
 	}
 
 	@Override
-	public double processCommand(String[] args) {
+	public double processCommand(String[] args, HashMap<String, Double> var) {
 		String a1 = Programm.getStringValue(args[0]);
 		switch (a1) {
 		case "vertexCount":
@@ -36,8 +39,8 @@ public class RetCommandGetSolidInfo extends ReturningCommand {
 						.println("getVertexElement requires 2 extra parameters: vertex and axis");
 				return 0;
 			}
-			int v = (int) Programm.getDoubleValue(args[1]);
-			int a = (int) Programm.getDoubleValue(args[2]);
+			int v = (int) MathHelper.calculate(args[1], var);
+			int a = (int) MathHelper.calculate(args[2], var);
 			return DimRegistry.getCalcThread().getSolid().vertices[v][a];
 		case "edgeCount":
 			return DimRegistry.getCalcThread().getSolid().getEdges().length;
@@ -47,8 +50,8 @@ public class RetCommandGetSolidInfo extends ReturningCommand {
 						.println("getVertexElement requires 2 extra parameters: vertex and axis");
 				return -1;
 			}
-			int e = (int) Programm.getDoubleValue(args[1]);
-			a = (int) Programm.getDoubleValue(args[2]);
+			int e = (int) MathHelper.calculate(args[1], var);
+			a = (int) MathHelper.calculate(args[2], var);
 			if (a < 0 || a > 1) {
 				System.out.println("Each edge has exactly 2 vertices");
 				return -1;
@@ -73,8 +76,8 @@ public class RetCommandGetSolidInfo extends ReturningCommand {
 						.println("getVertexElement requires 2 extra parameters: vertex and axis");
 				return 0;
 			}
-			int s = (int) Programm.getDoubleValue(args[1]);
-			a = (int) Programm.getDoubleValue(args[2]);
+			int s = (int) MathHelper.calculate(args[1], var);
+			a = (int) MathHelper.calculate(args[2], var);
 			if (DimRegistry.getCalcThread().getSolid().getSides() == null) {
 				System.out.println("This solid does not have sides");
 				return -1;

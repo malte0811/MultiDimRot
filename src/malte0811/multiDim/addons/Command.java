@@ -14,6 +14,7 @@ import malte0811.multiDim.commands.CommandClear;
 import malte0811.multiDim.commands.CommandDebugRender;
 import malte0811.multiDim.commands.CommandExit;
 import malte0811.multiDim.commands.CommandHelp;
+import malte0811.multiDim.commands.CommandMirror;
 import malte0811.multiDim.commands.CommandPrint;
 import malte0811.multiDim.commands.CommandRecord;
 import malte0811.multiDim.commands.CommandResetRot;
@@ -91,6 +92,7 @@ public abstract class Command {
 		register(new CommandUpdate());
 		register(new CommandShowFunction());
 		register(new CommandShowRecursiveFunction());
+		register(new CommandMirror());
 
 		try {
 			// only load if exists, so it doesnt appear in the master branch

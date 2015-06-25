@@ -25,7 +25,8 @@ public abstract class ReturningCommand {
 
 	public abstract String getRetCommandUsage();
 
-	public abstract double processCommand(String[] args);
+	public abstract double processCommand(String[] args,
+			HashMap<String, Double> var);
 
 	public abstract int getMinParameterCount();
 
@@ -50,7 +51,7 @@ public abstract class ReturningCommand {
 		retCommands.put(c.getRetCommandName(), c);
 	}
 
-	public static double processCommand(String s)
+	public static double processCommand(String s, HashMap<String, Double> var)
 			throws IllegalArgumentException {
 		StringTokenizer st = new StringTokenizer(s, "(");
 		String cmd = st.nextToken();
@@ -63,7 +64,7 @@ public abstract class ReturningCommand {
 								+ c.getMinParameterCount() + ", found: "
 								+ args.length);
 			}
-			return c.processCommand(args);
+			return c.processCommand(args, var);
 		}
 		throw new IllegalArgumentException(cmd + " is not a valid command");
 	}

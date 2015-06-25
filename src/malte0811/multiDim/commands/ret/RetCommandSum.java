@@ -2,10 +2,8 @@ package malte0811.multiDim.commands.ret;
 
 import java.util.HashMap;
 
-import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.addons.ReturningCommand;
 import malte0811.multiDim.commands.programs.MathHelper;
-import malte0811.multiDim.commands.programs.Programm;
 
 public class RetCommandSum extends ReturningCommand {
 
@@ -23,13 +21,11 @@ public class RetCommandSum extends ReturningCommand {
 	}
 
 	@Override
-	public double processCommand(String[] args) {
-		double start = Integer.parseInt(args[0]);
-		double max = Integer.parseInt(args[1]);
+	public double processCommand(String[] args, HashMap<String, Double> var) {
+		double start = MathHelper.calculate(args[0], var);
+		double max = MathHelper.calculate(args[1], var);
 		double ret = 0;
-		Programm c = DimRegistry.getCalcThread().getCurrentProgram();
-		HashMap<String, Double> var = (c == null) ? new HashMap<String, Double>()
-				: c.getDoubleVariables();
+
 		for (double i = start; i <= max; i++) {
 			var.put("_sumI", i);
 			ret += MathHelper.calculate(args[2], var);

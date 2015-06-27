@@ -316,7 +316,6 @@ public abstract class RenderAlgo {
 								double dist2 = inter[0] * inter[0] + inter[1]
 										* inter[1] + (inter[2] + dist)
 										* (inter[2] + dist);
-								// DEBUG
 								dens[x][y] += 6 / (dist2);
 							} else {
 								dens[x][y]++;
@@ -356,7 +355,6 @@ public abstract class RenderAlgo {
 								double dist2 = inter[0] * inter[0] + inter[1]
 										* inter[1] + (inter[2] + dist)
 										* (inter[2] + dist);
-								// DEBUG
 								dens[x][y] += 6 / (dist2);
 							} else {
 								dens[x][y]++;

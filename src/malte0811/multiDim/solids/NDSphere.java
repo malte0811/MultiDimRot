@@ -13,17 +13,18 @@ public class NDSphere extends Solid {
 		}
 		edges = new int[1][2];
 		if (dim == 1) {
-			Solid tmp = new TMPSolid(new int[0][2], new double[][] { { 1 },
-					{ -1 } }, new int[0][3]);
-			edges = tmp.getEdges();
-			vertices = tmp.getCopyOfVertices(dim);
-			sides = tmp.getSides();
+			edges = new int[0][2];
+			vertices = new double[2][1];
+			vertices[0][0] = -1;
+			vertices[1][0] = 1;
+			sides = new int[0][3];
 			return;
 		}
 		final Solid oldSphere = new NDSphere(dim - 1, res);
 		Solid tmp = new TMPSolid(new int[0][2], new double[0][dim],
 				new int[0][3]);
-		for (int rot = 0; rot < 180 + res; rot += res) {
+		int iterations = 180 / res;
+		for (int rot = 0; rot < 180; rot += res) {
 			oldSphere.rotate(0, dim - 1, res);
 			tmp = Solid.add(tmp, oldSphere, true);
 		}
@@ -33,30 +34,62 @@ public class NDSphere extends Solid {
 		int oldLength = oldSphere.getCopyOfVertices(0).length;
 		int oldELength = edges.length;
 		int oldSLength = sides.length;
-		sides = Arrays.copyOf(sides,
-				Math.max(sides.length + 2 * oldELength - 2 * oldLength + 4, 0));
+		sides = Arrays.copyOf(sides, 2 * oldELength + 2 * oldELength
+				/ iterations);
 		int z = 0;
-		for (int i = 0; i < edges.length && 2 * z + oldSLength < sides.length; i++) {
-			if (edges[i][0] < vertices.length - oldLength
-					&& edges[i][1] < vertices.length - oldLength) {
-				sides[2 * z + oldSLength] = new int[3];
-				sides[2 * z + oldSLength + 1] = new int[3];
-				sides[2 * z + oldSLength][0] = edges[i][0];
-				sides[2 * z + oldSLength][1] = edges[i][1];
-				sides[2 * z + oldSLength][2] = edges[i][0] + oldLength;
-				sides[2 * z + oldSLength + 1][0] = edges[i][1];
-				sides[2 * z + oldSLength + 1][1] = edges[i][1] + oldLength;
-				sides[2 * z + oldSLength + 1][2] = edges[i][0] + oldLength;
-				z++;
-			}
-		}
+		// DEBUG
+		// for (int i = 0; i < edges.length; i++) {
+		// // DEBUG
+		// if (edges[i][0] < vertices.length - oldLength) {
+		// if (2 * z + oldSLength + 1 < vertices.length) {
+		// sides[2 * z + oldSLength] = new int[3];
+		// sides[2 * z + oldSLength + 1] = new int[3];
+		// sides[2 * z + oldSLength][0] = edges[i][0];
+		// sides[2 * z + oldSLength][1] = edges[i][1];
+		// sides[2 * z + oldSLength][2] = edges[i][0] + oldLength;
+		// sides[2 * z + oldSLength + 1][0] = edges[i][1];
+		// sides[2 * z + oldSLength + 1][1] = edges[i][1] + oldLength;
+		// sides[2 * z + oldSLength + 1][2] = edges[i][0] + oldLength;
+		// } else {
+		// sides[2 * z + oldSLength] = new int[3];
+		// sides[2 * z + oldSLength + 1] = new int[3];
+		// sides[2 * z + oldSLength][0] = edges[i][0];
+		// sides[2 * z + oldSLength][1] = edges[i][1];
+		// sides[2 * z + oldSLength][2] = (edges[i][0] + oldLength)
+		// % vertices.length;
+		// sides[2 * z + oldSLength + 1][0] = edges[i][1];
+		// sides[2 * z + oldSLength + 1][1] = (edges[i][1] + oldLength)
+		// % vertices.length;
+		// sides[2 * z + oldSLength + 1][2] = (edges[i][0] + oldLength)
+		// % vertices.length;
+		//
+		// }
+		// z++;
+		// }
+		// }
 
-		edges = Arrays.copyOf(edges, oldELength + vertices.length - oldLength);
+		edges = Arrays.copyOf(edges, oldELength + vertices.length);
 
-		for (int i = 0; i < vertices.length - oldLength; i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			edges[i + oldELength] = new int[2];
 			edges[i + oldELength][0] = i;
-			edges[i + oldELength][1] = (i + oldLength) % vertices.length;
+			if (i + oldLength < vertices.length) {
+				edges[i + oldELength][1] = i + oldLength;
+			} else {
+				edges[i + oldELength][1] = (i + oldLength) % vertices.length;
+				// if (dim == 2) {
+				// edges[i + oldELength][1] += 1;
+				// edges[i + oldELength][1] %= oldLength;
+				// } else if (dim == 3) {
+				int d = oldLength - edges[i + oldELength][1];
+				if (edges[i + oldELength][1] % 2 == 1) {
+					edges[i + oldELength][1] = 2 * oldLength + d - dim + 1;
+				} else {
+					edges[i + oldELength][1] = 2 * oldLength + d - dim - 1;
+				}
+				edges[i + oldELength][1] %= oldLength;
+				// }
+			}
 		}
 	}
 

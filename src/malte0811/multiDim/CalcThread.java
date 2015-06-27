@@ -53,7 +53,6 @@ public class CalcThread implements Runnable {
 	}
 
 	private void init() throws LWJGLException {
-		System.out.println("Inkompetent");
 		Display.setVSyncEnabled(true);
 		Display.setDisplayMode(new DisplayMode(800, 600));
 		Display.setTitle("MultiDimRot");

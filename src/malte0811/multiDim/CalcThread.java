@@ -61,7 +61,7 @@ public class CalcThread implements Runnable {
 		try {
 			renderAlgo = DimRegistry.getAlgoInstance(3);
 		} catch (Exception e) {
-			CommandListener.out.logException(e);
+			DimRegistry.getLogger().logException(e);
 		}
 		Mouse.create();
 		Mouse.getDWheel();
@@ -73,7 +73,7 @@ public class CalcThread implements Runnable {
 			init();
 		} catch (LWJGLException e1) {
 			System.out.println("An error occured while initializing LWJGL");
-			CommandListener.out.logException(e1);
+			DimRegistry.getLogger().logException(e1);
 			System.exit(0);
 		}
 		RenderAlgo.init();
@@ -90,7 +90,7 @@ public class CalcThread implements Runnable {
 				} catch (IOException e) {
 					System.out
 							.println("Could not create directories for logs etc. :");
-					CommandListener.out.logException(e);
+					DimRegistry.getLogger().logException(e);
 				}
 			}
 		}
@@ -100,14 +100,14 @@ public class CalcThread implements Runnable {
 			AddonLoader.load();
 		} catch (Exception e1) {
 			System.out.println("An error occured while loading addons");
-			CommandListener.out.logException(e1);
+			DimRegistry.getLogger().logException(e1);
 		}
 		try {
 			String v = getVersion();
 			System.out.println("This is MultiDimRot version " + v);
 		} catch (IOException e1) {
 			System.out.println("Could not check version.");
-			CommandListener.out.logException(e1);
+			DimRegistry.getLogger().logException(e1);
 		}
 		// version check - master
 		try {
@@ -115,7 +115,7 @@ public class CalcThread implements Runnable {
 				System.out.println("A new version is available");
 			}
 		} catch (IOException x) {
-			CommandListener.out.logException(x);
+			DimRegistry.getLogger().logException(x);
 		}
 		// version check - dev
 		try {
@@ -123,7 +123,7 @@ public class CalcThread implements Runnable {
 				System.out.println("A new development version is available");
 			}
 		} catch (IOException x) {
-			CommandListener.out.logException(x);
+			DimRegistry.getLogger().logException(x);
 		}
 
 		System.out
@@ -179,7 +179,7 @@ public class CalcThread implements Runnable {
 				DebugHandler.getInstance().addTime(3, (int) tDiff);
 				Thread.sleep(100 - (tDiff > 100 ? 0 : tDiff));
 			} catch (InterruptedException e) {
-				CommandListener.out.logException(e);
+				DimRegistry.getLogger().logException(e);
 			}
 
 		}
@@ -225,7 +225,7 @@ public class CalcThread implements Runnable {
 					DimRegistry.getCalcThread().currentProgram = Programm
 							.load(cmd);
 				} catch (Exception e) {
-					CommandListener.out.logException(e);
+					DimRegistry.getLogger().logException(e);
 				}
 				if (DimRegistry.getCalcThread().currentProgram != null) {
 					c.input.toggle();
@@ -310,7 +310,7 @@ public class CalcThread implements Runnable {
 		try {
 			l = ProxySelector.getDefault().select(new URI("http://github.com"));
 		} catch (URISyntaxException e) {
-			CommandListener.out.logException(e);
+			DimRegistry.getLogger().logException(e);
 		}
 		if (l != null) {
 			for (Iterator<Proxy> iter = l.iterator(); iter.hasNext();) {

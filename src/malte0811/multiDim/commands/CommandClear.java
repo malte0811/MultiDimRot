@@ -1,7 +1,7 @@
 package malte0811.multiDim.commands;
 
+import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.addons.Command;
-import malte0811.multiDim.addons.DimRegistry;
 
 public class CommandClear extends Command {
 
@@ -17,7 +17,7 @@ public class CommandClear extends Command {
 
 	@Override
 	public void processCommand(String[] args) throws Exception {
-		DimRegistry.getCalcThread().getCommandListener().output.setText("");
+		CommandListener.output.setText("");
 	}
 
 	@Override

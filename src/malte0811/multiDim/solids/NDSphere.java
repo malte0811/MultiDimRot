@@ -13,72 +13,54 @@ public class NDSphere extends Solid {
 		}
 		edges = new int[1][2];
 		if (dim == 1) {
-			edges = new int[0][2];
-			vertices = new double[2][1];
-			vertices[0][0] = -1;
-			vertices[1][0] = 1;
-			sides = new int[0][3];
+			Solid tmp = new TMPSolid(new int[0][2], new double[][] { { 1 },
+					{ -1 } }, new int[0][3]);
+			edges = tmp.getEdges();
+			vertices = tmp.getCopyOfVertices(dim);
+			sides = tmp.getSides();
 			return;
 		}
-		Solid oldSphere = new NDSphere(dim - 1, res);
-		double[][] backup = oldSphere.getCopyOfVertices(0);
-		System.arraycopy(oldSphere.vertices, 0, oldSphere.vertices, 0,
-				oldSphere.vertices.length / 2);
-		if (oldSphere.vertices.length > 2) {
-			oldSphere.vertices = Arrays.copyOf(oldSphere.vertices,
-					backup.length / 2 + 1);
-		} else {
-			oldSphere.vertices = Arrays.copyOf(oldSphere.vertices,
-					backup.length / 2);
-		}
-		if (oldSphere.edges.length > 0) {
-			System.arraycopy(oldSphere.edges, 0, oldSphere.edges, 0,
-					oldSphere.edges.length / 2);
-			oldSphere.edges = Arrays.copyOf(oldSphere.edges,
-					oldSphere.edges.length / 2);
-		}
-		oldSphere.sides = Arrays.copyOf(oldSphere.getSides(),
-				oldSphere.getSides().length / 2);
-
+		final Solid oldSphere = new NDSphere(dim - 1, res);
 		Solid tmp = new TMPSolid(new int[0][2], new double[0][dim],
 				new int[0][3]);
-		int iterations = 180 / res;
-		// DEBUG
-		for (int rot = 0; rot < 360; rot += res) {
+		for (int rot = 0; rot < 180 + res; rot += res) {
+			oldSphere.rotate(0, dim - 1, res);
 			tmp = Solid.add(tmp, oldSphere, true);
-			// if (dim == 2)
-			oldSphere.rotate(dim - 2, dim - 1, res);
 		}
 		this.vertices = tmp.getCopyOfVertices(dim);
-		// this.edges = tmp.getEdges();
+		this.edges = tmp.getEdges();
 		this.sides = tmp.getSides();
 		int oldLength = oldSphere.getCopyOfVertices(0).length;
 		int oldELength = edges.length;
 		int oldSLength = sides.length;
-		sides = Arrays.copyOf(sides, 2 * oldELength + 2 * oldELength
-				/ iterations);
+		sides = Arrays.copyOf(sides,
+				Math.max(sides.length + 2 * oldELength - 2 * oldLength + 4, 0));
 		int z = 0;
-		// DEBUG sanity check
-		for (int i = 0; i < edges.length; i++) {
-			int[] s = edges[i];
-			if (s == null || s.length != 2 || s[0] >= vertices.length
-					|| s[1] >= vertices.length) {
-				System.out.print("Erroring edge: " + i);
-				if (s != null && s.length > 1) {
-					System.out.print(" " + s[0] + "->" + s[1]);
-				}
-				System.out.println();
+		for (int i = 0; i < edges.length && 2 * z + oldSLength < sides.length; i++) {
+			if (edges[i][0] < vertices.length - oldLength
+					&& edges[i][1] < vertices.length - oldLength) {
+				sides[2 * z + oldSLength] = new int[3];
+				sides[2 * z + oldSLength + 1] = new int[3];
+				sides[2 * z + oldSLength][0] = edges[i][0];
+				sides[2 * z + oldSLength][1] = edges[i][1];
+				sides[2 * z + oldSLength][2] = edges[i][0] + oldLength;
+				sides[2 * z + oldSLength + 1][0] = edges[i][1];
+				sides[2 * z + oldSLength + 1][1] = edges[i][1] + oldLength;
+				sides[2 * z + oldSLength + 1][2] = edges[i][0] + oldLength;
+				z++;
 			}
 		}
-		edges = new int[dim * vertices.length][2];
-		int eId = 0;
-		for (int i = 0; i < vertices.length; i++) {
-			for (int d = 0; d < dim - 1; d++) {
-				edges[eId][0] = i;
-				edges[eId][1] = (int) (i + Math.pow(iterations + 1, d))
-						% vertices.length;
-				eId++;
-			}
+		while (2 * z < sides.length) {
+			sides[2 * z + oldSLength] = new int[3];
+			sides[2 * z + oldSLength + 1] = new int[3];
+			z++;
+		}
+		edges = Arrays.copyOf(edges, oldELength + vertices.length - oldLength);
+
+		for (int i = 0; i < vertices.length - oldLength; i++) {
+			edges[i + oldELength] = new int[2];
+			edges[i + oldELength][0] = i;
+			edges[i + oldELength][1] = (i + oldLength) % vertices.length;
 		}
 	}
 

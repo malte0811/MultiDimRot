@@ -3,8 +3,8 @@ package malte0811.multiDim.commands;
 import java.util.ArrayList;
 import java.util.Set;
 
-import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.addons.Command;
+import malte0811.multiDim.addons.DimRegistry;
 import malte0811.multiDim.addons.ReturningCommand;
 import malte0811.multiDim.commands.programs.Programm;
 
@@ -39,9 +39,9 @@ public class CommandPrint extends Command {
 					System.out.println(x.getMessage().substring(18)
 							+ " is not a number.");
 				}
-				CommandListener.out.logException(x);
+				DimRegistry.getLogger().logException(x);
 				System.out.println(x2.getMessage());
-				CommandListener.out.logException(x2);
+				DimRegistry.getLogger().logException(x2);
 			}
 		}
 	}

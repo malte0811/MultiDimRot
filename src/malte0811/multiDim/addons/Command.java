@@ -109,8 +109,16 @@ public abstract class Command {
 		if (command == null || command.equals("")) {
 			return false;
 		}
-		LayeredStringTokenizer st = new LayeredStringTokenizer(command, '(',
-				')', new char[] { ' ', '	' }, true);
+		LayeredStringTokenizer st;
+
+		try {
+			st = new LayeredStringTokenizer(command, '(', ')', new char[] {
+					' ', '	' }, true);
+		} catch (IllegalArgumentException e) {
+			System.out.println(e.getMessage());
+			DimRegistry.getLogger().logException(e);
+			return false;
+		}
 		String cmd = st.nextToken();
 		String[] args = new String[0];
 		while (st.hasMoreTokens()) {
@@ -136,7 +144,7 @@ public abstract class Command {
 		} catch (Exception x) {
 			System.out.println("An error occured while running command: "
 					+ command);
-			CommandListener.out.logException(x);
+			DimRegistry.getLogger().logException(x);
 		}
 		return true;
 	}

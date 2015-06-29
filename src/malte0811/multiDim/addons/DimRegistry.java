@@ -1,11 +1,20 @@
 package malte0811.multiDim.addons;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
 import malte0811.multiDim.CalcThread;
+import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.commands.programs.Programm;
 import malte0811.multiDim.render.CentralOne;
 import malte0811.multiDim.render.CentralThree;
@@ -22,6 +31,9 @@ public class DimRegistry {
 	private static HashMap<String, Class<? extends Solid>> staticSolids = new HashMap<>();
 	private static String userDir;
 	private static String sep;
+	private static TextStream output = null;
+	private static LogStream out = null;
+	private static PrintStream old = null;
 
 	public static CalcThread instance = null;
 	static {
@@ -39,6 +51,15 @@ public class DimRegistry {
 					+ sep + "MultiDimRot";
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
+		}
+		try {
+			old = System.out;
+			out = new LogStream();
+			output = new TextStream(out);
+			System.setOut(output);
+			System.setErr(output);
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -99,4 +120,89 @@ public class DimRegistry {
 	public static String getFileSeperator() {
 		return sep;
 	}
+
+	public static LogStream getLogger() {
+		return out;
+	}
+
+	// Log streams
+	static class TextStream extends PrintStream {
+
+		public TextStream(String fileName) throws FileNotFoundException {
+			super(fileName);
+		}
+
+		public TextStream(LogStream os) {
+			super(os);
+		}
+
+		public TextStream() throws IOException {
+			super(new LogStream());
+		}
+	}
+
+	public static class LogStream extends OutputStream {
+		File outFile;
+		FileOutputStream fos;
+		String line = "";
+
+		public LogStream() throws IOException {
+			String s = DimRegistry.getFileSeperator();
+			String base = DimRegistry.getUserDir() + s + "logs" + s;
+			Path logLate = Paths.get(base + "latest.log");
+			Path log1 = Paths.get(base + "log1.log");
+			Path log2 = Paths.get(base + "log2.log");
+			Path log3 = Paths.get(base + "log3.log");
+			Files.deleteIfExists(log3);
+			if (Files.exists(log2)) {
+				Files.move(log2, log3);
+			}
+			if (Files.exists(log1)) {
+				Files.move(log1, log2);
+			}
+			if (Files.exists(logLate)) {
+				Files.move(logLate, log1);
+			}
+			outFile = new File(DimRegistry.getUserDir() + s + "logs" + s
+					+ "latest.log");
+			fos = new FileOutputStream(outFile);
+		}
+
+		@Override
+		public void write(int b) throws IOException {
+			line += (char) b;
+			if (b == '\n') {
+				CommandListener.output.append(line);
+				old.print(line);
+				fos.write(line.getBytes());
+				fos.flush();
+				line = "";
+			}
+		}
+
+		public void logFile(String s) {
+			try {
+				old.print(s + "\r\n");
+				fos.write((s + "\r\n").getBytes());
+				fos.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void logException(Throwable x) {
+			String out = x.toString() + "\r\n";
+			StackTraceElement[] trace = x.getStackTrace();
+			for (StackTraceElement t : trace) {
+				out += "\tat " + t.toString() + "\r\n";
+			}
+			logFile(out);
+			Throwable[] suppressed = x.getSuppressed();
+			for (Throwable t : suppressed) {
+				System.out.println("Suppressed exception:");
+				logException(t);
+			}
+		}
+	}
+
 }

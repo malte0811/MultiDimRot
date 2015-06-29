@@ -16,9 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-import malte0811.multiDim.CommandListener;
 import malte0811.multiDim.Downloader;
 import malte0811.multiDim.addons.Command;
+import malte0811.multiDim.addons.DimRegistry;
 
 public class CommandUpdate extends Command {
 	private boolean downloadDone = false;
@@ -93,7 +93,7 @@ public class CommandUpdate extends Command {
 			}
 		} catch (Exception x) {
 			System.out.println("Update failed.");
-			CommandListener.out.logException(x);
+			DimRegistry.getLogger().logException(x);
 		}
 	}
 

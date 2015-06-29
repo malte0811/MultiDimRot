@@ -3,15 +3,7 @@ package malte0811.multiDim;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -20,13 +12,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
-import malte0811.multiDim.addons.DimRegistry;
-
 public class CommandListener extends JFrame {
 	public InputField input = new InputField();
-	public JTextArea output = new JTextArea(0, 30);
-	public TextStream textOut;
-	public static OutStream out = null;
+	public static JTextArea output = new JTextArea(0, 30);
 	public PrintStream old;
 	boolean program = false;
 
@@ -61,98 +49,10 @@ public class CommandListener extends JFrame {
 			}
 		});
 		old = System.out;
-		try {
-			out = new OutStream();
-			textOut = new TextStream(out);
-			System.setOut(textOut);
-			System.setErr(textOut);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+
 		this.setTitle("MultiDimRot console");
 		this.setSize(400, 400);
 		this.setVisible(true);
-	}
-
-	class TextStream extends PrintStream {
-
-		public TextStream(String fileName) throws FileNotFoundException {
-			super(fileName);
-		}
-
-		public TextStream(OutStream os) {
-			super(os);
-		}
-
-		public TextStream() throws IOException {
-			super(new OutStream());
-		}
-	}
-
-	public class OutStream extends OutputStream {
-		File outFile;
-		FileOutputStream fos;
-		String line = "";
-
-		public OutStream() throws IOException {
-			String s = DimRegistry.getFileSeperator();
-			String base = DimRegistry.getUserDir() + s + "logs" + s;
-			Path logLate = Paths.get(base + "latest.log");
-			Path log1 = Paths.get(base + "log1.log");
-			Path log2 = Paths.get(base + "log2.log");
-			Path log3 = Paths.get(base + "log3.log");
-			Files.deleteIfExists(log3);
-			if (Files.exists(log2)) {
-				Files.move(log2, log3);
-			}
-			if (Files.exists(log1)) {
-				Files.move(log1, log2);
-			}
-			if (Files.exists(logLate)) {
-				Files.move(logLate, log1);
-			}
-			outFile = new File(DimRegistry.getUserDir() + s + "logs" + s
-					+ "latest.log");
-			fos = new FileOutputStream(outFile);
-		}
-
-		@Override
-		public void write(int b) throws IOException {
-			line += (char) b;
-			if (b == '\n') {
-				if (line.getBytes()[0] != '>') {
-					output.append(line);
-					old.write(line.getBytes());
-				}
-				fos.write(line.getBytes());
-				fos.flush();
-				line = "";
-			}
-		}
-
-		public void logFile(String s) throws IOException {
-			old.print(s + "\r\n");
-			fos.write((s + "\r\n").getBytes());
-			fos.flush();
-		}
-
-		public void logException(Throwable x) {
-			String out = x.toString() + "\r\n";
-			StackTraceElement[] trace = x.getStackTrace();
-			for (StackTraceElement t : trace) {
-				out += "\tat " + t.toString() + "\r\n";
-			}
-			try {
-				logFile(out);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			Throwable[] suppressed = x.getSuppressed();
-			for (Throwable t : suppressed) {
-				System.out.println("Suppressed exception:");
-				logException(t);
-			}
-		}
 	}
 
 }

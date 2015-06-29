@@ -70,7 +70,7 @@ public class AddonLoader {
 			file.close();
 			return c.asSubclass(Addon.class);
 		} catch (Exception e) {
-			CommandListener.out.logException(e);
+			DimRegistry.getLogger().logException(e);
 		}
 		return null;
 	}

@@ -78,7 +78,7 @@ public class MediaHandler extends TickHandler {
 						System.out
 								.println("An error occured while encoding image "
 										+ i);
-						CommandListener.out.logException(e);
+						DimRegistry.getLogger().logException(e);
 					}
 				}
 				try {
@@ -86,7 +86,7 @@ public class MediaHandler extends TickHandler {
 				} catch (IOException e1) {
 					System.out
 							.println("An error occured while creating the video");
-					CommandListener.out.logException(e1);
+					DimRegistry.getLogger().logException(e1);
 				}
 				// delete files
 				for (int i = 0; i < maxFrames; i++) {
@@ -94,7 +94,7 @@ public class MediaHandler extends TickHandler {
 						Files.delete(Paths.get(file + Integer.toString(i)
 								+ ".jpeg"));
 					} catch (IOException e) {
-						CommandListener.out.logException(e);
+						DimRegistry.getLogger().logException(e);
 					}
 				}
 
@@ -140,7 +140,7 @@ public class MediaHandler extends TickHandler {
 		} catch (IOException e) {
 			System.out
 					.println("An error occured while saving a screenshot/frame");
-			CommandListener.out.logException(e);
+			DimRegistry.getLogger().logException(e);
 		}
 	}
 

@@ -200,13 +200,16 @@ public class Downloader {
 		Class.forName("org.lwjgl.Sys");
 		Class.forName("org.jcodec.common.model.Picture");
 		// both jcodec and lwjgl are installed
-		Class<?> main = Class.forName("malte0811.multiDim.Main");
+		Class<?> registry = Class
+				.forName("malte0811.multiDim.addons.DimRegistry");
+		Class<?> calc = Class.forName("malte0811.multiDim.CalcThread");
 		Class<?> solid = Class.forName("malte0811.multiDim.solids.Solid");
 		Class<?> hyperCube = Class
 				.forName("malte0811.multiDim.solids.HyperCube");
 
-		main.getConstructor(solid).newInstance(hyperCube.newInstance());
-		return;
+		Runnable c = (Runnable) calc.getConstructor(solid).newInstance(
+				hyperCube.newInstance());
+		new Thread(c).start();
 	}
 
 	public static void restartApplication() throws Exception {

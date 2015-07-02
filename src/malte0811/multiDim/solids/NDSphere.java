@@ -28,7 +28,8 @@ public class NDSphere extends Solid {
 		int oldVLength = old.vertices.length;
 		int oldELength = old.edges.length;
 		vertices = new double[oldVLength * iter][dim];
-		edges = new int[oldELength * iter][2];
+		edges = new int[oldELength * iter
+				+ (int) (Math.pow(iter - 1, dim - 1) * iter)][2];
 		for (int i = 0; i * res < 360; i++) {
 			for (int i2 = 0; i2 < oldVLength; i2++) {
 				vertices[i2 + i * oldVLength] = Arrays.copyOf(old.vertices[i2],
@@ -36,13 +37,15 @@ public class NDSphere extends Solid {
 			}
 			old.rotate(dim - 2, dim - 1, res);
 		}
-		edges = new int[(int) (Math.pow(iter - 1, dim - 1) * iter)][2];
+		int edgeId = 0;
 		for (int i2 = 0; i2 < dim - 1; i2++) {
 			for (int i = 0; i < vertices.length; i++) {
-				int to = (int) (i + Math.pow(iter - 1, i2 - 1) * (double) iter);
+				int to = (int) (i + Math.pow(iter / 2, i2 - 1)
+						* (double) (iter / 2 + 1));
 				if (i2 == dim - 2 || to < vertices.length) {
-					edges[i][0] = i;
-					edges[i][1] = to % vertices.length;
+					edges[edgeId][0] = i;
+					edges[edgeId][1] = to % vertices.length;
+					edgeId++;
 				}
 
 			}

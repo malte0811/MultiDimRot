@@ -1,6 +1,7 @@
 package malte0811.multiDim.solids;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class NDSphere extends Solid {
 	public NDSphere(int dim, double res) {
@@ -29,7 +30,8 @@ public class NDSphere extends Solid {
 		int oldELength = old.edges.length;
 		vertices = new double[oldVLength * iter][dim];
 		edges = new int[oldELength * iter
-				+ (int) (Math.pow(iter - 1, dim - 1) * iter)][2];
+				+ (int) (Math.pow(iter - 1, dim - 2) * iter)
+				+ (int) Math.pow(iter, dim - 3)][2];
 		for (int i = 0; i * res < 360; i++) {
 			for (int i2 = 0; i2 < oldVLength; i2++) {
 				vertices[i2 + i * oldVLength] = Arrays.copyOf(old.vertices[i2],
@@ -38,17 +40,27 @@ public class NDSphere extends Solid {
 			old.rotate(dim - 2, dim - 1, res);
 		}
 		int edgeId = 0;
-		for (int i2 = 0; i2 < dim - 1; i2++) {
-			for (int i = 0; i < vertices.length; i++) {
-				int to = (int) (i + Math.pow(iter / 2, i2 - 1)
-						* (double) (iter / 2 + 1));
-				if (i2 == dim - 2 || to < vertices.length) {
+		for (int i = 0; i < vertices.length; i++) {
+			for (int d = 0; d < dim - 1; d++) {
+				int prod = prod(iter / 2, d);
+				int div = iter / 2 + (d == 0 ? 1 : 0);
+				if ((d == dim - 2 || i + prod < vertices.length)
+						&& (div != 0 || i != 0 || i % div != 0)) {
 					edges[edgeId][0] = i;
-					edges[edgeId][1] = to % vertices.length;
+					edges[edgeId][1] = (i + prod) % vertices.length;
 					edgeId++;
 				}
-
 			}
+		}
+		// DEBUG
+		System.out.println("Dimensions: " + dim);
+		System.out.println("Iterations: " + iter);
+		HashSet<Integer> dif = new HashSet<>();
+		for (int[] e : edges) {
+			dif.add(e[1] - e[0]);
+		}
+		for (int d : dif) {
+			System.out.println("Difference found: " + d);
 		}
 	}
 
@@ -86,5 +98,11 @@ public class NDSphere extends Solid {
 				vertices[i] = Arrays.copyOf(vertices[i], dim);
 			}
 		}
+	}
+
+	private int prod(int step, int end) {
+		int ret = end > 0 ? step + 1 : 1;
+		ret *= Math.pow(step, Math.max(0, end - 1));
+		return ret;
 	}
 }

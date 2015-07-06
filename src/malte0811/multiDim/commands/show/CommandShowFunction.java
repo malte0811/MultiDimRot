@@ -81,9 +81,10 @@ public class CommandShowFunction extends Command {
 		int edge = 0;
 		for (int i = 0; i < vertices.length; i++) {
 			for (int d = 0; d < var; d++) {
-				int prod = prod(lengths, 0, d);
+				int prod = prod(lengths, d);
+				int mod = prod(lengths, d + 1);
 				if (i + prod < vertices.length
-						&& (d != 0 || (i + 1) / lengths[d] == i / lengths[d])) {
+						&& (d == var - 1 || (i + prod) / mod == i / mod)) {
 					edges[edge][0] = i;
 					edges[edge][1] = i + prod;
 					edge++;
@@ -155,9 +156,9 @@ public class CommandShowFunction extends Command {
 		return sumNow * (step.length - exclude.length) + add;
 	}
 
-	private int prod(int[] in, int start, int end) {
+	private int prod(int[] in, int end) {
 		int ret = 1;
-		for (int i = start; i < end; i++) {
+		for (int i = 0; i < Math.min(end, in.length); i++) {
 			ret *= in[i];
 		}
 		return ret;

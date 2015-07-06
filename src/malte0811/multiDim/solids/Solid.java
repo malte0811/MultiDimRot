@@ -4,13 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import malte0811.multiDim.addons.DimRegistry;
 
-public abstract class Solid implements Serializable {
+public abstract class Solid {
 	public double[][] vertices;
 	public int[][] edges;
 	public int[][] sides;

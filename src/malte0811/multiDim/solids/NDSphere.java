@@ -41,14 +41,26 @@ public class NDSphere extends Solid {
 			old.rotate(dim - 2, dim - 1, res);
 		}
 		int edgeId = 0;
-		for (int i = 0; i < vertices.length; i++) {
-			for (int d = 0; d < dim - 1; d++) {
-				int prod = prod(iter, d);
-				int mod = prod(iter, d + 1);
-				// i + prod < vertices.length
-				// && (d == var - 1 || (i + prod) / mod == i / mod)
-				if (((i + prod) / mod == i / mod && i + prod < vertices.length)
-						|| d == dim - 2) {
+		for (int d = 0; d < dim - 1; d++) {
+			int prod = verticesForDimension(d + 1, iter);
+			for (int i = 0; i < vertices.length; i++) {
+				int[] a = gridPos(dim - 1, i, iter);
+				int[] b = gridPos(dim - 1, i + prod, iter);
+				// DEBUG
+				if (dim > 4) {
+					System.out.println("a:");
+					for (int j : a) {
+						System.out.print(j + " ");
+					}
+					System.out.println();
+					System.out.println("b:");
+					for (int j : b) {
+						System.out.print(j + " ");
+					}
+					System.out.println();
+					System.out.println();
+				}
+				if (isEqual(a, b, d) && a[d] + 1 == b[d] || d == dim - 2) {
 					edges[edgeId][0] = i;
 					edges[edgeId][1] = (i + prod) % vertices.length;
 					edgeId++;
@@ -122,11 +134,30 @@ public class NDSphere extends Solid {
 		}
 	}
 
-	private int prod(int iter, int max) {
-		int ret = 1;
-		for (int i = 0; i < max; i++) {
-			ret *= iter / 2 + Math.pow(iter / 2, i);
+	private int verticesForDimension(int d, int iter) {
+		if (d <= 1) {
+			return 1;
+		}
+		return verticesForDimension(d - 1, iter) * iter / 2
+				+ (int) Math.pow(iter / 2, d - 2);
+	}
+
+	private int[] gridPos(int d, int pos, int iter) {
+		int[] ret = new int[d];
+		for (int i = 0; i < d; i++) {
+			int v = verticesForDimension(i + 1, iter);
+			int v1 = verticesForDimension(i + 2, iter);
+			ret[i] = (pos % v1) / v;
 		}
 		return ret;
+	}
+
+	private boolean isEqual(int[] a, int[] b, int exclude) {
+		for (int i = 0; i < a.length; i++) {
+			if (a[i] != b[i] && i != exclude) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

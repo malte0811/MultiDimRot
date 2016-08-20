@@ -265,6 +265,18 @@ void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &pow
 	std::vector<VecN> vertices;
 	MatrixNxN curr;
 	MatrixNxN power(dims+1);
+	sf::Font font;
+	if (!font.loadFromFile("courier.ttf")) {
+		throw "Could not load font!";
+	}
+	std::string outFile;
+	sf::Text text;
+	int size = 20;
+	text.setCharacterSize(size);
+	text.setColor(sf::Color::White);
+	text.setFont(font);
+	text.setPosition(10, height-size-5);
+	text.setString("");
 	while (window.isOpen()) {
 		c.restart();
 		(*solid).update();
@@ -296,6 +308,7 @@ void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &pow
 			vb[2*i+1].color = sf::Color::Green;
 		}
 		window.draw(vb);
+		window.draw(text);
 		window.display();
 		sf::Time t = c.getElapsedTime();
 
@@ -308,11 +321,22 @@ void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &pow
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				window.close();
-			} else if (event.type==sf::Event::KeyPressed && event.key.code==sf::Keyboard::Return) {
-				std::cout << "Writing to file\n";
-				std::ofstream out("Test.obj");
-				solid->writeObj(&out, curr);
-				out.flush();
+			} else if (event.type==sf::Event::KeyPressed) {
+				if (event.key.code==sf::Keyboard::Return) {
+					std::ofstream out((outFile+".nobj").c_str());
+					solid->writeObj(&out, curr);
+					out.flush();
+					outFile = "";
+					text.setString("");
+				} else if (event.key.code==sf::Keyboard::BackSpace&&outFile.length()>0) {
+					outFile = outFile.substr(0, outFile.length()-1);
+					text.setString(outFile);
+				}
+			} else if (event.type==sf::Event::TextEntered) {
+				if (event.text.unicode>20) {
+					outFile+=event.text.unicode;
+					text.setString(outFile);
+				}
 			}
 		}
 	}

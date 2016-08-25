@@ -1,17 +1,10 @@
-/*
- * NDCrossPolytope.h
- *
- *  Created on: 29.07.2016
- *      Author: malte
- */
+#ifndef SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
+#define SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
 
-#ifndef SRC_MULTIDIMROT_SOLID_NDCROSSPOLYTOPE_H_
-#define SRC_MULTIDIMROT_SOLID_NDCROSSPOLYTOPE_H_
-
-#include <Solid.h>
 #include <vector>
+#include "Polytope.h"
 
-class NDCrossPolytope:public Solid{
+class NDCrossPolytope:public Polytope{
 public:
 	NDCrossPolytope(int i);
 	virtual ~NDCrossPolytope();
@@ -25,4 +18,4 @@ private:
 	std::vector<VecN> vertices;
 };
 
-#endif /* SRC_MULTIDIMROT_SOLID_NDCROSSPOLYTOPE_H_ */
+#endif /* SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_ */

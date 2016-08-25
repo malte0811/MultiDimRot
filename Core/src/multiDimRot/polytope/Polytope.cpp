@@ -1,15 +1,8 @@
-/*
- * Solid.cpp
- *
- *  Created on: 29.07.2016
- *      Author: malte
- */
-
-#include <Solid.h>
+#include <Polytope.h>
 #include <ostream>
 #include <vector>
 
-void Solid::writeObj(std::ostream* out, MatrixNxN &apply) {
+void Polytope::writeObj(std::ostream* out, MatrixNxN &apply) {
 	int dims = getDimensions();
 	*out << "dims " << dims << "\n";
 	std::vector<VecN> verticesOld = getVertices();

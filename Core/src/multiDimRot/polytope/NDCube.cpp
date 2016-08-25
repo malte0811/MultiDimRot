@@ -6,13 +6,13 @@
  */
 
 #include <NDCube.h>
-#include <Solid.h>
+#include <Polytope.h>
 #include <vector>
 #include <iostream>
 
-Solid::Solid() {}
+Polytope::Polytope() {}
 
-Solid::~Solid() {}
+Polytope::~Polytope() {}
 
 NDCube::NDCube(int dims) {
 	int vCount = 1<<dims;

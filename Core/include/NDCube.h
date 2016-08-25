@@ -1,17 +1,10 @@
-/*
- * NBCube.h
- *
- *  Created on: 25.07.2016
- *      Author: malte
- */
+#ifndef SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_
+#define SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_
 
-#ifndef SRC_MULTIDIMROT_SOLIDS_NDCUBE_H_
-#define SRC_MULTIDIMROT_SOLIDS_NDCUBE_H_
-
-#include <Solid.h>
 #include <vector>
+#include "Polytope.h"
 
-class NDCube: public Solid {
+class NDCube: public Polytope {
 public:
 	NDCube(int dims);
 	virtual ~NDCube();
@@ -25,4 +18,4 @@ private:
 	std::vector<VecN> vertices;
 };
 
-#endif /* SRC_MULTIDIMROT_SOLIDS_NDCUBE_H_ */
+#endif /* SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_ */

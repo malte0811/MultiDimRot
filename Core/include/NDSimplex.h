@@ -1,16 +1,9 @@
-/*
- * NDSimplex.h
- *
- *  Created on: 29.07.2016
- *      Author: malte
- */
+#ifndef SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
+#define SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
 
-#ifndef SRC_MULTIDIMROT_SOLID_NDSIMPLEX_H_
-#define SRC_MULTIDIMROT_SOLID_NDSIMPLEX_H_
+#include "Polytope.h"
 
-#include <Solid.h>
-
-class NDSimplex: public Solid {
+class NDSimplex: public Polytope {
 public:
 	NDSimplex(int i);
 	virtual ~NDSimplex();
@@ -24,4 +17,4 @@ private:
 	std::vector<VecN> vertices;
 };
 
-#endif /* SRC_MULTIDIMROT_SOLID_NDSIMPLEX_H_ */
+#endif /* SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_ */

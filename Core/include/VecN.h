@@ -1,10 +1,3 @@
-/*
- * VecN.h
- *
- *  Created on: 24.07.2016
- *      Author: malte
- */
-
 #ifndef VECN_H_
 #define VECN_H_
 #include <string>

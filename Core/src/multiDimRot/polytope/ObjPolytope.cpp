@@ -1,15 +1,8 @@
-/*
- * ObjSolid.cpp
- *
- *  Created on: 28.07.2016
- *      Author: malte
- */
-
-#include "ObjSolid.h"
-#include "Solid.h"
 #include <iostream>
 #include <fstream>
 #include <MatrixNxN.h>
+#include <ObjPolytope.h>
+#include <Polytope.h>
 #include <Util.h>
 #include <VecN.h>
 #include <vector>
@@ -17,7 +10,7 @@
 #include <iterator>
 #include <sstream>
 
-ObjSolid::ObjSolid(std::istream* in) {
+ObjPolytope::ObjPolytope(std::istream* in) {
 	char lineTmp[256];
 	dims = 3;//default for reading normal OBJ files
 	std::string line;
@@ -74,18 +67,18 @@ ObjSolid::ObjSolid(std::istream* in) {
 	}
 }
 
-ObjSolid::~ObjSolid() {}
+ObjPolytope::~ObjPolytope() {}
 
-std::vector<VecN>& ObjSolid::getVertices() {
+std::vector<VecN>& ObjPolytope::getVertices() {
 	return vertices;
 }
 
-std::vector<Edge>& ObjSolid::getEdges() {
+std::vector<Edge>& ObjPolytope::getEdges() {
 	return edges;
 }
 
-int ObjSolid::getDimensions() {
+int ObjPolytope::getDimensions() {
 	return dims;
 }
 
-void ObjSolid::update() {}
+void ObjPolytope::update() {}

@@ -1,10 +1,3 @@
-/*
- * MatrixNxN.h
- *
- *  Created on: 25.07.2016
- *      Author: malte
- */
-
 #ifndef MATRIXNXN_H_
 #define MATRIXNXN_H_
 #include <string>

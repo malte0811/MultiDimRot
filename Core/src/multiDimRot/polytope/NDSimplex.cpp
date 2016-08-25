@@ -5,10 +5,10 @@
  *      Author: malte
  */
 
+#include <Polytope.h>
 #include "NDSimplex.h"
 #include <vector>
 #include <VecN.h>
-#include <Solid.h>
 #include <cmath>
 #include <iostream>
 

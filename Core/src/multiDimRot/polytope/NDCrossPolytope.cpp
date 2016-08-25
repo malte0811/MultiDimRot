@@ -6,9 +6,9 @@
  */
 
 #include <NDCrossPolytope.h>
+#include <Polytope.h>
 #include <vector>
 #include <VecN.h>
-#include <Solid.h>
 
 NDCrossPolytope::NDCrossPolytope(int dim) {
 	dimensions = dim;

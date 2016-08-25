@@ -1,10 +1,3 @@
-/*
- * Util.h
- *
- *  Created on: 28.07.2016
- *      Author: malte
- */
-
 #include <string>
 #include <vector>
 

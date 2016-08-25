@@ -1,17 +1,17 @@
 #include <SFML/Graphics.hpp>
 #include <VecN.h>
 #include <MatrixNxN.h>
-#include <Solid.h>
 #include <NDCube.h>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <cmath>
-#include <ObjSolid.h>
 #include <Util.h>
 #include <NDCrossPolytope.h>
 #include <NDSimplex.h>
+#include <ObjPolytope.h>
+#include <Polytope.h>
 
 
 void rotAll(std::vector<MatrixNxN> &in, int dim, int a0, int a1, float deg, bool con) {
@@ -65,7 +65,7 @@ void checkSpace(int i, int length, int required, std::string name) {
 		throw s.str();
 	}
 }
-void parseSolidParam(const char* argv[], int &argc, int &pos, Solid* &solid) {
+void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &polyt) {
 	while (pos<argc) {
 		std::string in(argv[pos]);
 		if (in.find("--")==0) {
@@ -73,32 +73,32 @@ void parseSolidParam(const char* argv[], int &argc, int &pos, Solid* &solid) {
 		}
 		if (in=="cube") {
 			checkSpace(pos, argc, 1, in);
-			if (solid!=0)
-				delete solid;
-			solid = new NDCube(util::toInt(argv[pos+1]));
+			if (polyt!=0)
+				delete polyt;
+			polyt = new NDCube(util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="obj") {
 			checkSpace(pos, argc, 1, in);
-			if (solid!=0)
-				delete solid;
+			if (polyt!=0)
+				delete polyt;
 			std::string file = argv[pos+1];
 			std::ifstream instream(file.c_str());
 			if (!instream.is_open()) {
 				throw "File not found/Couldn't open "+file;
 			}
-			solid = new ObjSolid(&instream);
+			polyt = new ObjPolytope(&instream);
 			pos++;
 		} else if (in=="crossPolytope") {
 			checkSpace(pos, argc, 1, in);
-			if (solid!=0)
-				delete solid;
-			solid = new NDCrossPolytope(util::toInt(argv[pos+1]));
+			if (polyt!=0)
+				delete polyt;
+			polyt = new NDCrossPolytope(util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="simplex") {
 			checkSpace(pos, argc, 1, in);
-			if (solid!=0)
-				delete solid;
-			solid = new NDSimplex(util::toInt(argv[pos+1]));
+			if (polyt!=0)
+				delete polyt;
+			polyt = new NDSimplex(util::toInt(argv[pos+1]));
 			pos++;
 		}else {
 			throw "Unknown parameter: "+in;
@@ -201,46 +201,46 @@ void parseMatParam(const char* argv[], int &argc, int &pos, int dims, MatrixNxN 
 	}
 }
 
-void parseArgs(int argc, const char* argv[], Solid* &solid, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
+void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
 	int i = 1;
 	while (i<argc) {
 		std::string in(argv[i]);
 		i++;
-		if (in=="--solid") {
-			if (solid!=0) {
-				throw "Can't use \"--solid\" more than once";
+		if (in=="--polytope") {
+			if (polyt!=0) {
+				throw "Can't use \"--polytope\" more than once";
 			}
-			parseSolidParam(argv, argc, i, solid);
+			parsePolytopeParam(argv, argc, i, polyt);
 		} else if (in=="--startMats") {
-			if (solid==0) {
-				throw "No solid specified";
+			if (polyt==0) {
+				throw "No polytope specified";
 			}
-			parseMatVecParam(argv, argc, i, solid->getDimensions(), startMats);
+			parseMatVecParam(argv, argc, i, polyt->getDimensions(), startMats);
 		} else if (in=="--powerMat") {
-			if (solid==0) {
-				throw "No solid specified";
+			if (polyt==0) {
+				throw "No polytope specified";
 			}
-			parseMatParam(argv, argc, i, solid->getDimensions(), powerMat);
+			parseMatParam(argv, argc, i, polyt->getDimensions(), powerMat);
 		} else if (in=="--endMats") {
-			if (solid==0) {
-				throw "No solid specified";
+			if (polyt==0) {
+				throw "No polytope specified";
 			}
-			parseMatVecParam(argv, argc, i, solid->getDimensions(), endMats);
+			parseMatVecParam(argv, argc, i, polyt->getDimensions(), endMats);
 		} else {
 			throw "Unknown parameter: "+in;
 		}
 
 	}
-	if (solid==0) {
-		throw "No solid specified";
+	if (polyt==0) {
+		throw "No polytope specified";
 	}
-	dims = solid->getDimensions();
+	dims = polyt->getDimensions();
 }
 
-void initDefault(Solid* &solid, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
+void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
 	dims = 4;
-	solid = new NDCube(dims);
-	dims = solid->getDimensions();
+	polyt = new NDCube(dims);
+	dims = polyt->getDimensions();
 	endMats = std::vector<MatrixNxN>(1);
 	endMats[0] = MatrixNxN(dims+1);
 	endMats[0].scale(.5);
@@ -255,7 +255,7 @@ void initDefault(Solid* &solid, std::vector<MatrixNxN> &startMats, MatrixNxN &po
 		}
 	}
 }
-void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int dims) {
+void renderCycle(Polytope* polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int dims) {
 	int width = 500;
 	int height = 500;
 	int frameId = 0;
@@ -279,7 +279,7 @@ void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &pow
 	text.setString("");
 	while (window.isOpen()) {
 		c.restart();
-		(*solid).update();
+		(*polyt).update();
 		curr = startMats.size()>0?startMats[frameId%startMats.size()]:MatrixNxN(dims+1);
 		if (powerMat.getSize()>0) {
 			curr = power*curr;
@@ -289,8 +289,8 @@ void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &pow
 			curr = endMats[frameId%endMats.size()]*curr;
 		}
 		window.clear();
-		std::vector<Edge>& edges = (*solid).getEdges();
-		std::vector<VecN>& verticesOld = (*solid).getVertices();
+		std::vector<Edge>& edges = (*polyt).getEdges();
+		std::vector<VecN>& verticesOld = (*polyt).getVertices();
 		curr.applyMass(verticesOld, vertices);
 		int edgeCount = edges.size();
 		sf::VertexArray vb(sf::Lines, 2*edgeCount);
@@ -324,7 +324,7 @@ void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &pow
 			} else if (event.type==sf::Event::KeyPressed) {
 				if (event.key.code==sf::Keyboard::Return) {
 					std::ofstream out((outFile+".nobj").c_str());
-					solid->writeObj(&out, curr);
+					polyt->writeObj(&out, curr);
 					out.flush();
 					outFile = "";
 					text.setString("");
@@ -343,18 +343,18 @@ void renderCycle(Solid* solid, std::vector<MatrixNxN> &startMats, MatrixNxN &pow
 	std::cout << "Avg. processing time: " << sum/(float)frameId << " us, Avg. short-circuit FPS: " << (1000000.0*frameId)/sum << "\n";
 }
 int main(int argc, const char* argv[]) {
-	Solid* solid = 0;
+	Polytope* polyt = 0;
 	std::vector<MatrixNxN> startMats;
 	MatrixNxN power;
 	std::vector<MatrixNxN> endMats;
 	int dims;
 	try {
 		if (argc>1) {
-			parseArgs(argc, argv, solid, startMats, power, endMats, dims);
+			parseArgs(argc, argv, polyt, startMats, power, endMats, dims);
 		} else {
-			initDefault(solid, startMats, power, endMats, dims);
+			initDefault(polyt, startMats, power, endMats, dims);
 		}
-		renderCycle(solid, startMats, power, endMats, dims);
+		renderCycle(polyt, startMats, power, endMats, dims);
 	} catch (const char* c) {
 		std::cerr<<c<<"\n";
 	} catch (const std::string &c) {

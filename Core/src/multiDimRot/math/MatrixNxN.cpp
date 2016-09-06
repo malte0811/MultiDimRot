@@ -125,13 +125,18 @@ void MatrixNxN::translate(int axis, float amount) {
 }
 
 void MatrixNxN::apply(VecN &in, VecN &out) {
-	if (in.getDimensions()>length) {
+	int dims = in.getDimensions();
+	if (dims>length) {
 		throw "Can't apply to a larger vector!";
 	}
 	for (int i = 0;i<length;i++) {
 		float val = 0;
-		for (int j = 0;j<length;j++) {
-			val+=elements[i][j]*in.getElement(j, 1);
+		int j = 0;
+		for (;j<dims;j++) {
+			val+=elements[i][j]*in[j];
+		}
+		for (;j<length;j++) {
+			val+=elements[i][j];
 		}
 		out.setElement(i, val);
 	}
@@ -157,8 +162,12 @@ void MatrixNxN::applyMass(std::vector<VecN> &in, std::vector<VecN> &out) {
 
 void MatrixNxN::prepareForRender() {
 	scale(.5);
-	translate(0, .5);
-	translate(1, .5);
+	if (length>1) {
+		translate(0, .5);
+		if (length>2) {
+			translate(1, .5);
+		}
+	}
 }
 
 void MatrixNxN::project(int dim, float val) {

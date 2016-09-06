@@ -9,17 +9,20 @@
 #include <Polytope.h>
 #include <vector>
 #include <VecN.h>
+#include <cmath>
+#include <iostream>
 
 NDCrossPolytope::NDCrossPolytope(int dim) {
+	float dist = std::sqrt(2)/2;
 	dimensions = dim;
 	vertices = std::vector<VecN>(2*dimensions);
 	edges = std::vector<Edge>(2*dim*(dim-1));
 	int edgeId = 0;
 	for (int i = 0;i<dimensions;i++) {
 		VecN v(dim);
-		v.setElement(i, 1);
+		v.setElement(i, dist);
 		vertices[2*i] = v;
-		v.setElement(i, -1);
+		v.setElement(i, -dist);
 		vertices[2*i+1] = v;
 		for (int j = 0;j<2*i;j++) {
 			Edge e;

@@ -51,10 +51,12 @@ public class SingleMatrixPanel extends ParamPanel {
 		JButton delete = new JButton("Delete");
 		delete.addActionListener((e)->{
 			int min = transformations.getSelectionModel().getMinSelectionIndex();
-			if (min!=-1) {
-				int max = transformations.getSelectionModel().getMaxSelectionIndex();
-				model.removeRange(min, max);
+			int max = transformations.getSelectionModel().getMaxSelectionIndex();
+			if (min==-1) {
+				min = 0;
+				max = 0;
 			}
+			model.removeRange(min, max);
 		});
 
 		JButton rotate = new JButton("Rotate");

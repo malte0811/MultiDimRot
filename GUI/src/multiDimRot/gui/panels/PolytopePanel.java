@@ -20,9 +20,10 @@ public class PolytopePanel extends ParamPanel {
 	private static Map<String, String> polytopes;
 	static {
 		polytopes = new HashMap<>();
-		polytopes.put("n-dimensional Cube", "cube");
-		polytopes.put("n-dimensional Cross-polytope", "crosspolytope");
-		polytopes.put("n-dimensional Simplex", "simplex");
+		polytopes.put("n-dimensional Cube", "cube -d");
+		polytopes.put("n-dimensional Cross-polytope", "crosspolytope -d");
+		polytopes.put("n-dimensional Simplex", "simplex -d");
+		polytopes.put("24-Cell", "24Cell -4");
 	}
 	@Override
 	public void addTo(Group oHor, Group oVert, GroupLayout l, JFrame frame) {
@@ -38,6 +39,10 @@ public class PolytopePanel extends ParamPanel {
 			bGroup.add(buttons[i]);
 			buttons[i].addActionListener((a)->{
 				polytope = polytopes.get(curr);
+				if (!polytope.endsWith("d")) {
+					Main.INSTANCE.dimensions = Integer.parseInt(polytope.substring(polytope.length()-1, polytope.length()));
+					Main.INSTANCE.frame.repaint();
+				}
 			});
 			hor.addComponent(buttons[i]);
 			vert.addComponent(buttons[i]);
@@ -48,7 +53,7 @@ public class PolytopePanel extends ParamPanel {
 
 	@Override
 	public String getParam() {
-		return "--polytope "+polytope+" "+Main.INSTANCE.dimensions+" ";
+		return "--polytope "+polytope.substring(0, polytope.length()-2)+(polytope.endsWith("d")?(Main.INSTANCE.dimensions+" "):"");
 	}
 
 	@Override

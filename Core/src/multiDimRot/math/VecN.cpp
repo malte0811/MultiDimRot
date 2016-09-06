@@ -30,34 +30,21 @@ VecN::VecN(const VecN &other) {
 	}
 }
 
-float VecN::getElement(int i, float def) {
+float VecN::getElement(int i, float def) const {
 	if (i>=dimensions) {
 		return def;
 	}
 	return elements[i];
 }
+
 void VecN::setElement(int i, float val) {
-	if (i<0||i>=dimensions) {
-		throw "Can't write to VecN outside bounds";
-	}
 	elements[i] = val;
 }
-int VecN::getDimensions() {
+int VecN::getDimensions() const {
 	return dimensions;
 }
 
-void add(VecN &a, VecN &b, VecN& out) {
-	int dims = std::max(a.getDimensions(), b.getDimensions());
-	if (out.getDimensions()!=dims) {
-		throw "Can't add VecN's with different dimensions";
-		return;
-	}
-	for (int i = 0;i<dims;i++) {
-		out.setElement(i, a.getElement(i, 0)+b.getElement(i, 0));
-	}
-}
-
-VecN VecN::operator +(VecN &other) {
+VecN VecN::operator+(const VecN &other) const {
 	int dims = std::max(getDimensions(), other.getDimensions());
 	VecN ret(dims);
 	for (int i = 0;i<dims;i++) {
@@ -66,22 +53,26 @@ VecN VecN::operator +(VecN &other) {
 	return ret;
 }
 
-float VecN::operator *(VecN &other) {
+float VecN::operator*(const VecN &other) const {
 	int dims = std::max(getDimensions(), other.getDimensions());
 	float ret = 0;
 	for (int i = 0;i<dims;i++) {
-		ret+=getElement(i, 0)*other.getElement(i, 0);
+		ret+=elements[i]*other.elements[i];
 	}
 	return ret;
 }
 
-VecN VecN::operator *(float other) {
+VecN VecN::operator*(float other) const {
 	int dims = getDimensions();
 	VecN ret(dims);
 	for (int i = 0;i<dims;i++) {
-		ret.setElement(i, getElement(i, 0)*other);
+		ret.setElement(i, elements[i]*other);
 	}
 	return ret;
+}
+
+float VecN::operator [](int i) const {
+	return elements[i];
 }
 
 void VecN::operator=(const VecN &v) {
@@ -95,7 +86,7 @@ void VecN::operator=(const VecN &v) {
 	}
 }
 
-std::string VecN::toString() {
+std::string VecN::toString() const {
 	std::stringstream ret;
 	ret << "[";
 	for (int i = 0;i<dimensions;i++) {

@@ -2,6 +2,7 @@ package multiDimRot.gui.panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -25,7 +26,17 @@ public class DimensionCountPanel extends ParamPanel {
 		JLabel tmp = new JLabel("Dimensions: ");
 		iHor.addComponent(tmp);
 		iVert.addComponent(tmp);
-		dimIn = new JTextField();
+		dimIn = new JTextField() {
+			private static final long serialVersionUID = -509853485283732383L;
+
+			@Override
+			public void paint(Graphics g) {
+				if (Main.INSTANCE.dimensions>=0) {
+					setText(Integer.toString(Main.INSTANCE.dimensions));
+				}
+				super.paint(g);
+			}
+		};
 		dimIn.setMaximumSize(new Dimension(200, 25));
 		result = new JLabel(" ");
 		dimIn.getDocument().addDocumentListener(new DocumentListener() {

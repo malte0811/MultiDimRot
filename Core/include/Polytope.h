@@ -20,6 +20,7 @@ public:
 	virtual int getDimensions() = 0;
 	virtual void update() = 0;
 	void writeObj(std::ostream* o, MatrixNxN &apply);
+	float getLength(Edge e);
 };
 
 #endif /* SRC_MULTIDIMROT_POLYTOPE_H_ */

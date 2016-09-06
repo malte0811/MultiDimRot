@@ -2,18 +2,23 @@ package multiDimRot.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 import multiDimRot.gui.panels.DimensionCountPanel;
 import multiDimRot.gui.panels.MatrixVectorPanel;
@@ -26,7 +31,7 @@ public class Main  {
 	private List<ParamPanel> panels = new ArrayList<>();
 	public JFrame frame;
 	public int dimensions = -1;
-	
+
 	public static void main(String[] args) {
 		new Main().start();
 	}
@@ -49,14 +54,14 @@ public class Main  {
 			JOptionPane.showMessageDialog(null, "The MultiDimRot executable file was not found. This is probably an installation error.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+
 		INSTANCE = this;
 		panels.add(new DimensionCountPanel());
 		panels.add(new PolytopePanel());
 		panels.add(new MatrixVectorPanel("--startMats", "Start matrix"));
 		panels.add(new SingleMatrixPanel("--powerMat", "Power matrix"));
 		panels.add(new MatrixVectorPanel("--endMats", "End matrix"));
-		
+
 
 		frame = new JFrame("MultiDimRot");
 		JPanel panel = new JPanel();
@@ -65,20 +70,34 @@ public class Main  {
 		ParallelGroup hor = l.createParallelGroup();
 		SequentialGroup vert = l.createSequentialGroup();
 
-		for (ParamPanel p:panels) {
+		for (int i = 0;i<panels.size();i++) {
+			ParamPanel p = panels.get(i);
+			JLabel label = new JLabel(p.getTitle());
+			vert.addComponent(label);
+			vert.addGap(5);
+			hor.addComponent(label);
 			p.addTo(hor, vert, l, frame);
-			JSeparator sep = new JSeparator();
-			sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 10));
-			vert.addComponent(sep);
-			hor.addComponent(sep);
+			if (i<panels.size()-1) {
+				JSeparator sep = new JSeparator();
+				sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 5));
+				vert.addComponent(sep);
+				hor.addComponent(sep);
+			}
 		}
 		JButton launch = new JButton("Launch");
 		launch.setForeground(Color.GREEN);
 		launch.addActionListener((a)->{
-			String cmd = System.getProperty("user.dir")+"/MultiDimRot2.0"+end+" ";
+			String cmd = System.getProperty("user.dir")+File.separator+"MultiDimRot2.0"+end+" ";
 			for (ParamPanel p:panels) {
 				if (!p.isFinished()) {
-					JOptionPane.showMessageDialog(frame, "\""+p.getTitle()+"\" is not ready for launch", "Error", JOptionPane.ERROR_MESSAGE);
+					int res = JOptionPane.showOptionDialog(frame, "\""+p.getTitle()+"\" is not ready for launch", "Error", 0, JOptionPane.ERROR_MESSAGE, null, new String[]{"Ok", "Launch default configuration"}, null);
+					if (res==1) {
+						try {
+							Runtime.getRuntime().exec(cmd);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 					return;
 				}
 				cmd+=p.getParam();

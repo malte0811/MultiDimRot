@@ -1,6 +1,12 @@
 #include <Polytope.h>
 #include <ostream>
 #include <vector>
+#include <cmath>
+
+
+Polytope::Polytope() {}
+
+Polytope::~Polytope() {}
 
 void Polytope::writeObj(std::ostream* out, MatrixNxN &apply) {
 	int dims = getDimensions();
@@ -27,4 +33,15 @@ void Polytope::writeObj(std::ostream* out, MatrixNxN &apply) {
 		*out << e.start << " " << e.end << "\n";
 	}
 	//TODO add faces+normals once they exist
+}
+
+float Polytope::getLength(Edge e) {
+	std::vector<VecN>& vertices = getVertices();
+	float sum = 0;
+	VecN a = vertices[e.start];
+	VecN b = vertices[e.end];
+	for (int i = 0;i<getDimensions();i++) {
+		sum += (a[i]-b[i])*(a[i]-b[i]);
+	}
+	return std::sqrt(sum);
 }

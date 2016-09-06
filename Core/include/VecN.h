@@ -8,14 +8,15 @@ public:
 	VecN(int dimensions);
 	VecN(const VecN &other);
 	~VecN();
-	float getElement(int i, float def);
+	float getElement(int i, float def) const;
 	void setElement(int i, float value);
-	int getDimensions();
-	VecN operator+(VecN &d);
-	float operator*(VecN &d);
-	VecN operator*(float d);
+	int getDimensions() const;
+	VecN operator+(const VecN &d) const;
+	float operator*(const VecN &d) const;
+	VecN operator*(float d) const;
 	void operator=(const VecN &v);
-	std::string toString();
+	float operator[](int i) const;
+	std::string toString() const;
 	float* elements;
 	int dimensions;
 private:

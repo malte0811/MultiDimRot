@@ -1,19 +1,7 @@
-/*
- * NBCube.cpp
- *
- *  Created on: 25.07.2016
- *      Author: malte
- */
-
 #include <NDCube.h>
 #include <Polytope.h>
 #include <vector>
 #include <iostream>
-
-Polytope::Polytope() {}
-
-Polytope::~Polytope() {}
-
 NDCube::NDCube(int dims) {
 	int vCount = 1<<dims;
 	int eCount = dims*(vCount>>1);
@@ -26,7 +14,7 @@ NDCube::NDCube(int dims) {
 		VecN next(dims);
 		for (int digit = 0;digit<dims;digit++) {
 			int tmp = i&(1<<digit);
-			next.setElement(digit, tmp>0?1:-1);
+			next.setElement(digit, tmp>0?.5:-.5);
 			//edge
 			if (tmp==0) {
 				edges[edgeId].start = i;

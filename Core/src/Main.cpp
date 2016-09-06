@@ -12,6 +12,8 @@
 #include <NDSimplex.h>
 #include <ObjPolytope.h>
 #include <Polytope.h>
+#include <JoinedPolytope.h>
+#include <P24Cell.h>
 
 
 void rotAll(std::vector<MatrixNxN> &in, int dim, int a0, int a1, float deg, bool con) {
@@ -100,7 +102,11 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &poly
 				delete polyt;
 			polyt = new NDSimplex(util::toInt(argv[pos+1]));
 			pos++;
-		}else {
+		} else if (in=="24Cell") {
+			if (polyt!=0)
+				delete polyt;
+			polyt = new P24Cell();
+		} else {
 			throw "Unknown parameter: "+in;
 		}
 		pos++;
@@ -174,7 +180,7 @@ void parseMatParam(const char* argv[], int &argc, int &pos, int dims, MatrixNxN 
 			pos+=3;
 		} else if (in=="scale") {
 			checkSpace(pos, argc, 2, in);
-			mat.scale(util::toInt(argv[pos+1]), util::toFloat(argv[pos+2]));
+			mat.scale(util::toFloat(argv[pos+2]), util::toInt(argv[pos+1]));
 			pos+=2;
 		} else if (in=="scaleAll") {
 			checkSpace(pos, argc, 1, in);
@@ -238,24 +244,25 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 }
 
 void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
-	dims = 4;
-	polyt = new NDCube(dims);
+	polyt = new P24Cell();
 	dims = polyt->getDimensions();
 	endMats = std::vector<MatrixNxN>(1);
 	endMats[0] = MatrixNxN(dims+1);
 	endMats[0].scale(.5);
 	for (int j = dims;j>=3;j--) {
-		endMats[0].project(j, .2);
+		endMats[0].project(j, .5);
 	}
 	endMats[0].prepareForRender();
 	powerMat = MatrixNxN(dims+1);
-	for (int j = 0;j<dims;j++) {
-		for (int k = j+1;k<dims;k++) {
-			powerMat.rotate(j, k, 1);
+	startMats = std::vector<MatrixNxN>(360);
+	for (int j = 0;j<dims-1;j++) {
+		for (int i = j+1;i<dims;i++) {
+			//powerMat.rotate(j, i, 1);
+			rotAll(startMats, dims, j, i, 1, true);
 		}
 	}
 }
-void renderCycle(Polytope* polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int dims) {
+void renderCycle(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int dims) {
 	int width = 500;
 	int height = 500;
 	int frameId = 0;
@@ -277,16 +284,18 @@ void renderCycle(Polytope* polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &
 	text.setFont(font);
 	text.setPosition(10, height-size-5);
 	text.setString("");
+	int startSize = startMats.size();
+	int endSize = endMats.size();
 	while (window.isOpen()) {
 		c.restart();
 		(*polyt).update();
-		curr = startMats.size()>0?startMats[frameId%startMats.size()]:MatrixNxN(dims+1);
+		curr = startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1);
 		if (powerMat.getSize()>0) {
 			curr = power*curr;
 			power = powerMat*power;
 		}
-		if (endMats.size()>0) {
-			curr = endMats[frameId%endMats.size()]*curr;
+		if (endSize>0) {
+			curr = endMats[frameId%endSize]*curr;
 		}
 		window.clear();
 		std::vector<Edge>& edges = (*polyt).getEdges();
@@ -298,10 +307,10 @@ void renderCycle(Polytope* polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &
 			Edge currE = edges[i];
 			float zStart = (vertices[currE.start]).getElement(dims, 1);
 			float zEnd = (vertices[currE.end]).getElement(dims, 1);
-			int xStart = (vertices[currE.start]).getElement(0, .5)*width/zStart;
-			int yStart = (vertices[currE.start]).getElement(1, .5)*height/zStart;
-			int xEnd = (vertices[currE.end]).getElement(0, .5)*width/zEnd;
-			int yEnd = (vertices[currE.end]).getElement(1, .5)*height/zEnd;
+			int xStart = (dims>0?(vertices[currE.start])[0]:.5)*width/zStart;
+			int yStart = (dims>1?(vertices[currE.start])[1]:.5)*height/zStart;
+			int xEnd = (dims>0?(vertices[currE.end])[0]:.5)*width/zEnd;
+			int yEnd = (dims>1?(vertices[currE.end])[1]:.5)*height/zEnd;
 			vb[2*i].position = sf::Vector2f(xStart, yStart);
 			vb[2*i+1].position = sf::Vector2f(xEnd, yEnd);
 			vb[2*i].color = sf::Color::Green;
@@ -324,6 +333,7 @@ void renderCycle(Polytope* polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &
 			} else if (event.type==sf::Event::KeyPressed) {
 				if (event.key.code==sf::Keyboard::Return) {
 					std::ofstream out((outFile+".nobj").c_str());
+					curr = power*(startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1));
 					polyt->writeObj(&out, curr);
 					out.flush();
 					outFile = "";

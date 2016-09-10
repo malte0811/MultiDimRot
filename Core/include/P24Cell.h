@@ -8,11 +8,13 @@ public:
 	virtual ~P24Cell();
 	virtual std::vector<VecN>& getVertices();
 	virtual std::vector<Edge>& getEdges();
+	virtual std::vector<Triangle>& getFaces();
 	virtual int getDimensions();
 	virtual void update();
 private:
 	std::vector<Edge> edges;
 	std::vector<VecN> vertices;
+	std::vector<Triangle> faces;
 };
 
 #endif /* MULTIDIMROT_POLYTOPE_P24CELL_H_ */

@@ -124,7 +124,7 @@ void MatrixNxN::translate(int axis, float amount) {
 	}
 }
 
-void MatrixNxN::apply(VecN &in, VecN &out) {
+void MatrixNxN::apply(const VecN &in, VecN &out) {
 	int dims = in.getDimensions();
 	if (dims>length) {
 		throw "Can't apply to a larger vector!";

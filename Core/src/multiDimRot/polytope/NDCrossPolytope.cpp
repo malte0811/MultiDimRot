@@ -13,7 +13,7 @@
 #include <iostream>
 
 NDCrossPolytope::NDCrossPolytope(int dim) {
-	float dist = std::sqrt(2)/2;
+	float dist = std::sqrt(2.0)/2;
 	dimensions = dim;
 	vertices = std::vector<VecN>(2*dimensions);
 	edges = std::vector<Edge>(2*dim*(dim-1));
@@ -49,6 +49,9 @@ std::vector<Edge>& NDCrossPolytope::getEdges() {
 
 std::vector<VecN>& NDCrossPolytope::getVertices() {
 	return vertices;
+}
+std::vector<Triangle>& NDCrossPolytope::getFaces() {
+	return faces;
 }
 
 void NDCrossPolytope::update() {}

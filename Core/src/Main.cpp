@@ -3,6 +3,7 @@
 #include <MatrixNxN.h>
 #include <NDCube.h>
 #include <iostream>
+#include <array>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -244,21 +245,21 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 }
 
 void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
-	polyt = new P24Cell();
+	polyt = new NDCube(3);
 	dims = polyt->getDimensions();
 	endMats = std::vector<MatrixNxN>(1);
 	endMats[0] = MatrixNxN(dims+1);
 	endMats[0].scale(.5);
-	for (int j = dims;j>=3;j--) {
-		endMats[0].project(j, .5);
+	for (int j = dims;j>=2;j--) {
+		endMats[0].project(j, -.5);
 	}
 	endMats[0].prepareForRender();
 	powerMat = MatrixNxN(dims+1);
-	startMats = std::vector<MatrixNxN>(360);
+	//startMats = std::vector<MatrixNxN>(360);
 	for (int j = 0;j<dims-1;j++) {
 		for (int i = j+1;i<dims;i++) {
-			//powerMat.rotate(j, i, 1);
-			rotAll(startMats, dims, j, i, 1, true);
+			powerMat.rotate(j, i, 1);
+			//rotAll(startMats, dims, j, i, 1, true);
 		}
 	}
 }
@@ -286,44 +287,106 @@ void renderCycle(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN 
 	text.setString("");
 	int startSize = startMats.size();
 	int endSize = endMats.size();
+	bool doCycle = true;
+	VecN light(dims);
+	light.setElement(dims-1, 1);
+	MatrixNxN curr2;
 	while (window.isOpen()) {
 		c.restart();
 		(*polyt).update();
-		curr = startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1);
-		if (powerMat.getSize()>0) {
-			curr = power*curr;
-			power = powerMat*power;
-		}
-		if (endSize>0) {
-			curr = endMats[frameId%endSize]*curr;
+		if (doCycle) {
+			curr = startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1);
+			if (powerMat.getSize()>0) {
+				curr = power*curr;
+				power = powerMat*power;
+			}
+			curr2 = curr;
+			if (endSize>0) {
+				curr = endMats[frameId%endSize]*curr;
+			}
+			frameId++;
 		}
 		window.clear();
 		std::vector<Edge>& edges = (*polyt).getEdges();
 		std::vector<VecN>& verticesOld = (*polyt).getVertices();
 		curr.applyMass(verticesOld, vertices);
 		int edgeCount = edges.size();
-		sf::VertexArray vb(sf::Lines, 2*edgeCount);
-		for (int i = 0;i<edgeCount;i++) {
-			Edge currE = edges[i];
-			float zStart = (vertices[currE.start]).getElement(dims, 1);
-			float zEnd = (vertices[currE.end]).getElement(dims, 1);
-			int xStart = (dims>0?(vertices[currE.start])[0]:.5)*width/zStart;
-			int yStart = (dims>1?(vertices[currE.start])[1]:.5)*height/zStart;
-			int xEnd = (dims>0?(vertices[currE.end])[0]:.5)*width/zEnd;
-			int yEnd = (dims>1?(vertices[currE.end])[1]:.5)*height/zEnd;
-			vb[2*i].position = sf::Vector2f(xStart, yStart);
-			vb[2*i+1].position = sf::Vector2f(xEnd, yEnd);
-			vb[2*i].color = sf::Color::Green;
-			vb[2*i+1].color = sf::Color::Green;
+		int vSize = vertices.size();
+		sf::VertexArray vb(sf::Points, vSize);
+		std::vector<int> positions(vSize, 0);
+		for (int i = 0;i<vSize;i++) {
+			VecN v = vertices[i];
+			float z = v.getElement(dims, 1);
+			int x = v[0]/z*height;
+			positions[i] = x;
+			int y = .5*height;
+			vb[i].position = sf::Vector2f(x, y);
+			vb[i].color = sf::Color::Green;
 		}
 		window.draw(vb);
 		window.draw(text);
+		//build depth buffer
+		std::vector<VecN> depthBuffer(width, VecN());
+		std::vector<float> brightnessBuffer(width, 0);
+		VecN tmp(dims);
+		for (int i = 0;i<edgeCount;i++) {
+			Edge e = edges[i];
+			curr2.apply(e.normal, tmp);
+			tmp.scaleToLength(1);
+			float brightness = light*tmp;
+			if (brightness<0) {
+				continue;
+			}
+			int a = positions[e.start];
+			int b = positions[e.end];
+			bool aFirst = a<=b;
+			float diff = std::abs(a-b);
+			VecN& start = vertices[aFirst?e.start:e.end];
+			VecN& end = vertices[aFirst?e.end:e.start];
+			int min = std::min(a, b);
+			for (int j = 0;j<=diff;j++) {
+				float ratio = j/diff;
+				VecN pos = (start*ratio)+(end*(1-ratio));
+				bool closer = depthBuffer[j+min].getDimensions()==0;
+				if (!closer) {
+					closer = true;
+					for (int k = 1;k<dims;k++) {
+						if (pos[k]<=depthBuffer[j+min][k]) {
+							closer = false;
+							break;
+						}
+					}
+				}
+				if (closer) {
+					depthBuffer[j+min] = pos;
+					brightnessBuffer[j+min] = brightness;
+				}
+			}
+		}
+
+		//render edges
+		int non0Count = 0;
+		for (int i = 0;i<width;i++) {
+			if (brightnessBuffer[i]>.0000001) {
+				non0Count++;
+			}
+		}
+		sf::VertexArray vb2(sf::Points, non0Count);
+		int pId = 0;
+		for (int i = 0;i<width;i++) {
+			if (brightnessBuffer[i]>.0000001) {
+				vb2[pId].position = sf::Vector2f(i, height/2);
+				vb2[pId].color = sf::Color(255*brightnessBuffer[i], 0, 0);
+				pId++;
+			}
+		}
+		window.draw(vb2);
+
 		window.display();
 		sf::Time t = c.getElapsedTime();
 
 		sum+=t.asMicroseconds();
 		sf::sleep(sf::microseconds(25000-t.asMicroseconds()));
-		frameId++;
 
 
 		sf::Event event;
@@ -341,9 +404,11 @@ void renderCycle(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN 
 				} else if (event.key.code==sf::Keyboard::BackSpace&&outFile.length()>0) {
 					outFile = outFile.substr(0, outFile.length()-1);
 					text.setString(outFile);
+				} else if (event.key.code==sf::Keyboard::I) {
+					doCycle = !doCycle;
 				}
 			} else if (event.type==sf::Event::TextEntered) {
-				if (event.text.unicode>20) {
+				if (event.text.unicode>20&&event.text.unicode!='i') {
 					outFile+=event.text.unicode;
 					text.setString(outFile);
 				}

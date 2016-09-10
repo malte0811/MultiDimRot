@@ -73,4 +73,8 @@ std::vector<VecN>& P24Cell::getVertices() {
 	return vertices;
 }
 
+std::vector<Triangle>& P24Cell::getFaces() {
+	return faces;
+}
+
 void P24Cell::update() {}

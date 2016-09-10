@@ -11,6 +11,8 @@ public:
 	float getElement(int i, float def) const;
 	void setElement(int i, float value);
 	int getDimensions() const;
+	float getLength() const;
+	void scaleToLength(float length);
 	VecN operator+(const VecN &d) const;
 	float operator*(const VecN &d) const;
 	VecN operator*(float d) const;

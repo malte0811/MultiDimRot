@@ -10,12 +10,14 @@ public:
 	virtual ~NDCube();
 	virtual std::vector<VecN>& getVertices();
 	virtual std::vector<Edge>& getEdges();
+	virtual std::vector<Triangle>& getFaces();
 	virtual int getDimensions();
 	virtual void update();
 private:
 	int dimensions;
 	std::vector<Edge> edges;
 	std::vector<VecN> vertices;
+	std::vector<Triangle> faces;
 };
 
 #endif /* SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_ */

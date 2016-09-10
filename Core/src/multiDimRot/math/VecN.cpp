@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <cmath>
 
 VecN::VecN(int dims) {
 	dimensions = dims;
@@ -44,6 +45,21 @@ int VecN::getDimensions() const {
 	return dimensions;
 }
 
+void VecN::scaleToLength(float length) {
+	float factor = length/getLength();
+	for (int i = 0;i<dimensions;i++) {
+		elements[i]*=factor;
+	}
+}
+
+float VecN::getLength() const {
+	float sum = 0;
+	for (int i = 0;i<dimensions;i++) {
+		sum+=elements[i]*elements[i];
+	}
+	return std::sqrt(sum);
+}
+
 VecN VecN::operator+(const VecN &other) const {
 	int dims = std::max(getDimensions(), other.getDimensions());
 	VecN ret(dims);
@@ -54,7 +70,7 @@ VecN VecN::operator+(const VecN &other) const {
 }
 
 float VecN::operator*(const VecN &other) const {
-	int dims = std::max(getDimensions(), other.getDimensions());
+	int dims = std::min(getDimensions(), other.getDimensions());
 	float ret = 0;
 	for (int i = 0;i<dims;i++) {
 		ret+=elements[i]*other.elements[i];

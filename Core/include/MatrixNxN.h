@@ -17,7 +17,7 @@ public:
 	void translate(int axis, float amount);
 	void scale(float scale, int axis);
 	void scale(float scale);
-	void apply(VecN &in, VecN &out);
+	void apply(const VecN &in, VecN &out);
 	void applyMass(std::vector<VecN> &in, std::vector<VecN> &out);
 	int getSize();
 	void prepareForRender();

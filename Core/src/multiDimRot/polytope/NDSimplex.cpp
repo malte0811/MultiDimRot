@@ -16,7 +16,7 @@ NDSimplex::NDSimplex(int dim) {
 	dimensions = dim;
 	vertices = std::vector<VecN>(dimensions+1);
 	edges = std::vector<Edge>((dim*(dim+1))/2);
-	std::vector<float> heights(dim);
+	std::vector<float> heights(dim, 0);
 	heights[0] = 1;
 	for (int i = 1;i<dim;i++) {
 		float tmp = heights[i-1]*i/(i+1);
@@ -55,6 +55,9 @@ std::vector<Edge>& NDSimplex::getEdges() {
 
 std::vector<VecN>& NDSimplex::getVertices() {
 	return vertices;
+}
+std::vector<Triangle>& NDSimplex::getFaces() {
+	return faces;
 }
 
 void NDSimplex::update() {}

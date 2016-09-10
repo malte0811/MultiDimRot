@@ -81,4 +81,8 @@ int ObjPolytope::getDimensions() {
 	return dims;
 }
 
+std::vector<Triangle>& ObjPolytope::getFaces() {
+	return faces;
+}
+
 void ObjPolytope::update() {}

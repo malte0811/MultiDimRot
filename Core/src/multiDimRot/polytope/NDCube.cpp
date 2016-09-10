@@ -24,6 +24,19 @@ NDCube::NDCube(int dims) {
 		}
 		vertices[i] = next;
 	}
+	//temporary: normals for edges
+	for (int i = 0;i<eCount;i++) {
+		VecN normal(dims);
+		VecN start = vertices[edges[i].start];
+		VecN end = vertices[edges[i].end];
+		for (int j = 0;j<dims;j++) {
+			if (start[j]==end[j]) {
+				normal.setElement(j, start[j]);
+			}
+		}
+		normal.scaleToLength(1);
+		edges[i].normal = normal;
+	}
 }
 
 NDCube::~NDCube() {}
@@ -38,6 +51,9 @@ std::vector<Edge>& NDCube::getEdges() {
 
 std::vector<VecN>& NDCube::getVertices() {
 	return vertices;
+}
+std::vector<Triangle>& NDCube::getFaces() {
+	return faces;
 }
 
 void NDCube::update() {}

@@ -53,5 +53,8 @@ std::vector<VecN>& NDCrossPolytope::getVertices() {
 std::vector<Triangle>& NDCrossPolytope::getFaces() {
 	return faces;
 }
+std::vector<VecN>& NDCrossPolytope::getNormals() {
+	return normals;
+}
 
 void NDCrossPolytope::update() {}

@@ -45,9 +45,10 @@ int VecN::getDimensions() const {
 	return dimensions;
 }
 
-void VecN::scaleToLength(float length) {
+void VecN::scaleToLength(float length, bool ignoreLast) {
 	float factor = length/getLength();
-	for (int i = 0;i<dimensions;i++) {
+	int max = ignoreLast?dimensions-1:dimensions;
+	for (int i = 0;i<max;i++) {
 		elements[i]*=factor;
 	}
 }
@@ -87,7 +88,7 @@ VecN VecN::operator*(float other) const {
 	return ret;
 }
 
-float VecN::operator [](int i) const {
+float& VecN::operator [](int i) const {
 	return elements[i];
 }
 

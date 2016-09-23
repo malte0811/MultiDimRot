@@ -59,5 +59,8 @@ std::vector<VecN>& NDSimplex::getVertices() {
 std::vector<Triangle>& NDSimplex::getFaces() {
 	return faces;
 }
+std::vector<VecN>& NDSimplex::getNormals() {
+	return normals;
+}
 
 void NDSimplex::update() {}

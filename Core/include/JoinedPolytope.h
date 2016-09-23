@@ -12,6 +12,7 @@ public:
 	virtual std::vector<VecN>& getVertices();
 	virtual std::vector<Edge>& getEdges();
 	virtual std::vector<Triangle>& getFaces();
+	virtual std::vector<VecN>& getNormals();
 	virtual int getDimensions();
 	virtual void update();
 private:
@@ -19,6 +20,7 @@ private:
 	Polytope* b;
 	std::vector<Edge> retE;
 	std::vector<VecN> retV;
+	std::vector<VecN> retN;
 	std::vector<Triangle> retF;
 };
 

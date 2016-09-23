@@ -160,16 +160,6 @@ void MatrixNxN::applyMass(std::vector<VecN> &in, std::vector<VecN> &out) {
 	}
 }
 
-void MatrixNxN::prepareForRender() {
-	scale(.5);
-	if (length>1) {
-		translate(0, .5);
-		if (length>2) {
-			translate(1, .5);
-		}
-	}
-}
-
 void MatrixNxN::project(int dim, float val) {
 	if (dim>=length) {
 		throw "Can't project on higher dimension than the matrix";

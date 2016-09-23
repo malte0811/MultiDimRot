@@ -31,7 +31,11 @@ public class DimensionCountPanel extends ParamPanel {
 
 			@Override
 			public void paint(Graphics g) {
-				if (Main.INSTANCE.dimensions>=0) {
+				int curr = -1;
+				try {
+					curr = Integer.parseInt(getText());
+				} catch (NumberFormatException x) {}
+				if (Main.INSTANCE.dimensions>=0&&curr!=Main.INSTANCE.dimensions) {
 					setText(Integer.toString(Main.INSTANCE.dimensions));
 				}
 				super.paint(g);

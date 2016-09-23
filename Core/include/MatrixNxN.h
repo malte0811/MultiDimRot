@@ -20,7 +20,6 @@ public:
 	void apply(const VecN &in, VecN &out);
 	void applyMass(std::vector<VecN> &in, std::vector<VecN> &out);
 	int getSize();
-	void prepareForRender();
 	void project(int dim, float val);
 private:
 	float** elements;

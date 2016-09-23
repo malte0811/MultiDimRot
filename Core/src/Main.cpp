@@ -15,6 +15,7 @@
 #include <Polytope.h>
 #include <JoinedPolytope.h>
 #include <P24Cell.h>
+#include <Renderer.h>
 
 
 void rotAll(std::vector<MatrixNxN> &in, int dim, int a0, int a1, float deg, bool con) {
@@ -50,14 +51,6 @@ void project(std::vector<MatrixNxN> &in, int dims, int dim, float dist) {
 			in[i] = MatrixNxN(dims+1);
 		}
 		in[i].project(dim, 1/dist);
-	}
-}
-void prepForRender(std::vector<MatrixNxN> &in, int dims) {
-	for (unsigned int i = 0;i<in.size();i++) {
-		if (in[i].getSize()==0) {
-			in[i] = MatrixNxN(dims+1);
-		}
-		in[i].prepareForRender();
 	}
 }
 
@@ -157,8 +150,6 @@ void parseMatVecParam(const char* argv[], int &argc, int &pos, int dims, std::ve
 				project(mats, dims, d, dist);
 			}
 			pos++;
-		} else if (in=="prepForRender") {
-			prepForRender(mats, dims);
 		} else {
 			throw "Unknown parameter: "+in;
 		}
@@ -245,177 +236,24 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 }
 
 void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
-	polyt = new NDCube(3);
+	polyt = new NDCube(4);
 	dims = polyt->getDimensions();
-	endMats = std::vector<MatrixNxN>(1);
-	endMats[0] = MatrixNxN(dims+1);
+	endMats = std::vector<MatrixNxN>(1, MatrixNxN(dims+1));
 	endMats[0].scale(.5);
-	for (int j = dims;j>=2;j--) {
-		endMats[0].project(j, -.5);
+	for (int j = dims;j>2;j--) {
+		endMats[0].project(3, .2);
 	}
-	endMats[0].prepareForRender();
 	powerMat = MatrixNxN(dims+1);
-	//startMats = std::vector<MatrixNxN>(360);
-	for (int j = 0;j<dims-1;j++) {
+	startMats = std::vector<MatrixNxN>(1, MatrixNxN(dims+1));
+	startMats[0].rotate(0, 2, 5);
+	/*for (int j = 0;j<dims-1;j++) {
 		for (int i = j+1;i<dims;i++) {
 			powerMat.rotate(j, i, 1);
 			//rotAll(startMats, dims, j, i, 1, true);
 		}
-	}
-}
-void renderCycle(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int dims) {
-	int width = 500;
-	int height = 500;
-	int frameId = 0;
-	sf::Clock c;
-	sf::RenderWindow window(sf::VideoMode(width, height), "MultiDimRot");
-	long int sum = 0;
-	std::vector<VecN> vertices;
-	MatrixNxN curr;
-	MatrixNxN power(dims+1);
-	sf::Font font;
-	if (!font.loadFromFile("courier.ttf")) {
-		throw "Could not load font!";
-	}
-	std::string outFile;
-	sf::Text text;
-	int size = 20;
-	text.setCharacterSize(size);
-	text.setColor(sf::Color::White);
-	text.setFont(font);
-	text.setPosition(10, height-size-5);
-	text.setString("");
-	int startSize = startMats.size();
-	int endSize = endMats.size();
-	bool doCycle = true;
-	VecN light(dims);
-	light.setElement(dims-1, 1);
-	MatrixNxN curr2;
-	while (window.isOpen()) {
-		c.restart();
-		(*polyt).update();
-		if (doCycle) {
-			curr = startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1);
-			if (powerMat.getSize()>0) {
-				curr = power*curr;
-				power = powerMat*power;
-			}
-			curr2 = curr;
-			if (endSize>0) {
-				curr = endMats[frameId%endSize]*curr;
-			}
-			frameId++;
-		}
-		window.clear();
-		std::vector<Edge>& edges = (*polyt).getEdges();
-		std::vector<VecN>& verticesOld = (*polyt).getVertices();
-		curr.applyMass(verticesOld, vertices);
-		int edgeCount = edges.size();
-		int vSize = vertices.size();
-		sf::VertexArray vb(sf::Points, vSize);
-		std::vector<int> positions(vSize, 0);
-		for (int i = 0;i<vSize;i++) {
-			VecN v = vertices[i];
-			float z = v.getElement(dims, 1);
-			int x = v[0]/z*height;
-			positions[i] = x;
-			int y = .5*height;
-			vb[i].position = sf::Vector2f(x, y);
-			vb[i].color = sf::Color::Green;
-		}
-		window.draw(vb);
-		window.draw(text);
-		//build depth buffer
-		std::vector<VecN> depthBuffer(width, VecN());
-		std::vector<float> brightnessBuffer(width, 0);
-		VecN tmp(dims);
-		for (int i = 0;i<edgeCount;i++) {
-			Edge e = edges[i];
-			curr2.apply(e.normal, tmp);
-			tmp.scaleToLength(1);
-			float brightness = light*tmp;
-			if (brightness<0) {
-				continue;
-			}
-			int a = positions[e.start];
-			int b = positions[e.end];
-			bool aFirst = a<=b;
-			float diff = std::abs(a-b);
-			VecN& start = vertices[aFirst?e.start:e.end];
-			VecN& end = vertices[aFirst?e.end:e.start];
-			int min = std::min(a, b);
-			for (int j = 0;j<=diff;j++) {
-				float ratio = j/diff;
-				VecN pos = (start*ratio)+(end*(1-ratio));
-				bool closer = depthBuffer[j+min].getDimensions()==0;
-				if (!closer) {
-					closer = true;
-					for (int k = 1;k<dims;k++) {
-						if (pos[k]<=depthBuffer[j+min][k]) {
-							closer = false;
-							break;
-						}
-					}
-				}
-				if (closer) {
-					depthBuffer[j+min] = pos;
-					brightnessBuffer[j+min] = brightness;
-				}
-			}
-		}
-
-		//render edges
-		int non0Count = 0;
-		for (int i = 0;i<width;i++) {
-			if (brightnessBuffer[i]>.0000001) {
-				non0Count++;
-			}
-		}
-		sf::VertexArray vb2(sf::Points, non0Count);
-		int pId = 0;
-		for (int i = 0;i<width;i++) {
-			if (brightnessBuffer[i]>.0000001) {
-				vb2[pId].position = sf::Vector2f(i, height/2);
-				vb2[pId].color = sf::Color(255*brightnessBuffer[i], 0, 0);
-				pId++;
-			}
-		}
-		window.draw(vb2);
-
-		window.display();
-		sf::Time t = c.getElapsedTime();
-
-		sum+=t.asMicroseconds();
-		sf::sleep(sf::microseconds(25000-t.asMicroseconds()));
-
-
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed) {
-				window.close();
-			} else if (event.type==sf::Event::KeyPressed) {
-				if (event.key.code==sf::Keyboard::Return) {
-					std::ofstream out((outFile+".nobj").c_str());
-					curr = power*(startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1));
-					polyt->writeObj(&out, curr);
-					out.flush();
-					outFile = "";
-					text.setString("");
-				} else if (event.key.code==sf::Keyboard::BackSpace&&outFile.length()>0) {
-					outFile = outFile.substr(0, outFile.length()-1);
-					text.setString(outFile);
-				} else if (event.key.code==sf::Keyboard::I) {
-					doCycle = !doCycle;
-				}
-			} else if (event.type==sf::Event::TextEntered) {
-				if (event.text.unicode>20&&event.text.unicode!='i') {
-					outFile+=event.text.unicode;
-					text.setString(outFile);
-				}
-			}
-		}
-	}
-	std::cout << "Avg. processing time: " << sum/(float)frameId << " us, Avg. short-circuit FPS: " << (1000000.0*frameId)/sum << "\n";
+	}*/
+	powerMat.rotate(0, 2, 1);
+	powerMat.rotate(1, 3, 1);
 }
 int main(int argc, const char* argv[]) {
 	Polytope* polyt = 0;
@@ -429,7 +267,8 @@ int main(int argc, const char* argv[]) {
 		} else {
 			initDefault(polyt, startMats, power, endMats, dims);
 		}
-		renderCycle(polyt, startMats, power, endMats, dims);
+		Renderer r(polyt, startMats, power, endMats);
+		r.render();
 	} catch (const char* c) {
 		std::cerr<<c<<"\n";
 	} catch (const std::string &c) {

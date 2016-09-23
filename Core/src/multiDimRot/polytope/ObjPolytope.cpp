@@ -84,5 +84,8 @@ int ObjPolytope::getDimensions() {
 std::vector<Triangle>& ObjPolytope::getFaces() {
 	return faces;
 }
+std::vector<VecN>& ObjPolytope::getNormals() {
+	return normals;
+}
 
 void ObjPolytope::update() {}

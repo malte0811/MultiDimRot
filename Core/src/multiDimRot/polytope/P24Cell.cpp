@@ -77,4 +77,8 @@ std::vector<Triangle>& P24Cell::getFaces() {
 	return faces;
 }
 
+std::vector<VecN>& P24Cell::getNormals() {
+	return normals;
+}
+
 void P24Cell::update() {}

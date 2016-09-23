@@ -7,11 +7,10 @@
 struct Edge {
 	int start;
 	int end;
-	VecN normal;
 };
 struct Triangle {
 	std::array<int, 3> vertices;
-	std::array<VecN, 3> normals;
+	std::array<int, 3> normals;
 };
 
 typedef struct Edge Edge;
@@ -20,6 +19,7 @@ public:
 	Polytope();
 	virtual ~Polytope() = 0;
 	virtual std::vector<VecN>& getVertices() = 0;
+	virtual std::vector<VecN>& getNormals() = 0;
 	virtual std::vector<Edge>& getEdges() = 0;
 	virtual std::vector<Triangle>& getFaces() = 0;
 	/**

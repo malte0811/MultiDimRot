@@ -38,10 +38,10 @@ void JoinedPolytope::update() {
 	b->update();
 	std::vector<VecN> vA = a->getVertices();
 	std::vector<VecN> vB = b->getVertices();
-	retV = std::vector<VecN>(vA.size()+vB.size());
-	int i = 0;
 	int vASize = vA.size();
 	int vBSize = vB.size();
+	retV = std::vector<VecN>(vASize+vBSize);
+	int i = 0;
 	for (;i<vASize;i++) {
 		retV[i] = vA[i];
 	}
@@ -63,6 +63,20 @@ void JoinedPolytope::update() {
 		tmp.end+=vASize;
 		retE[i] = tmp;
 	}
+	std::vector<VecN> nA = a->getNormals();
+	std::vector<VecN> nB = b->getNormals();
+	int nASize = nA.size();
+	int nBSize = nB.size();
+	retN = std::vector<VecN>(nASize+nB.size());
+	i = 0;
+	for (;i<nASize;i++) {
+		retN[i] = nA[i];
+	}
+	for (;i<nBSize;i++) {
+		retN[i+nASize] = nB[i];
+	}
+
+
 	std::vector<Triangle> fA = a->getFaces();
 	std::vector<Triangle> fB = b->getFaces();
 	retF = std::vector<Triangle>(fA.size()+fB.size());
@@ -77,6 +91,13 @@ void JoinedPolytope::update() {
 		tmp.vertices[0]+=vASize;
 		tmp.vertices[1]+=vASize;
 		tmp.vertices[2]+=vASize;
+		tmp.normals[0]+=nASize;
+		tmp.normals[1]+=nASize;
+		tmp.normals[2]+=nASize;
 		retF[i] = tmp;
 	}
+}
+
+std::vector<VecN>& JoinedPolytope::getNormals() {
+	return retN;
 }

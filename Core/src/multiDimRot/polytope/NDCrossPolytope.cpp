@@ -9,6 +9,7 @@
 #include <Polytope.h>
 #include <vector>
 #include <VecN.h>
+#include <Util.h>
 #include <cmath>
 #include <iostream>
 
@@ -35,6 +36,24 @@ NDCrossPolytope::NDCrossPolytope(int dim) {
 			edgeId+=2;
 		}
 	}
+	int fCount = 0;
+	for (int i = 2;i<dimensions;i++) {
+		fCount+=4*i*(i-1);
+	}
+	faces = std::vector<Triangle>(fCount);
+	normals = std::vector<VecN>(fCount);
+	int faceId = 0;
+	for (int i = 0;i<dimensions;i++) {
+		for (int j = 0;j<2*i;j++) {
+			for (int k = j+1;k<2*i;k++) {
+				if (k/2!=j/2) {
+					util::addFace(faces, normals, vertices, 2*i, j, k, faceId);
+					util::addFace(faces, normals, vertices, 2*i+1, j, k, faceId);
+				}
+			}
+		}
+	}
+	std::cout << fCount << ":" << faceId << "\n";
 }
 
 NDCrossPolytope::~NDCrossPolytope() {}

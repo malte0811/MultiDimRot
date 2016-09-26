@@ -2,23 +2,20 @@ package multiDimRot.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
-import javax.swing.JButton;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
 
 import multiDimRot.gui.panels.DimensionCountPanel;
 import multiDimRot.gui.panels.MatrixVectorPanel;
@@ -102,9 +99,7 @@ public class Main  {
 				}
 				cmd+=p.getParam();
 			}
-			cmd+="prepForRender";
 			try {
-				System.out.println(cmd);
 				Runtime.getRuntime().exec(cmd);
 			} catch (Exception e) {
 				e.printStackTrace();

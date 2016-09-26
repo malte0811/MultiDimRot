@@ -71,9 +71,9 @@ VecN VecN::operator+(const VecN &other) const {
 }
 
 float VecN::operator*(const VecN &other) const {
-	int dims = std::min(getDimensions(), other.getDimensions());
+	//int dims = std::min(getDimensions(), other.getDimensions());
 	float ret = 0;
-	for (int i = 0;i<dims;i++) {
+	for (int i = 0;i<dimensions;i++) {
 		ret+=elements[i]*other.elements[i];
 	}
 	return ret;
@@ -88,7 +88,7 @@ VecN VecN::operator*(float other) const {
 	return ret;
 }
 
-float& VecN::operator [](int i) const {
+float& VecN::operator [](const int &i) const {
 	return elements[i];
 }
 

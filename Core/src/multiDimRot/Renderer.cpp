@@ -76,8 +76,7 @@ void Renderer::render() {
 	int height = 500;
 	int frameId = 0;
 	sf::Clock c;
-	sf::ContextSettings s(24, 8, 2, 3, 3);
-	sf::RenderWindow window(sf::VideoMode(width, height), "MultiDimRot", sf::Style::Close, s);
+	sf::RenderWindow window(sf::VideoMode(width, height), "MultiDimRot", sf::Style::Default, sf::ContextSettings(24));
 	window.setVerticalSyncEnabled(true);
 	GLenum glew_status = glewInit();
 	if (glew_status != GLEW_OK) {
@@ -88,7 +87,8 @@ void Renderer::render() {
 	long int sum = 0;
 	std::vector<VecN> vertices;
 	std::vector<VecN> normals;
-	MatrixNxN curr;
+	const MatrixNxN id(dims+1);
+	MatrixNxN curr = id;
 	MatrixNxN power(dims+1);
 	sf::Font font;
 	if (!font.loadFromFile("courier.ttf")) {
@@ -106,22 +106,22 @@ void Renderer::render() {
 	int endSize = endMats.size();
 	bool doCycle = true;
 	VecN light(dims);
-	light.setElement(dims-1, 1);
-	MatrixNxN currNoProject;
+	light.setElement(dims-1, -1);
 	GLfloat* faceData = 0;
 	int facelength = -1;
+	std::vector<float> brightnesses(0, 0);
+	int brightnessSize = brightnesses.size();
 	while (window.isOpen()) {
 		c.restart();
 		(*polyt).update();
 		if (doCycle) {
-			curr = startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1);
+			curr = startSize>0?startMats[frameId%startSize]:id;
 			if (powerMat.getSize()>0) {
-				curr = power*curr;
-				power = powerMat*power;
+				curr *= power;
+				power *= powerMat;
 			}
-			currNoProject = curr;
 			if (endSize>0) {
-				curr = endMats[frameId%endSize]*curr;
+				curr *= endMats[frameId%endSize];
 			}
 			frameId++;
 		}
@@ -130,14 +130,18 @@ void Renderer::render() {
 		std::vector<VecN>& verticesOld = polyt->getVertices();
 		std::vector<VecN>& normalsOld = polyt->getNormals();
 		curr.applyMass(verticesOld, vertices);
-		currNoProject.applyMass(normalsOld, normals);
+		curr.applyInvTMass(normalsOld, normals);
 		int nSize = normals.size();
 		int fSize = tris.size();
 		int vSize = vertices.size();
-		std::vector<float> brightnesses(nSize, 0);
 		for (int i = 0;i<nSize;i++) {
 			normals[i].scaleToLength(1, true);
-			brightnesses[i] = light*normals[i];
+			if (i<brightnessSize) {
+				brightnesses[i] = light*normals[i];
+			} else {
+				brightnesses.push_back(light*normals[i]);
+				brightnessSize++;
+			}
 		}
 		// scale z
 		float minZ = 0;
@@ -146,9 +150,9 @@ void Renderer::render() {
 			VecN& curr = vertices[i];
 			float last = curr[dims];
 			if (dims>0) {
-				curr[0] = curr[0]/last;
+				curr[0] /= last;
 				if (dims>1) {
-					curr[1] = curr[1]/last;
+					curr[1] /= last;
 					if (dims>2) {
 						float z = curr[2]/last;
 						curr[2] = z;
@@ -179,7 +183,7 @@ void Renderer::render() {
 		for (int i = 0;i<fSize;i++) {
 			Triangle curr = tris[i];
 			for (int j = 0;j<3;j++) {
-				VecN pos = vertices[curr.vertices[j]];
+				VecN& pos = vertices[curr.vertices[j]];
 				float brightness = brightnesses[curr.normals[j]];
 				if (brightness>0) {
 					faceData[base] = pos.getElement(0, 0);

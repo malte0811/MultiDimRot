@@ -236,24 +236,23 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 }
 
 void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
-	polyt = new NDCube(4);
+	polyt = new NDSimplex(4);
 	dims = polyt->getDimensions();
 	endMats = std::vector<MatrixNxN>(1, MatrixNxN(dims+1));
 	endMats[0].scale(.5);
 	for (int j = dims;j>2;j--) {
-		endMats[0].project(3, .2);
+		endMats[0].project(j, -.2);
 	}
 	powerMat = MatrixNxN(dims+1);
-	startMats = std::vector<MatrixNxN>(1, MatrixNxN(dims+1));
-	startMats[0].rotate(0, 2, 5);
-	/*for (int j = 0;j<dims-1;j++) {
+	startMats = std::vector<MatrixNxN>(360, MatrixNxN(dims+1));
+	for (int j = 0;j<dims-1;j++) {
 		for (int i = j+1;i<dims;i++) {
 			powerMat.rotate(j, i, 1);
 			//rotAll(startMats, dims, j, i, 1, true);
 		}
-	}*/
-	powerMat.rotate(0, 2, 1);
-	powerMat.rotate(1, 3, 1);
+	}
+	//powerMat.rotate(0, 2, 1);
+	//powerMat.rotate(1, 3, 1);
 }
 int main(int argc, const char* argv[]) {
 	Polytope* polyt = 0;

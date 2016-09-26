@@ -1,21 +1,9 @@
 #include <NDCube.h>
 #include <Polytope.h>
+#include <Util.h>
 #include <vector>
 #include <iostream>
-void initQuad(std::vector<Triangle>& tris, int startIndex, int a, int b, int c, int d, int normal) {
-	tris[startIndex].normals[0] = normal;
-	tris[startIndex].normals[1] = normal;
-	tris[startIndex].normals[2] = normal;
-	tris[startIndex].vertices[0] = a;
-	tris[startIndex].vertices[1] = b;
-	tris[startIndex].vertices[2] = c;
-	tris[startIndex+1].normals[0] = normal;
-	tris[startIndex+1].normals[1] = normal;
-	tris[startIndex+1].normals[2] = normal;
-	tris[startIndex+1].vertices[0] = c;
-	tris[startIndex+1].vertices[1] = d;
-	tris[startIndex+1].vertices[2] = b;
-}
+
 bool getBit(int num, int bitId) {
 	return (num&(1<<bitId))!=0;
 }
@@ -43,24 +31,22 @@ NDCube::NDCube(int dims) {
 				edgeId++;
 				for (int digit2 = digit+1;digit2<dims;digit2++) {
 					if (!getBit(i, digit2)) {
-						initQuad(faces, 2*faceId, i, i+(1<<digit), i+(1<<digit2), i+(1<<digit)+(1<<digit2), faceId);
+						util::initQuad(faces, faceId, i, i+(1<<digit), i+(1<<digit2), i+(1<<digit)+(1<<digit2), faceId/2);
 						for (int digit3 = 0;digit3<dims;digit3++) {
 							if (digit3!=digit&&digit3!=digit2) {
 								if (getBit(i, digit3)) {
-									normals[faceId].setElement(digit3, 1);
+									normals[faceId/2].setElement(digit3, 1);
 								} else {
-									normals[faceId].setElement(digit3, -1);
+									normals[faceId/2].setElement(digit3, -1);
 								}
 							}
 						}
-						normals[faceId].scaleToLength(1, false);
-						faceId++;
+						normals[faceId/2].scaleToLength(1, false);
 					}
 				}
 			}
 		}
 	}
-
 }
 
 NDCube::~NDCube() {}

@@ -9,7 +9,6 @@ public:
 	VecN(const VecN &other);
 	~VecN();
 	float getElement(int i, float def) const;
-	void setElement(int i, float value);
 	int getDimensions() const;
 	float getLength() const;
 	void scaleToLength(float length, bool ignoreLast);
@@ -17,7 +16,10 @@ public:
 	float operator*(const VecN &d) const;
 	VecN operator*(float d) const;
 	void operator=(const VecN &v);
-	float& operator[](const int &i) const;
+
+	float& operator[](const int &i);
+	const float& operator[](const int &i) const;
+
 	std::string toString() const;
 private:
 	float* elements;

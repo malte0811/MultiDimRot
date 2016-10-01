@@ -22,9 +22,9 @@ NDSimplex::NDSimplex(int dim) {
 	for (int i = 0;i<dimensions+1;i++) {
 		for (int j = 0;j<dimensions;j++) {
 			if (i<=j) {
-				vertices[i].setElement(j, -heights[j]/(j+2));
+				vertices[i][j] = -heights[j]/(j+2);
 			} else if (i==j+1) {
-				vertices[i].setElement(j, heights[j]*(j+1)/(j+2));
+				vertices[i][j] = heights[j]*(j+1)/(j+2);
 			}
 		}
 	}

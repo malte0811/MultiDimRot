@@ -199,7 +199,25 @@ void parseMatParam(const char* argv[], int &argc, int &pos, int dims, MatrixNxN 
 	}
 }
 
-void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
+void parseRenderType(const char* argv[], int argc, int &pos, bool* renderType) {
+	while (pos<argc) {
+		std::string in(argv[pos]);
+		if (in.find("--")==0) {
+			return;
+		}
+		if (in=="vertices") {
+			renderType[0] = true;
+		} else if (in=="edges") {
+			renderType[1] = true;
+		} else if (in=="faces") {
+			renderType[2] = true;
+		}
+		pos++;
+	}
+}
+
+void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<MatrixNxN> &startMats,
+		MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims, bool renderType[]) {
 	int i = 1;
 	while (i<argc) {
 		std::string in(argv[i]);
@@ -224,6 +242,11 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 				throw "No polytope specified";
 			}
 			parseMatVecParam(argv, argc, i, polyt->getDimensions(), endMats);
+		} else if (in=="--renderType") {
+			if (polyt==0) {
+				throw "No polytope specified";
+			}
+			parseRenderType(argv, argc, i, renderType);
 		} else {
 			throw "Unknown parameter: "+in;
 		}
@@ -235,24 +258,28 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 	dims = polyt->getDimensions();
 }
 
-void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims) {
-	polyt = new NDSimplex(4);
+void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats,
+		MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims, bool renderType[]) {
+	polyt = new NDCube(4);
 	dims = polyt->getDimensions();
 	endMats = std::vector<MatrixNxN>(1, MatrixNxN(dims+1));
 	endMats[0].scale(.5);
 	for (int j = dims;j>2;j--) {
-		endMats[0].project(j, -.2);
+		endMats[0].project(j, .2);
 	}
 	powerMat = MatrixNxN(dims+1);
 	startMats = std::vector<MatrixNxN>(360, MatrixNxN(dims+1));
-	for (int j = 0;j<dims-1;j++) {
+	/*for (int j = 0;j<dims-1;j++) {
 		for (int i = j+1;i<dims;i++) {
 			powerMat.rotate(j, i, 1);
 			//rotAll(startMats, dims, j, i, 1, true);
 		}
-	}
-	//powerMat.rotate(0, 2, 1);
-	//powerMat.rotate(1, 3, 1);
+	}*/
+	powerMat.rotate(0, 2, 1);
+	powerMat.rotate(1, 3, 1);
+	renderType[0] = true;
+	renderType[1] = true;
+	renderType[2] = true;
 }
 int main(int argc, const char* argv[]) {
 	Polytope* polyt = 0;
@@ -261,12 +288,13 @@ int main(int argc, const char* argv[]) {
 	std::vector<MatrixNxN> endMats;
 	int dims;
 	try {
+		bool renderType[] = {false, false, false};
 		if (argc>1) {
-			parseArgs(argc, argv, polyt, startMats, power, endMats, dims);
+			parseArgs(argc, argv, polyt, startMats, power, endMats, dims, renderType);
 		} else {
-			initDefault(polyt, startMats, power, endMats, dims);
+			initDefault(polyt, startMats, power, endMats, dims, renderType);
 		}
-		Renderer r(polyt, startMats, power, endMats);
+		Renderer r(polyt, startMats, power, endMats, renderType);
 		r.render();
 	} catch (const char* c) {
 		std::cerr<<c<<"\n";

@@ -16,15 +16,12 @@
 NDCrossPolytope::NDCrossPolytope(int dim) {
 	float dist = std::sqrt(2.0)/2;
 	dimensions = dim;
-	vertices = std::vector<VecN>(2*dimensions);
+	vertices = std::vector<VecN>(2*dimensions, VecN(dimensions));
 	edges = std::vector<Edge>(2*dim*(dim-1));
 	int edgeId = 0;
 	for (int i = 0;i<dimensions;i++) {
-		VecN v(dim);
-		v.setElement(i, dist);
-		vertices[2*i] = v;
-		v.setElement(i, -dist);
-		vertices[2*i+1] = v;
+		vertices[2*i][i] = dist;
+		vertices[2*i+1][i] = -dist;
 		for (int j = 0;j<2*i;j++) {
 			Edge e;
 			e.start = j;

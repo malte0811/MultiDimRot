@@ -2,14 +2,13 @@
 #include <vector>
 #include <iostream>
 P24Cell::P24Cell() {
-	vertices = std::vector<VecN>(24);
+	vertices = std::vector<VecN>(24, VecN(4));
 	edges = std::vector<Edge>(96);
 	int edgeId = 0;
 	for (int i = 0;i<16;i++) {
-		VecN next(4);
 		for (int digit = 0;digit<4;digit++) {
 			int tmp = i&(1<<digit);
-			next.setElement(digit, tmp>0?.5:-.5);
+			vertices[i][digit] = tmp>0?.5:-.5;
 			//edge
 			if (tmp==0) {
 				edges[edgeId].start = i;
@@ -17,14 +16,11 @@ P24Cell::P24Cell() {
 				edgeId++;
 			}
 		}
-		vertices[i] = next;
 	}
 
 	for (int i = 0;i<4;i++) {
 		//vertex
-		VecN next(4);
-		next.setElement(i, 1);
-		vertices[16+2*i] = next;
+		vertices[16+2*i][i] = 1;
 		//edges
 		for (int j = 0;j<8;j++) {
 			Edge e;
@@ -40,8 +36,7 @@ P24Cell::P24Cell() {
 			edgeId++;
 		}
 		//vertex
-		next.setElement(i, -1);
-		vertices[17+2*i] = next;
+		vertices[17+2*i][i] = -1;
 		//edges
 		for (int j = 0;j<8;j++) {
 			Edge e;

@@ -37,10 +37,6 @@ float VecN::getElement(int i, float def) const {
 	}
 	return elements[i];
 }
-
-void VecN::setElement(int i, float val) {
-	elements[i] = val;
-}
 int VecN::getDimensions() const {
 	return dimensions;
 }
@@ -65,7 +61,7 @@ VecN VecN::operator+(const VecN &other) const {
 	int dims = std::max(getDimensions(), other.getDimensions());
 	VecN ret(dims);
 	for (int i = 0;i<dims;i++) {
-		ret.setElement(i, getElement(i, 0)+other.getElement(i, 0));
+		ret.elements[i] =  getElement(i, 0)+other.getElement(i, 0);
 	}
 	return ret;
 }
@@ -83,12 +79,16 @@ VecN VecN::operator*(float other) const {
 	int dims = getDimensions();
 	VecN ret(dims);
 	for (int i = 0;i<dims;i++) {
-		ret.setElement(i, elements[i]*other);
+		ret.elements[i] = elements[i]*other;
 	}
 	return ret;
 }
 
-float& VecN::operator [](const int &i) const {
+float& VecN::operator [](const int &i) {
+	return elements[i];
+}
+
+const float& VecN::operator [](const int &i) const {
 	return elements[i];
 }
 

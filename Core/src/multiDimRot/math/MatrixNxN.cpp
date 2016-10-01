@@ -271,7 +271,7 @@ void MatrixNxN::apply(const VecN &in, VecN &out) const {
 		for (;j<length;j++) {
 			val+=elements[i][j];
 		}
-		out.setElement(i, val);
+		out[i] = val;
 	}
 }
 
@@ -303,7 +303,7 @@ void MatrixNxN::applyInvT(const VecN &in, VecN &out) const {
 		for (;j<length;j++) {
 			val+=inverse[j][i];
 		}
-		out.setElement(i, val);
+		out[i] = val;
 	}
 }
 

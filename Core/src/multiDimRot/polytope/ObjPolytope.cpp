@@ -24,7 +24,7 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 				throw "Invalid input in OBJ: element count of \"v\" differs from dimension";
 			}
 			for (unsigned int i = 0;i<words.size();i++) {
-				next.setElement(i, util::toFloat(words[i]));
+				next[i] = util::toFloat(words[i]);
 			}
 			vertices.push_back(next);
 		} else if (line.find("dims ")==0) {

@@ -8,17 +8,16 @@
 #include <GL/glew.h>
 #include <cmath>
 
-Renderer::Renderer(Polytope* &p, std::vector<MatrixNxN> &start, MatrixNxN &power, std::vector<MatrixNxN> &end):
-startMats(start), powerMat(power), endMats(end) {
+Renderer::Renderer(Polytope* &p, std::vector<MatrixNxN> &start, MatrixNxN &power, std::vector<MatrixNxN> &end, const bool rt[]):
+startMats(start), powerMat(power), endMats(end), dims(p->getDimensions()) {
 	polyt = p;
+	renderType = rt;
 }
 
 Renderer::~Renderer() {
 	//delete polyt;
 }
-GLuint program;
-GLint attribute_pos;
-void init_resources(void) {
+void Renderer::init_resources() {
 	GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
 
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -40,8 +39,9 @@ void init_resources(void) {
 	const char *fs_source =
 			"#version 330\n"
 			"varying float color;"
+			"uniform vec3 colorMultiplier;"
 			"void main(void) {"
-			"  gl_FragColor = vec4(color, 0, 0, 1);"
+			"  gl_FragColor = vec4(color*colorMultiplier[0], color*colorMultiplier[1], color*colorMultiplier[2], 1);"
 			"  gl_FragDepth = gl_FragCoord.z;"
 			"}";
 	glShaderSource(fs, 1, &fs_source, NULL);
@@ -63,12 +63,104 @@ void init_resources(void) {
 	if (attribute_pos == -1) {
 		throw "Could not bind attribute pos";
 	}
+
+	uniform_baseColor = glGetUniformLocation(program, "colorMultiplier");
+	if (uniform_baseColor == -1) {
+		throw "could not bind uniform colorMultiplier";
+	}
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 }
 
+inline void Renderer::renderFaces(const std::vector<Triangle> &faces, const VecN &light) {
+	int nSize = transformedNormals.size();
+	for (int i = 0;i<nSize;i++) {
+		transformedNormals[i].scaleToLength(1, true);
+		if (i<brightnessSize) {
+			brightness[i] = light*transformedNormals[i];
+		} else {
+			brightness.push_back(light*transformedNormals[i]);
+			brightnessSize++;
+		}
+	}
+	//generate faceData
+	int fSize = faces.size();
+	if (fSize*4*3>dataSize) {//TODO replace 4 by 6 and figure out interleaving
+		if (data!=0) {
+			delete[] data;
+		}
+		dataSize = 3*4*fSize;
+		data = new GLfloat[dataSize];
+	}
+	int base = 0;
+	for (int i = 0;i<fSize;i++) {
+		Triangle curr = faces[i];
+		for (int j = 0;j<3;j++) {
+			const VecN& pos = transformedVertices[curr.vertices[j]];
+			float b = brightness[curr.normals[j]];
+			if (b>0) {
+				data[base] = pos.getElement(0, 0);
+				data[base+1] = pos.getElement(1, 0);
+				data[base+2] = pos.getElement(2, .5);
+				data[base+3] = b;
+				base+=4;
+			}
+		}
+	}
+	//render faceData
+	glVertexAttribPointer(attribute_pos, 4, GL_FLOAT, GL_FALSE, 0, data);
+	glUniform3f(uniform_baseColor, 1, 0, 0);
+	glDrawArrays(GL_TRIANGLES, 0, base/4);
+}
 
+inline void Renderer::renderVertices() {
+	if (dataSize<vSize*4) {
+		delete[] data;
+		data = new GLfloat[vSize*4];
+		dataSize = vSize*4;
+	}
+	for (int i = 0;i<vSize;i++) {
+		const VecN& curr = transformedVertices[i];
+		data[4*i] = curr.getElement(0, 0);
+		data[4*i+1] = curr.getElement(1, 0);
+		data[4*i+2] = curr.getElement(2, 0);
+		data[4*i+3] = 1;
+	}
+	glVertexAttribPointer(attribute_pos, 4, GL_FLOAT, GL_FALSE, 0, data);
+	glUniform3f(uniform_baseColor, 0, 0, 1);
+	glPointSize(4);
+	glDrawArrays(GL_POINTS, 0, vSize);
+	glPointSize(1);
+}
+
+inline void Renderer::renderEdges(const std::vector<Edge> &edges) {
+	int eSize = edges.size();
+	if (dataSize<2*4*eSize) {
+		delete[] data;
+		data = new GLfloat[2*4*eSize];
+		dataSize = 2*4*eSize;
+	}
+	for (int i = 0;i<eSize;i++) {
+		const Edge &curr = edges[i];
+		const VecN &start = transformedVertices[curr.start];
+		const VecN &end = transformedVertices[curr.end];
+		data[8*i] = start.getElement(0, 0);
+		data[8*i+1] = start.getElement(1, 0);
+		data[8*i+2] = start.getElement(2, 0);
+		data[8*i+3] = 1;
+		data[8*i+4] = end.getElement(0, 0);
+		data[8*i+5] = end.getElement(1, 0);
+		data[8*i+6] = end.getElement(2, 0);
+		data[8*i+7] = 1;
+
+	}
+	glVertexAttribPointer(attribute_pos, 4, GL_FLOAT, GL_FALSE, 0, data);
+	glUniform3f(uniform_baseColor, 0, 1, 0);
+	glLineWidth(2);
+	glDrawArrays(GL_LINES, 0, eSize*2);
+	glLineWidth(1);
+}
 
 void Renderer::render() {
 	int dims = polyt->getDimensions();
@@ -85,8 +177,6 @@ void Renderer::render() {
 
 	init_resources();
 	long int sum = 0;
-	std::vector<VecN> vertices;
-	std::vector<VecN> normals;
 	const MatrixNxN id(dims+1);
 	MatrixNxN curr = id;
 	MatrixNxN power(dims+1);
@@ -106,14 +196,11 @@ void Renderer::render() {
 	int endSize = endMats.size();
 	bool doCycle = true;
 	VecN light(dims);
-	light.setElement(dims-1, -1);
-	GLfloat* faceData = 0;
-	int facelength = -1;
+	light[dims-1] = -1;
 	std::vector<float> brightnesses(0, 0);
-	int brightnessSize = brightnesses.size();
 	while (window.isOpen()) {
 		c.restart();
-		(*polyt).update();
+		polyt->update();
 		if (doCycle) {
 			curr = startSize>0?startMats[frameId%startSize]:id;
 			if (powerMat.getSize()>0) {
@@ -127,27 +214,18 @@ void Renderer::render() {
 		}
 		window.clear();
 		std::vector<Triangle>& tris = polyt->getFaces();
+		std::vector<Edge> &edges = polyt->getEdges();
 		std::vector<VecN>& verticesOld = polyt->getVertices();
 		std::vector<VecN>& normalsOld = polyt->getNormals();
-		curr.applyMass(verticesOld, vertices);
-		curr.applyInvTMass(normalsOld, normals);
-		int nSize = normals.size();
-		int fSize = tris.size();
-		int vSize = vertices.size();
-		for (int i = 0;i<nSize;i++) {
-			normals[i].scaleToLength(1, true);
-			if (i<brightnessSize) {
-				brightnesses[i] = light*normals[i];
-			} else {
-				brightnesses.push_back(light*normals[i]);
-				brightnessSize++;
-			}
-		}
+		curr.applyMass(verticesOld, transformedVertices);
+		curr.applyInvTMass(normalsOld, transformedNormals);
+		vSize = transformedVertices.size();
+
 		// scale z
 		float minZ = 0;
 		float maxZ = 0;
 		for (int i = 0;i<vSize;i++) {
-			VecN& curr = vertices[i];
+			VecN& curr = transformedVertices[i];
 			float last = curr[dims];
 			if (dims>0) {
 				curr[0] /= last;
@@ -170,38 +248,26 @@ void Renderer::render() {
 		//map depth to 1;2
 		if (dims>2) {
 			for (int i = 0;i<vSize;i++) {
-				vertices[i][2] = (vertices[i][2]-minZ)/diff;
+				transformedVertices[i][2] = (transformedVertices[i][2]-minZ)/diff;
 			}
 		}
-		//generate faceData
-		if (fSize*4*3>facelength) {//TODO replace 4 by 6 and figure out interleaving
-			delete[] faceData;
-			facelength = 3*4*fSize;
-			faceData = new GLfloat[facelength];
-		}
-		int base = 0;
-		for (int i = 0;i<fSize;i++) {
-			Triangle curr = tris[i];
-			for (int j = 0;j<3;j++) {
-				VecN& pos = vertices[curr.vertices[j]];
-				float brightness = brightnesses[curr.normals[j]];
-				if (brightness>0) {
-					faceData[base] = pos.getElement(0, 0);
-					faceData[base+1] = pos.getElement(1, 0);
-					faceData[base+2] = pos.getElement(2, .5);
-					faceData[base+3] = brightness;
-					base+=4;
-				}
-			}
-		}
-		//render faceData
+
 		glClearColor(0, 0, 0, 1);
 		glClearDepth(1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(program);
 		glEnableVertexAttribArray(attribute_pos);
-		glVertexAttribPointer(attribute_pos, 4, GL_FLOAT, GL_FALSE, 0, faceData);
-		glDrawArrays(GL_TRIANGLES, 0, base/4);
+
+		if (renderType[0]) {
+			renderVertices();
+		}
+		if (renderType[1]) {
+			renderEdges(edges);
+		}
+		if (renderType[2]) {
+			renderFaces(tris, light);
+		}
+
 		glDisableVertexAttribArray(attribute_pos);
 
 		window.draw(text);

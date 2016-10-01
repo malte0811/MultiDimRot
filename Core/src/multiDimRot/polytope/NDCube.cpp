@@ -23,7 +23,7 @@ NDCube::NDCube(int dims) {
 		//vertex
 		for (int digit = 0;digit<dims;digit++) {
 			bool is0 = getBit(i, digit);
-			vertices[i].setElement(digit, is0?-.5:.5);
+			vertices[i][digit] = is0?-.5:.5;
 			//edge
 			if (!is0) {
 				edges[edgeId].start = i;
@@ -31,17 +31,17 @@ NDCube::NDCube(int dims) {
 				edgeId++;
 				for (int digit2 = digit+1;digit2<dims;digit2++) {
 					if (!getBit(i, digit2)) {
-						util::initQuad(faces, faceId, i, i+(1<<digit), i+(1<<digit2), i+(1<<digit)+(1<<digit2), faceId/2);
 						for (int digit3 = 0;digit3<dims;digit3++) {
 							if (digit3!=digit&&digit3!=digit2) {
 								if (getBit(i, digit3)) {
-									normals[faceId/2].setElement(digit3, 1);
+									normals[faceId/2][digit3] = -1;
 								} else {
-									normals[faceId/2].setElement(digit3, -1);
+									normals[faceId/2][digit3] = 1;
 								}
 							}
 						}
 						normals[faceId/2].scaleToLength(1, false);
+						util::initQuad(faces, faceId, i, i+(1<<digit), i+(1<<digit2), i+(1<<digit)+(1<<digit2), faceId/2);
 					}
 				}
 			}

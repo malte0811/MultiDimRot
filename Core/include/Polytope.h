@@ -18,16 +18,16 @@ class Polytope {
 public:
 	Polytope();
 	virtual ~Polytope() = 0;
-	virtual std::vector<VecN>& getVertices() = 0;
-	virtual std::vector<VecN>& getNormals() = 0;
-	virtual std::vector<Edge>& getEdges() = 0;
-	virtual std::vector<Triangle>& getFaces() = 0;
+	virtual const std::vector<VecN>& getVertices() const = 0;
+	virtual const std::vector<VecN>& getNormals() const = 0;
+	virtual const std::vector<Edge>& getEdges() const = 0;
+	virtual const std::vector<Triangle>& getFaces() const = 0;
 	/**
 	 * The amount of dimensions of this polytope. MUST NOT CHANGE!
 	 */
-	virtual int getDimensions() = 0;
+	virtual int getDimensions() const = 0;
 	virtual void update() = 0;
-	void writeObj(std::ostream* o, MatrixNxN &apply);
+	void writeObj(std::ostream* o, const MatrixNxN &apply) const;
 	float getLength(Edge e);
 };
 

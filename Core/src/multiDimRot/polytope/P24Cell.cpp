@@ -56,23 +56,23 @@ P24Cell::P24Cell() {
 
 P24Cell::~P24Cell() {}
 
-int P24Cell::getDimensions() {
+int P24Cell::getDimensions() const {
 	return 4;
 }
 
-std::vector<Edge>& P24Cell::getEdges() {
+const std::vector<Edge>& P24Cell::getEdges() const {
 	return edges;
 }
 
-std::vector<VecN>& P24Cell::getVertices() {
+const std::vector<VecN>& P24Cell::getVertices() const {
 	return vertices;
 }
 
-std::vector<Triangle>& P24Cell::getFaces() {
+const std::vector<Triangle>& P24Cell::getFaces() const {
 	return faces;
 }
 
-std::vector<VecN>& P24Cell::getNormals() {
+const std::vector<VecN>& P24Cell::getNormals() const {
 	return normals;
 }
 

@@ -18,19 +18,23 @@ JoinedPolytope::~JoinedPolytope() {
 	}
 }
 
-std::vector<VecN>& JoinedPolytope::getVertices() {
+const std::vector<VecN>& JoinedPolytope::getVertices() const {
 	return retV;
 }
 
-std::vector<Triangle>& JoinedPolytope::getFaces() {
+const std::vector<Triangle>& JoinedPolytope::getFaces() const {
 	return retF;
 }
 
-std::vector<Edge>& JoinedPolytope::getEdges() {
+const std::vector<Edge>& JoinedPolytope::getEdges() const {
 	return retE;
 }
 
-int JoinedPolytope::getDimensions() {
+const std::vector<VecN>& JoinedPolytope::getNormals() const {
+	return retN;
+}
+
+int JoinedPolytope::getDimensions() const{
 	return a->getDimensions();
 }
 void JoinedPolytope::update() {
@@ -96,8 +100,4 @@ void JoinedPolytope::update() {
 		tmp.normals[2]+=nASize;
 		retF[i] = tmp;
 	}
-}
-
-std::vector<VecN>& JoinedPolytope::getNormals() {
-	return retN;
 }

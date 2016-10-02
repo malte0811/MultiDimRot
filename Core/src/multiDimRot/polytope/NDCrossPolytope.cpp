@@ -55,21 +55,21 @@ NDCrossPolytope::NDCrossPolytope(int dim) {
 
 NDCrossPolytope::~NDCrossPolytope() {}
 
-int NDCrossPolytope::getDimensions() {
+int NDCrossPolytope::getDimensions() const {
 	return dimensions;
 }
 
-std::vector<Edge>& NDCrossPolytope::getEdges() {
+const std::vector<Edge>& NDCrossPolytope::getEdges() const {
 	return edges;
 }
 
-std::vector<VecN>& NDCrossPolytope::getVertices() {
+const std::vector<VecN>& NDCrossPolytope::getVertices() const {
 	return vertices;
 }
-std::vector<Triangle>& NDCrossPolytope::getFaces() {
+const std::vector<Triangle>& NDCrossPolytope::getFaces() const {
 	return faces;
 }
-std::vector<VecN>& NDCrossPolytope::getNormals() {
+const std::vector<VecN>& NDCrossPolytope::getNormals() const {
 	return normals;
 }
 

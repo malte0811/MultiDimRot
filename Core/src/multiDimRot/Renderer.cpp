@@ -96,10 +96,17 @@ inline void Renderer::renderFaces(const std::vector<Triangle> &faces, const VecN
 	int base = 0;
 	for (int i = 0;i<fSize;i++) {
 		Triangle curr = faces[i];
+		bool skip = true;
 		for (int j = 0;j<3;j++) {
-			const VecN& pos = transformedVertices[curr.vertices[j]];
-			float b = brightness[curr.normals[j]];
-			if (b>0) {
+			if (brightness[curr.normals[j]]>0) {
+				skip = false;
+				break;
+			}
+		}
+		if (!skip) {
+			for (int j = 0;j<3;j++) {
+				const VecN& pos = transformedVertices[curr.vertices[j]];
+				float b = brightness[curr.normals[j]];
 				data[base] = pos.getElement(0, 0);
 				data[base+1] = pos.getElement(1, 0);
 				data[base+2] = pos.getElement(2, .5);
@@ -213,10 +220,10 @@ void Renderer::render() {
 			frameId++;
 		}
 		window.clear();
-		std::vector<Triangle>& tris = polyt->getFaces();
-		std::vector<Edge> &edges = polyt->getEdges();
-		std::vector<VecN>& verticesOld = polyt->getVertices();
-		std::vector<VecN>& normalsOld = polyt->getNormals();
+		const std::vector<Triangle>& tris = polyt->getFaces();
+		const std::vector<Edge> &edges = polyt->getEdges();
+		const std::vector<VecN>& verticesOld = polyt->getVertices();
+		const std::vector<VecN>& normalsOld = polyt->getNormals();
 		curr.applyMass(verticesOld, transformedVertices);
 		curr.applyInvTMass(normalsOld, transformedNormals);
 		vSize = transformedVertices.size();
@@ -270,7 +277,11 @@ void Renderer::render() {
 
 		glDisableVertexAttribArray(attribute_pos);
 
-		window.draw(text);
+		if (outFile.size()>0) {
+			window.pushGLStates();
+			window.draw(text);
+			window.popGLStates();
+		}
 		window.display();
 		sf::Time t = c.getElapsedTime();
 
@@ -286,7 +297,7 @@ void Renderer::render() {
 				if (event.key.code==sf::Keyboard::Return) {
 					std::ofstream out((outFile+".nobj").c_str());
 					curr = power*(startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1));
-					polyt->writeObj(&out, curr);
+					polyt->writeObj(&out, id);
 					out.flush();
 					outFile = "";
 					text.setString("");
@@ -306,5 +317,6 @@ void Renderer::render() {
 			}
 		}
 	}
+	std::cout << "Vertex count: " << transformedVertices.size() << ", face count: " << polyt->getFaces().size() << ", normal count: " << transformedNormals.size() << "\n";
 	std::cout << "Avg. processing time: " << sum/(float)frameId << " us, Avg. short-circuit FPS: " << (1000000.0*frameId)/sum << "\n";
 }

@@ -8,11 +8,11 @@ class NDCrossPolytope:public Polytope {
 public:
 	NDCrossPolytope(int i);
 	virtual ~NDCrossPolytope();
-	virtual std::vector<VecN>& getVertices();
-	virtual std::vector<Edge>& getEdges();
-	virtual std::vector<Triangle>& getFaces();
-	virtual std::vector<VecN>& getNormals();
-	virtual int getDimensions();
+	virtual const std::vector<VecN>& getVertices() const;
+	virtual const std::vector<Edge>& getEdges() const;
+	virtual const std::vector<Triangle>& getFaces() const;
+	virtual const std::vector<VecN>& getNormals() const;
+	virtual int getDimensions() const;
 	virtual void update();
 private:
 	int dimensions;

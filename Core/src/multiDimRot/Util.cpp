@@ -20,12 +20,12 @@ float util::toFloat(std::string in) {
 	return i;
 }
 
-std::vector<std::string> util::splitAtWords(std::string inStr) {
+std::vector<std::string> util::splitAtWords(std::string inStr, char split) {
 	std::vector<std::string> ret;
 	std::stringstream s;
 	const char* in = inStr.c_str();
 	for (unsigned int i = 0;i<inStr.length()+1;i++) {
-		if (i==inStr.length()||in[i]==' ') {
+		if (i==inStr.length()||in[i]==split) {
 			if (s.str().length()>0) {
 				ret.push_back(s.str());
 				s.str("");

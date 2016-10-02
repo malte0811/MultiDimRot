@@ -45,21 +45,21 @@ NDSimplex::NDSimplex(int dim) {
 
 NDSimplex::~NDSimplex() {}
 
-int NDSimplex::getDimensions() {
+int NDSimplex::getDimensions() const {
 	return dimensions;
 }
 
-std::vector<Edge>& NDSimplex::getEdges() {
+const std::vector<Edge>& NDSimplex::getEdges() const {
 	return edges;
 }
 
-std::vector<VecN>& NDSimplex::getVertices() {
+const std::vector<VecN>& NDSimplex::getVertices() const {
 	return vertices;
 }
-std::vector<Triangle>& NDSimplex::getFaces() {
+const std::vector<Triangle>& NDSimplex::getFaces() const {
 	return faces;
 }
-std::vector<VecN>& NDSimplex::getNormals() {
+const std::vector<VecN>& NDSimplex::getNormals() const {
 	return normals;
 }
 

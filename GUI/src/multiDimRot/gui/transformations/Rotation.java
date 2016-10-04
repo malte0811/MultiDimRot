@@ -11,7 +11,7 @@ public class Rotation extends Transformation {
 		inc = i;
 	}
 	@Override
-	public String getHumanString(boolean multible) {
+	public String getHumanString(boolean multiple) {
 		return "Rotate in the plane "+a0+"|"+a1+"\n by "+angle+"°"+(inc?"\n per frame (40 FPS)":"");
 	}
 	@Override

@@ -1,12 +1,16 @@
 package multiDimRot.gui.panels;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
@@ -17,6 +21,7 @@ import javax.swing.JRadioButton;
 
 public class PolytopePanel extends ParamPanel {
 	String polytope;
+	String path = "";
 	private static Map<String, String> polytopes;
 	static {
 		polytopes = new HashMap<>();
@@ -24,6 +29,7 @@ public class PolytopePanel extends ParamPanel {
 		polytopes.put("n-dimensional Cross-polytope", "crosspolytope -d");
 		polytopes.put("n-dimensional Simplex", "simplex -d");
 		polytopes.put("24-Cell", "24Cell -4");
+		polytopes.put("(N)Obj file", "obj -o");
 	}
 	@Override
 	public void addTo(Group oHor, Group oVert, GroupLayout l, JFrame frame) {
@@ -37,9 +43,47 @@ public class PolytopePanel extends ParamPanel {
 			String curr = it.next();
 			buttons[i] = new JRadioButton(curr);
 			bGroup.add(buttons[i]);
+			int iCopy = i;
 			buttons[i].addActionListener((a)->{
 				polytope = polytopes.get(curr);
-				if (!polytope.endsWith("d")) {
+				if (polytope.endsWith("o")) {
+					JFileChooser c = new JFileChooser(System.getProperty("user.dir"));
+					c.showOpenDialog(frame);
+					File f = c.getSelectedFile();
+					System.out.println(f);
+					if (f==null) {
+						polytope = null;
+						buttons[iCopy].setSelected(false);
+					} else {
+						try {
+							FileInputStream fis = new FileInputStream(f);
+							int dimensions = -1;
+							while (fis.available()>0) {
+								String line = "";
+								int next;
+								while ((next = fis.read())!=-1&&next!='\n'&&next!='\r') {
+									line += (char) next;
+								}
+								if (line.startsWith("dims ")) {
+									dimensions = Integer.parseInt(line.substring(5));
+									break;
+								}
+							}
+							if (dimensions>=0) {
+								path = f.getAbsolutePath();
+								Main.INSTANCE.dimensions = dimensions;
+								Main.INSTANCE.frame.repaint();
+							} else {
+								polytope = null;
+								buttons[iCopy].setSelected(false);
+							}
+							fis.close();
+						} catch (Exception x) {
+							x.printStackTrace();
+							JOptionPane.showMessageDialog(frame, "An error occured: "+x.getClass(), "Error", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				} else if (!polytope.endsWith("d")) {
 					Main.INSTANCE.dimensions = Integer.parseInt(polytope.substring(polytope.length()-1, polytope.length()));
 					Main.INSTANCE.frame.repaint();
 				}
@@ -53,7 +97,13 @@ public class PolytopePanel extends ParamPanel {
 
 	@Override
 	public String getParam() {
-		return "--polytope "+polytope.substring(0, polytope.length()-2)+(polytope.endsWith("d")?(Main.INSTANCE.dimensions+" "):"");
+		String end = "";
+		if (polytope.endsWith("o")) {
+			end = path;
+		} else if (polytope.endsWith("d")) {
+			end = Integer.toString(Main.INSTANCE.dimensions);
+		}
+		return "--polytope "+polytope.substring(0, polytope.length()-2)+end+" ";
 	}
 
 	@Override

@@ -56,6 +56,7 @@ MultiDimRot2.0: $(BCS) $(USER_OBJS)
 	clang++ -L/usr/lib/gcc/x86_64-linux-gnu/6/ -o "MultiDimRot2.0" $(BCS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
+	$(MAKE) --no-print-directory post-build
 
 USER_OBJS.exe: MultiDimRot2.0 $(BCS) $(USER_OBJS)
 
@@ -64,9 +65,13 @@ clean:
 	-$(RM) $(BCS)$(CC_DEPS)$(C++_DEPS)$(LLVM_BC_EXECUTABLES)$(C_UPPER_DEPS)$(CXX_DEPS)$(BC_DEPS)$(LLVM_EXECUTABLES)$(C_DEPS)$(CPP_DEPS) MultiDimRot2.0
 	-@echo ' '
 
+post-build:
+	-cp MultiDimRot2.0 ../../GUI/MultiDimRot2.0
+	-@echo ' '
+
 secondary-outputs: $(LLVM_BC_EXECUTABLES)
 
 .PHONY: all clean dependents
-.SECONDARY:
+.SECONDARY: post-build
 
 -include ../makefile.targets

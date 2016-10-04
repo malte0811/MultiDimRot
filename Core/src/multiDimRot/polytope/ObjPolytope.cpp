@@ -38,8 +38,8 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 				throw "Invalid edge entry for OBJ";
 			}
 			Edge e;
-			e.start = util::toInt(words[0])-1;
-			e.end = util::toInt(words[1])-1;
+			e.start = util::toInt(words[0]);
+			e.end = util::toInt(words[1]);
 			edges.push_back(e);
 		} else if (line.find("vn ")==0) {
 			VecN next(dims);

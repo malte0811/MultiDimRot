@@ -103,6 +103,7 @@ public class Main  {
 			}
 			try {
 				Runtime.getRuntime().exec(cmd);
+				System.out.println(cmd);
 			} catch (Exception e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(frame, "Could not launch MultiDimRot", "Error", JOptionPane.ERROR_MESSAGE);

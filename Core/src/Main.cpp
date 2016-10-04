@@ -184,12 +184,12 @@ void parseMatParam(const char* argv[], int &argc, int &pos, int dims, MatrixNxN 
 			pos+=2;
 		} else if (in=="project") {
 			checkSpace(pos, argc, 2, in);
-			mat.project(util::toInt(argv[pos+1]), util::toFloat(argv[pos+2]));
+			mat.project(util::toInt(argv[pos+1]), 1/util::toFloat(argv[pos+2]));
 			pos+=2;
 		} else if (in=="projectAll") {
 			float dist = util::toFloat(argv[pos+1]);
 			for (int d = dims;d>=3;d--) {
-				mat.project(d, dist);
+				mat.project(d, 1/dist);
 			}
 			pos++;
 		} else {

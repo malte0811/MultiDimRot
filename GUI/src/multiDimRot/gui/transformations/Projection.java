@@ -9,7 +9,7 @@ public class Projection extends Transformation {
 		distance = dist;
 	}
 	@Override
-	public String getHumanString(boolean multible) {
+	public String getHumanString(boolean multiple) {
 		if (dimension>0) {
 			return "Project onto a "+(dimension-1)+" dimensional space from distance "+distance;
 		} else {
@@ -18,7 +18,7 @@ public class Projection extends Transformation {
 	}
 
 	@Override
-	public String getParameterString(boolean multible) {
+	public String getParameterString(boolean multiple) {
 		if (dimension>0) {
 			return "project "+dimension+" "+distance;
 		} else {

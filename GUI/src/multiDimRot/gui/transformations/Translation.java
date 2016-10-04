@@ -8,12 +8,12 @@ public class Translation extends Transformation {
 		amount = a;
 	}
 	@Override
-	public String getHumanString(boolean multible) {
+	public String getHumanString(boolean multiple) {
 		return "Translate into direction "+dim+" by "+amount;
 	}
 
 	@Override
-	public String getParameterString(boolean multible) {
+	public String getParameterString(boolean multiple) {
 		return "translate "+dim+" "+amount;
 	}
 

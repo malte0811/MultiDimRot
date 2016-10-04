@@ -11,7 +11,7 @@ public class Scaling extends Transformation {
 		amount = a;
 	}
 	@Override
-	public String getHumanString(boolean multible) {
+	public String getHumanString(boolean multiple) {
 		if (dim!=-1) {
 			return "Scale in direction "+dim+" by "+amount;
 		} else {
@@ -20,7 +20,7 @@ public class Scaling extends Transformation {
 	}
 
 	@Override
-	public String getParameterString(boolean multible) {
+	public String getParameterString(boolean multiple) {
 		if (dim==-1) {
 			return "scaleAll "+amount;
 		} else {

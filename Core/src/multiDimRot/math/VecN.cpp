@@ -107,7 +107,7 @@ std::string VecN::toString() const {
 	std::stringstream ret;
 	ret << "[";
 	for (int i = 0;i<dimensions;i++) {
-		ret << elements[i];
+		ret << (std::abs(elements[i])<.000001?0:elements[i]);
 		if (i!=dimensions-1) {
 			ret << ", ";
 		}

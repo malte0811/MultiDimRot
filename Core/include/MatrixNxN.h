@@ -7,7 +7,7 @@
 
 class MatrixNxN {
 public:
-	MatrixNxN(int size);
+	MatrixNxN(int size, bool inverse = true);
 	MatrixNxN();
 	MatrixNxN(const MatrixNxN& other);
 	virtual ~MatrixNxN();
@@ -20,6 +20,7 @@ public:
 	std::string toString() const;
 
 	void initInverse();
+	void setToIdentity();
 
 	void rotate(int a1, int a2, float angleDeg);
 	void translate(int axis, float amount);

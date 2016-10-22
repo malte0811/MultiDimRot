@@ -136,7 +136,11 @@ inline void Renderer::renderVertices() {
 	}
 	glVertexAttribPointer(attribute_pos, 4, GL_FLOAT, GL_FALSE, 0, data);
 	glUniform3f(uniform_baseColor, 0, 0, 1);
-	glPointSize(4);
+	int size = 2;
+	if (renderType[2]||renderType[1]) {
+		size = 4;
+	}
+	glPointSize(size);
 	glDrawArrays(GL_POINTS, 0, vSize);
 	glPointSize(1);
 }
@@ -164,7 +168,8 @@ inline void Renderer::renderEdges(const std::vector<Edge> &edges) {
 	}
 	glVertexAttribPointer(attribute_pos, 4, GL_FLOAT, GL_FALSE, 0, data);
 	glUniform3f(uniform_baseColor, 0, 1, 0);
-	glLineWidth(2);
+	if (renderType[2])
+		glLineWidth(2);
 	glDrawArrays(GL_LINES, 0, eSize*2);
 	glLineWidth(1);
 }

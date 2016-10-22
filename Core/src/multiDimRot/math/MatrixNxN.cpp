@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 // elements[row][column]
-MatrixNxN::MatrixNxN(int size) {
+MatrixNxN::MatrixNxN(int size, bool inverse) {
 	elements = new float*[size];
 	buffer = new float*[size];
 	length = size;
@@ -17,8 +17,9 @@ MatrixNxN::MatrixNxN(int size) {
 			elements[i][j] = (i==j?1:0);
 		}
 	}
-	//TODO find a cleaner way to do this...
-	initInverse();
+	if (inverse) {
+		initInverse();
+	}
 }
 
 MatrixNxN::MatrixNxN() {
@@ -65,6 +66,21 @@ void MatrixNxN::initInverse() {
 		inverse = new float*[length];
 		for (int i = 0;i<length;i++) {
 			inverse[i] = new float[length];
+			for (int j = 0;j<length;j++) {
+				inverse[i][j] = (i==j?1:0);
+			}
+		}
+	}
+}
+
+void MatrixNxN::setToIdentity() {
+	for (int i = 0;i<length;i++) {
+		for (int j = 0;j<length;j++) {
+			elements[i][j] = (i==j?1:0);
+		}
+	}
+	if (inverse!=0) {
+		for (int i = 0;i<length;i++) {
 			for (int j = 0;j<length;j++) {
 				inverse[i][j] = (i==j?1:0);
 			}
@@ -167,31 +183,29 @@ void MatrixNxN::operator*=(const MatrixNxN &other) {
 			elements[i][j] = sum;
 		}
 	}
-	//copy inverse to buffer
-	for (int i = 0;i<length;i++) {
-		for (int j = 0;j<length;j++) {
-			buffer[i][j] = inverse[i][j];
-		}
-	}
-	//multiply inverse matrix
-	for (int i = 0;i<length;i++) {
-		for (int j = 0;j<length;j++) {
-			float sum = 0;
-			for (int k = 0;k<length;k++) {
-				sum+=buffer[i][k]*other.inverse[k][j];
+	if (inverse!=0) {
+		//copy inverse to buffer
+		for (int i = 0;i<length;i++) {
+			for (int j = 0;j<length;j++) {
+				buffer[i][j] = inverse[i][j];
 			}
-			inverse[i][j] = sum;
+		}
+		//multiply inverse matrix
+		for (int i = 0;i<length;i++) {
+			for (int j = 0;j<length;j++) {
+				float sum = 0;
+				for (int k = 0;k<length;k++) {
+					sum+=buffer[i][k]*other.inverse[k][j];
+				}
+				inverse[i][j] = sum;
+			}
 		}
 	}
-
 }
 
 void MatrixNxN::rotate(int a1, int a2, float deg) {
 	if (a1==a2) {
 		throw "Can't rotate around one axis";
-	}
-	if (a1>length-2||a2>length-2) {
-		throw "Can't rotate around the last axis";
 	}
 	float angle = M_PI*deg/180;
 	float cos = std::cos(angle);

@@ -16,6 +16,7 @@
 #include <JoinedPolytope.h>
 #include <P24Cell.h>
 #include <Renderer.h>
+#include <NDSphere.h>
 
 
 void rotAll(std::vector<MatrixNxN> &in, int dim, int a0, int a1, float deg, bool con) {
@@ -67,16 +68,14 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &poly
 		if (in.find("--")==0) {
 			return;
 		}
+		if (polyt!=0)
+			delete polyt;
 		if (in=="cube") {
 			checkSpace(pos, argc, 1, in);
-			if (polyt!=0)
-				delete polyt;
 			polyt = new NDCube(util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="obj") {
 			checkSpace(pos, argc, 1, in);
-			if (polyt!=0)
-				delete polyt;
 			std::string file = argv[pos+1];
 			std::ifstream instream(file.c_str());
 			if (!instream.is_open()) {
@@ -86,20 +85,20 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &poly
 			pos++;
 		} else if (in=="crossPolytope") {
 			checkSpace(pos, argc, 1, in);
-			if (polyt!=0)
-				delete polyt;
 			polyt = new NDCrossPolytope(util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="simplex") {
 			checkSpace(pos, argc, 1, in);
-			if (polyt!=0)
-				delete polyt;
 			polyt = new NDSimplex(util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="24Cell") {
 			if (polyt!=0)
 				delete polyt;
 			polyt = new P24Cell();
+		} else if (in=="sphere") {
+			checkSpace(pos, argc, 2, in);
+			polyt = new NDSphere(util::toInt(argv[pos+1]), util::toInt(argv[pos+2]));
+			pos+=2;
 		} else {
 			throw "Unknown parameter: "+in;
 		}
@@ -243,9 +242,6 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 			}
 			parseMatVecParam(argv, argc, i, polyt->getDimensions(), endMats);
 		} else if (in=="--renderType") {
-			if (polyt==0) {
-				throw "No polytope specified";
-			}
 			parseRenderType(argv, argc, i, renderType);
 		} else {
 			throw "Unknown parameter: "+in;
@@ -269,12 +265,12 @@ void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats,
 	}
 	powerMat = MatrixNxN(dims+1);
 	startMats = std::vector<MatrixNxN>(360, MatrixNxN(dims+1));
-	/*for (int j = 0;j<dims-1;j++) {
-		for (int i = j+1;i<dims;i++) {
-			powerMat.rotate(j, i, 1);
-			//rotAll(startMats, dims, j, i, 1, true);
-		}
-	}*/
+//	for (int j = 0;j<dims-1;j++) {
+//		for (int i = j+1;i<dims;i++) {
+//			powerMat.rotate(j, i, 1);
+//			//rotAll(startMats, dims, j, i, 1, true);
+//		}
+//	}
 	powerMat.rotate(0, 2, 1);
 	powerMat.rotate(1, 3, 1);
 	renderType[0] = true;

@@ -1,5 +1,4 @@
 Core/Debug/*
-!Core/Debug/makefile
 GUI/MultiDimRot2.0
 GUI/courier.ttf
 */bin/*

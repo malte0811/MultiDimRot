@@ -12,8 +12,8 @@ public class RenderTypePanel extends ParamPanel {
 
 	@Override
 	public void addTo(Group hor, Group vert, GroupLayout l, JFrame main) {
-		vertices = new JCheckBox("Render vertices");
-		edges = new JCheckBox("Render edges");
+		vertices = new JCheckBox("Render vertices", false);
+		edges = new JCheckBox("Render edges", true);
 		faces = new JCheckBox("Render faces");
 		hor.addComponent(vertices);
 		vert.addComponent(vertices);

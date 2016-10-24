@@ -4,7 +4,7 @@
 #include <Polytope.h>
 class NDSphere: public Polytope {
 public:
-	NDSphere(int dimensions, int verticesPerHalf = 18);
+	NDSphere(int dimensions, int verticesPerHalf = 10);
 	virtual ~NDSphere();
 	virtual const std::vector<VecN>& getVertices() const;
 	virtual const std::vector<Edge>& getEdges() const;

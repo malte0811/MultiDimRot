@@ -1,5 +1,6 @@
 package multiDimRot.gui.panels;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -18,16 +19,19 @@ import javax.swing.GroupLayout.SequentialGroup;
 import multiDimRot.gui.Main;
 
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 public class PolytopePanel extends ParamPanel {
 	String polytope;
 	String path = "";
+	Map<String, JTextField> extraData = new HashMap<>();
 	private static Map<String, String> polytopes;
 	static {
 		polytopes = new HashMap<>();
 		polytopes.put("n-dimensional Cube", "cube -d");
 		polytopes.put("n-dimensional Cross-polytope", "crosspolytope -d");
 		polytopes.put("n-dimensional Simplex", "simplex -d");
+		polytopes.put("n-dimensional Sphere", "sphere -e");
 		polytopes.put("24-Cell", "24Cell -4");
 		polytopes.put("(N)Obj file", "obj -o");
 	}
@@ -83,13 +87,32 @@ public class PolytopePanel extends ParamPanel {
 							JOptionPane.showMessageDialog(frame, "An error occured: "+x.getClass(), "Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
-				} else if (!polytope.endsWith("d")) {
+				} else if (Character.isDigit(polytope.charAt(polytope.length()-1))) {
 					Main.INSTANCE.dimensions = Integer.parseInt(polytope.substring(polytope.length()-1, polytope.length()));
 					Main.INSTANCE.frame.repaint();
 				}
+				for (String s:extraData.keySet()) {
+					extraData.get(s).setEnabled(s.equals(polytope));
+				}
 			});
-			hor.addComponent(buttons[i]);
-			vert.addComponent(buttons[i]);
+			String p = polytopes.get(curr);
+			if (p.endsWith("-e")) {
+				GroupLayout.ParallelGroup iVert = l.createParallelGroup();
+				GroupLayout.SequentialGroup iHor = l.createSequentialGroup();
+				JTextField input = new JTextField();
+				input.setMaximumSize(new Dimension(200, buttons[i].getHeight()));
+				input.setEnabled(false);
+				iVert.addComponent(buttons[i]);
+				iHor.addComponent(buttons[i]);
+				iVert.addComponent(input);
+				iHor.addComponent(input);
+				hor.addGroup(iHor);
+				vert.addGroup(iVert);
+				extraData.put(p, input);
+			} else {
+				hor.addComponent(buttons[i]);
+				vert.addComponent(buttons[i]);
+			}
 		}
 		oHor.addGroup(hor);
 		oVert.addGroup(vert);
@@ -102,6 +125,8 @@ public class PolytopePanel extends ParamPanel {
 			end = path;
 		} else if (polytope.endsWith("d")) {
 			end = Integer.toString(Main.INSTANCE.dimensions);
+		} else if (polytope.endsWith("e")) {
+			end = Integer.toString(Main.INSTANCE.dimensions)+" "+extraData.get(polytope).getText();
 		}
 		return "--polytope "+polytope.substring(0, polytope.length()-2)+end+" ";
 	}

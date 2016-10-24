@@ -77,10 +77,11 @@ inline void Renderer::renderFaces(const std::vector<Triangle> &faces, const VecN
 	int nSize = transformedNormals.size();
 	for (int i = 0;i<nSize;i++) {
 		transformedNormals[i].scaleToLength(1, true);
+		float val = (light*transformedNormals[i]);
 		if (i<brightnessSize) {
-			brightness[i] = light*transformedNormals[i];
+			brightness[i] = val;
 		} else {
-			brightness.push_back(light*transformedNormals[i]);
+			brightness.push_back(val);
 			brightnessSize++;
 		}
 	}

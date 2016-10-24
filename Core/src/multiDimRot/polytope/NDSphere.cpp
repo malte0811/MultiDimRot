@@ -1,5 +1,6 @@
 #include <NDSphere.h>
 #include <cmath>
+#include <Util.h>
 
 /*
  * This is not perfect, it generates a lot of duplicate vertices.
@@ -14,9 +15,11 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 		vertices[1][0] = -1;
 	MatrixNxN rot(dims, false);
 	MatrixNxN rotBase(dims, false);
+	int prevPrevVSize = -1;
 	for (int i = 1;i<dimensions;i++) {
 		const int prevVSize = vertices.size();
 		const int prevESize = edges.size();
+		const int prevFSize = faces.size();
 		rot.setToIdentity();
 		rotBase.setToIdentity();
 		rotBase.rotate(i-1, i, angle);
@@ -35,6 +38,14 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 				tmp.end = edges[k].end+vOffset;
 				edges.push_back(tmp);
 			}
+			for (int k = 0;k<prevFSize;k++) {
+				Triangle tmp;
+				tmp.vertices[0] = faces[k].vertices[0]+vOffset;
+				tmp.vertices[1] = faces[k].vertices[1]+vOffset;
+				tmp.vertices[2] = faces[k].vertices[2]+vOffset;
+				tmp.normals = tmp.vertices;
+				faces.push_back(tmp);
+			}
 		}
 		const int newVSize = vertices.size();
 		const int maxV = (i==dimensions-1)?newVSize:(newVSize-prevVSize);
@@ -44,18 +55,33 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 			e.end = (j+prevVSize)%newVSize;
 			edges.push_back(e);
 		}
+		for (int j = 0;j<maxV;j++) {
+			if ((j+1)%prevVSize!=0) {
+				const int idStart = faces.size();
+				faces.push_back(Triangle());
+				faces.push_back(Triangle());
+				int tmp = idStart;
+				util::initQuad(faces, tmp, j, (j+prevPrevVSize)%newVSize,
+						(j+prevVSize)%newVSize, (j+prevVSize+prevPrevVSize)%newVSize, 0);
+				faces[idStart].normals = faces[idStart].vertices;
+				faces[idStart+1].normals = faces[idStart+1].vertices;
+			}
+		}
+		prevPrevVSize = prevVSize;
 	}
 	if (dimensions==2)
 		return;
 	// clean up (most of) the mess of duplicates and zero-length edges
 	const std::vector<VecN> oldVertices = vertices;
 	const std::vector<Edge> oldEdges = edges;
+	const std::vector<Triangle> oldFaces = faces;
 	//TODO get rid of this mess
 	std::vector<int> vertexMap = std::vector<int>(oldVertices.size());
 	vertices = std::vector<VecN>(2, VecN(dimensions));
 	vertices[0][0] = 1;
 	vertices[1][0] = -1;
 	edges = std::vector<Edge>();
+	faces = std::vector<Triangle>();
 	int nextId = 2;
 	for (int i = 0;i<oldVertices.size();i++) {
 		int mod = i%(verticesPerHalf+1);
@@ -78,6 +104,15 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 			edges.push_back(tmp);
 		}
 	}
+	for (int i = 0;i<oldFaces.size();i++) {
+		Triangle tmp;
+		Triangle old = oldFaces[i];
+		tmp.vertices[0] = vertexMap[old.vertices[0]];
+		tmp.vertices[1] = vertexMap[old.vertices[1]];
+		tmp.vertices[2] = vertexMap[old.vertices[2]];
+		tmp.normals = tmp.vertices;
+		faces.push_back(tmp);
+	}
 }
 
 
@@ -99,7 +134,7 @@ const std::vector<Triangle>& NDSphere::getFaces() const {
 }
 
 const std::vector<VecN>& NDSphere::getNormals() const {
-	return normals;
+	return vertices;
 }
 
 int NDSphere::getDimensions() const {

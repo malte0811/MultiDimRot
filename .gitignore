@@ -5,4 +5,8 @@ GUI/courier.ttf
 .metadata/*
 RemoteSystemsTempFiles/*
 .recommenders/*
-Core/.settings/
+*/.settings/*
+*/.project
+*/.cproject
+*/.classpath
+

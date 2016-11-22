@@ -61,23 +61,3 @@ NDSimplex::NDSimplex(int dim) {
 }
 
 NDSimplex::~NDSimplex() {}
-
-int NDSimplex::getDimensions() const {
-	return dimensions;
-}
-
-const std::vector<Edge>& NDSimplex::getEdges() const {
-	return edges;
-}
-
-const std::vector<VecN>& NDSimplex::getVertices() const {
-	return vertices;
-}
-const std::vector<Triangle>& NDSimplex::getFaces() const {
-	return faces;
-}
-const std::vector<VecN>& NDSimplex::getNormals() const {
-	return normals;
-}
-
-void NDSimplex::update() {}

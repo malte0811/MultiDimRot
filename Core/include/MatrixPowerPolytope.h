@@ -15,16 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#ifndef SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
-#define SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
+#ifndef SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_
+#define SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_
 
-#include <vector>
-#include "Polytope.h"
+#include <Polytope.h>
+#include <MatrixNxN.h>
+#include <VecN.h>
 
-class NDCrossPolytope:public Polytope {
+class MatrixPowerPolytope: public Polytope {
 public:
-	NDCrossPolytope(int i);
-	virtual ~NDCrossPolytope();
+	MatrixPowerPolytope();
+	virtual ~MatrixPowerPolytope();
+	virtual void update();
+private:
+	MatrixNxN curr;
+	MatrixNxN base;
+	VecN init;
+	bool generating = true;
+	int nextId = 0;
 };
 
-#endif /* SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_ */
+#endif /* SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_ */

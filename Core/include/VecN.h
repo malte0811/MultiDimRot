@@ -33,6 +33,7 @@ public:
 	float operator*(const VecN &d) const;
 	VecN operator*(float d) const;
 	void operator=(const VecN &v);
+	bool operator==(const VecN& other);
 
 	float& operator[](const int &i);
 	const float& operator[](const int &i) const;

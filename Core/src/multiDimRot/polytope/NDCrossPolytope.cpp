@@ -71,23 +71,3 @@ NDCrossPolytope::NDCrossPolytope(int dim) {
 }
 
 NDCrossPolytope::~NDCrossPolytope() {}
-
-int NDCrossPolytope::getDimensions() const {
-	return dimensions;
-}
-
-const std::vector<Edge>& NDCrossPolytope::getEdges() const {
-	return edges;
-}
-
-const std::vector<VecN>& NDCrossPolytope::getVertices() const {
-	return vertices;
-}
-const std::vector<Triangle>& NDCrossPolytope::getFaces() const {
-	return faces;
-}
-const std::vector<VecN>& NDCrossPolytope::getNormals() const {
-	return normals;
-}
-
-void NDCrossPolytope::update() {}

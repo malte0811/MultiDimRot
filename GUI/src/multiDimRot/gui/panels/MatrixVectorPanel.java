@@ -47,16 +47,18 @@ public class MatrixVectorPanel extends ParamPanel {
 	String paramPrefix;
 	JTextField cycle;
 	String title;
-	public MatrixVectorPanel(String pp, String t) {
+	int defaultCycle;
+	public MatrixVectorPanel(String pp, String t, int dCycle) {
 		paramPrefix = pp;
 		title = t;
+		defaultCycle = dCycle;
 	}
 	@Override
 	public void addTo(Group oHor, Group oVert, GroupLayout l, JFrame frame) {
 		ParallelGroup vert = l.createParallelGroup();
 		SequentialGroup hor = l.createSequentialGroup();
 		JLabel tmp = new JLabel("Cycle length: ");
-		cycle = new JTextField();
+		cycle = new JTextField(Integer.toString(defaultCycle));
 		cycle.setMaximumSize(new Dimension(200, tmp.getHeight()));
 		vert.addComponent(tmp);
 		hor.addComponent(tmp);

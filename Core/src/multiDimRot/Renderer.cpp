@@ -23,16 +23,17 @@
 #include <fstream>
 #include <iostream>
 #include <GL/glew.h>
+#include <ThreadedMatVecMultiplier.h>
 #include <cmath>
 
-Renderer::Renderer(Polytope* &p, std::vector<MatrixNxN> &start, MatrixNxN &power, std::vector<MatrixNxN> &end, const bool rt[]):
-startMats(start), powerMat(power), endMats(end), dims(p->getDimensions()) {
+Renderer::Renderer(Polytope* &p, std::vector<MatrixNxN> &start, MatrixNxN &power, std::vector<MatrixNxN> &end, const bool rt[], int tC):
+startMats(start), powerMat(power), endMats(end), dims(p->getDimensions()), threadCount(tC) {
 	polyt = p;
 	renderType = rt;
 }
 
 Renderer::~Renderer() {
-	//delete polyt;
+	delete polyt;
 }
 void Renderer::init_resources() {
 	GLint compile_ok = GL_FALSE, link_ok = GL_FALSE;
@@ -228,6 +229,7 @@ void Renderer::render() {
 	VecN light(dims);
 	light[dims-1] = -1;
 	std::vector<float> brightnesses(0, 0);
+	ThreadedMatVecMultiplier multiplier(curr, threadCount);
 	while (window.isOpen()) {
 		c.restart();
 		polyt->update();
@@ -247,8 +249,10 @@ void Renderer::render() {
 		const std::vector<Edge> &edges = polyt->getEdges();
 		const std::vector<VecN>& verticesOld = polyt->getVertices();
 		const std::vector<VecN>& normalsOld = polyt->getNormals();
-		curr.applyMass(verticesOld, transformedVertices);
-		curr.applyInvTMass(normalsOld, transformedNormals);
+		multiplier.apply(verticesOld, transformedVertices, false);
+		if (renderType[2]) {
+			multiplier.apply(normalsOld, transformedNormals, true);
+		}
 		vSize = transformedVertices.size();
 
 		// scale z
@@ -340,6 +344,7 @@ void Renderer::render() {
 			}
 		}
 	}
+	multiplier.stop();
 	std::cout << "Vertex count: " << transformedVertices.size() << ", face count: " << polyt->getFaces().size() << ", normal count: " << transformedNormals.size() << "\n";
 	std::cout << "Avg. processing time: " << sum/(float)frameId << " us, Avg. short-circuit FPS: " << (1000000.0*frameId)/sum << "\n";
 }

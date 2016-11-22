@@ -35,3 +35,25 @@ float Polytope::getLength(Edge e) {
 	}
 	return std::sqrt(sum);
 }
+
+const std::vector<VecN>& Polytope::getVertices() const {
+	return vertices;
+}
+
+const std::vector<VecN>& Polytope::getNormals() const {
+	return normals;
+}
+
+const std::vector<Edge>& Polytope::getEdges() const {
+	return edges;
+}
+
+const std::vector<Triangle>& Polytope::getFaces() const {
+	return faces;
+}
+
+int Polytope::getDimensions() const {
+	return dimensions;
+}
+
+void Polytope::update() {}

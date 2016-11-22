@@ -67,23 +67,3 @@ NDCube::NDCube(int dims) {
 }
 
 NDCube::~NDCube() {}
-
-int NDCube::getDimensions() const {
-	return dimensions;
-}
-
-const std::vector<Edge>& NDCube::getEdges() const {
-	return edges;
-}
-
-const std::vector<VecN>& NDCube::getVertices() const {
-	return vertices;
-}
-const std::vector<Triangle>& NDCube::getFaces() const {
-	return faces;
-}
-const std::vector<VecN>& NDCube::getNormals() const {
-	return normals;
-}
-
-void NDCube::update() {}

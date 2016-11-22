@@ -143,16 +143,18 @@ void MatrixNxN::operator=(const MatrixNxN &other) {
 	}
 	bool keepArray = length==other.length;
 	length = other.length;
-	float** old = elements;
 	if (!keepArray) {
 		if (elements!=0) {
 			delete[] elements;
+			delete[] buffer;
 		}
 		elements = new float*[length];
+		buffer = new float*[length];
 	}
 	for (int i = 0;i<length;i++) {
 		if (!keepArray) {
 			elements[i] = new float[length];
+			buffer[i] = new float[length];
 		}
 		for (int j = 0;j<length;j++) {
 			elements[i][j] = other.elements[i][j];
@@ -178,9 +180,6 @@ void MatrixNxN::operator=(const MatrixNxN &other) {
 				inverse[i][j] = other.inverse[i][j];
 			}
 		}
-	}
-	if (!keepArray&&old!=0) {
-		delete[] old;
 	}
 }
 void MatrixNxN::operator*=(const MatrixNxN &other) {
@@ -380,6 +379,13 @@ void MatrixNxN::checkInverse() const {
 	}
 	ret.inverse = 0;
 	std::cout << ret;
+}
+
+void MatrixNxN::setElement(int a, int b, float c) {
+	if (inverse!=0) {
+		throw "Can't set individual elements in matrices with inverses";
+	}
+	elements[a][b] = c;
 }
 
 std::ostream& operator<<(std::ostream& os, const MatrixNxN& en) {

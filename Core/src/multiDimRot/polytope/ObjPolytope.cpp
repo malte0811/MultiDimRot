@@ -29,15 +29,15 @@
 
 ObjPolytope::ObjPolytope(std::istream* in) {
 	char lineTmp[256];
-	dims = 3;//default for reading normal OBJ files
+	dimensions = 3;//default for reading normal OBJ files
 	std::string line;
 	while (!(*in).eof()) {
 		(*in).getline(lineTmp, 256);
 		line = std::string(lineTmp);
 		if (line.find("v ")==0) {
-			VecN next(dims);
+			VecN next(dimensions);
 			std::vector<std::string> words = util::splitAtWords(line.substr(2), ' ');
-			if (words.size()!=dims) {
+			if (words.size()!=dimensions) {
 				throw "Invalid input in OBJ: vertex element count of \"v\" differs from dimension";
 			}
 			for (unsigned int i = 0;i<words.size();i++) {
@@ -45,8 +45,8 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 			}
 			vertices.push_back(next);
 		} else if (line.find("dims ")==0) {
-			dims = util::toInt(line.substr(5));
-			if (dims<=0) {
+			dimensions = util::toInt(line.substr(5));
+			if (dimensions<=0) {
 				throw "Dimension count can not be less than 1 (OBJ)";
 			}
 		} else if (line.find("e ")==0) {
@@ -59,9 +59,9 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 			e.end = util::toInt(words[1]);
 			edges.push_back(e);
 		} else if (line.find("vn ")==0) {
-			VecN next(dims);
+			VecN next(dimensions);
 			std::vector<std::string> words = util::splitAtWords(line.substr(3), ' ');
-			if (words.size()!=dims) {
+			if (words.size()!=dimensions) {
 				throw "Invalid input in OBJ: normal element count of \"v\" differs from dimension";
 			}
 			for (unsigned int i = 0;i<words.size();i++) {
@@ -100,27 +100,6 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 }
 
 ObjPolytope::~ObjPolytope() {}
-
-const std::vector<VecN>& ObjPolytope::getVertices() const {
-	return vertices;
-}
-
-const std::vector<Edge>& ObjPolytope::getEdges() const {
-	return edges;
-}
-
-int ObjPolytope::getDimensions() const {
-	return dims;
-}
-
-const std::vector<Triangle>& ObjPolytope::getFaces() const {
-	return faces;
-}
-const std::vector<VecN>& ObjPolytope::getNormals() const {
-	return normals;
-}
-
-void ObjPolytope::update() {}
 
 void Polytope::writeObj(std::ostream* out, const MatrixNxN &apply) const {
 	int dims = getDimensions();

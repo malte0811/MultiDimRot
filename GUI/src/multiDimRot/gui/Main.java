@@ -38,7 +38,7 @@ import multiDimRot.gui.panels.DimensionCountPanel;
 import multiDimRot.gui.panels.MatrixVectorPanel;
 import multiDimRot.gui.panels.ParamPanel;
 import multiDimRot.gui.panels.PolytopePanel;
-import multiDimRot.gui.panels.RenderTypePanel;
+import multiDimRot.gui.panels.MiscPanel;
 import multiDimRot.gui.panels.SingleMatrixPanel;
 
 public class Main  {
@@ -73,10 +73,10 @@ public class Main  {
 		INSTANCE = this;
 		panels.add(new DimensionCountPanel());
 		panels.add(new PolytopePanel());
-		panels.add(new RenderTypePanel());
-		panels.add(new MatrixVectorPanel("--startMats", "Start matrix"));
+		panels.add(new MiscPanel());
+		panels.add(new MatrixVectorPanel("--startMats", "Start matrix", 0));
 		panels.add(new SingleMatrixPanel("--powerMat", "Power matrix"));
-		panels.add(new MatrixVectorPanel("--endMats", "End matrix"));
+		panels.add(new MatrixVectorPanel("--endMats", "End matrix", 1));
 
 
 		frame = new JFrame("MultiDimRot");

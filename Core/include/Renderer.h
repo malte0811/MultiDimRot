@@ -25,7 +25,7 @@
 
 class Renderer {
 public:
-	Renderer(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, const bool* renderType);
+	Renderer(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, const bool* renderType, int threadCount);
 	virtual ~Renderer();
 	void render();
 private:
@@ -49,6 +49,7 @@ private:
 	int vSize = 0;
 	int brightnessSize = 0;
 	const int dims;
+	const int threadCount;
 };
 
 #endif /* SRC_MULTIDIMROT_RENDERER_H_ */

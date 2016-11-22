@@ -51,6 +51,7 @@ public:
 	void applyInvTMass(const std::vector<VecN> &in, std::vector<VecN> &out) const;
 	int getSize() const;
 	void checkInverse() const;
+	void setElement(int a, int b, float val);
 private:
 	float** elements;
 	float** buffer = 0;

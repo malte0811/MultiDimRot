@@ -92,7 +92,6 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 	const std::vector<VecN> oldVertices = vertices;
 	const std::vector<Edge> oldEdges = edges;
 	const std::vector<Triangle> oldFaces = faces;
-	//TODO get rid of this mess
 	std::vector<int> vertexMap = std::vector<int>(oldVertices.size());
 	vertices = std::vector<VecN>(2, VecN(dimensions));
 	vertices[0][0] = 1;
@@ -138,26 +137,6 @@ NDSphere::~NDSphere() {
 
 }
 
-const std::vector<VecN>& NDSphere::getVertices() const {
-	return vertices;
-}
-
-const std::vector<Edge>& NDSphere::getEdges() const {
-	return edges;
-}
-
-const std::vector<Triangle>& NDSphere::getFaces() const {
-	return faces;
-}
-
 const std::vector<VecN>& NDSphere::getNormals() const {
 	return vertices;
-}
-
-int NDSphere::getDimensions() const {
-	return dimensions;
-}
-
-void NDSphere::update() {
-
 }

@@ -72,25 +72,3 @@ P24Cell::P24Cell() {
 }
 
 P24Cell::~P24Cell() {}
-
-int P24Cell::getDimensions() const {
-	return 4;
-}
-
-const std::vector<Edge>& P24Cell::getEdges() const {
-	return edges;
-}
-
-const std::vector<VecN>& P24Cell::getVertices() const {
-	return vertices;
-}
-
-const std::vector<Triangle>& P24Cell::getFaces() const {
-	return faces;
-}
-
-const std::vector<VecN>& P24Cell::getNormals() const {
-	return normals;
-}
-
-void P24Cell::update() {}

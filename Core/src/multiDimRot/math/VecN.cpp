@@ -120,6 +120,19 @@ void VecN::operator=(const VecN &v) {
 	}
 }
 
+bool VecN::operator ==(const VecN& other) {
+	float tolerance = .0001;
+	if (other.dimensions!=dimensions) {
+		return false;
+	}
+	for (int i = 0;i<dimensions;i++) {
+		if (std::abs(other.elements[i]-elements[i])>tolerance) {
+			return false;
+		}
+	}
+	return true;
+}
+
 std::string VecN::toString() const {
 	std::stringstream ret;
 	ret << "[";

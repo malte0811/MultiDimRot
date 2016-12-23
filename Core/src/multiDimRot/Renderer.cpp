@@ -142,7 +142,9 @@ inline void Renderer::renderFaces(const std::vector<Triangle> &faces, const VecN
 
 inline void Renderer::renderVertices() {
 	if (dataSize<vSize*4) {
-		delete[] data;
+		if (data!=0) {
+			delete[] data;
+		}
 		data = new GLfloat[vSize*4];
 		dataSize = vSize*4;
 	}
@@ -167,7 +169,9 @@ inline void Renderer::renderVertices() {
 inline void Renderer::renderEdges(const std::vector<Edge> &edges) {
 	int eSize = edges.size();
 	if (dataSize<2*4*eSize) {
-		delete[] data;
+		if (data!=0) {
+			delete[] data;
+		}
 		data = new GLfloat[2*4*eSize];
 		dataSize = 2*4*eSize;
 	}
@@ -301,7 +305,7 @@ void Renderer::render() {
 		if (renderType[2]) {
 			renderFaces(tris, light);
 		}
-
+		glFlush();
 		glDisableVertexAttribArray(attribute_pos);
 
 		if (outFile.size()>0) {

@@ -303,7 +303,7 @@ void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats,
 		endMats[0].project(j, .2);
 	}
 	powerMat = MatrixNxN(dims+1);
-	startMats = std::vector<MatrixNxN>(360, MatrixNxN(dims+1));
+	startMats = std::vector<MatrixNxN>(0, MatrixNxN(dims+1));
 	//	for (int j = 0;j<dims-1;j++) {
 	//		for (int i = j+1;i<dims;i++) {
 	//			powerMat.rotate(j, i, 1);
@@ -312,7 +312,7 @@ void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats,
 	//	}
 	powerMat.rotate(0, 2, 1);
 	powerMat.rotate(1, 3, 1);
-	renderType[0] = 0;
+	renderType[0] = true;
 	renderType[1] = true;
 	renderType[2] = 0;
 }

@@ -22,6 +22,7 @@
 #include "VecN.h"
 #include <vector>
 #include <iostream>
+#include <Util.h>
 // elements[row][column]
 MatrixNxN::MatrixNxN(int size, bool inverse) {
 	elements = new float*[size];
@@ -67,15 +68,9 @@ MatrixNxN::MatrixNxN(const MatrixNxN &other) {
 }
 
 MatrixNxN::~MatrixNxN() {
-	if (elements!=0) {
-		delete[] elements;
-	}
-	if (inverse!=0) {
-		delete[] inverse;
-	}
-	if (buffer!=0) {
-		delete[] buffer;
-	}
+	util::del2DimArray(elements, length);
+	util::del2DimArray(inverse, length);
+	util::del2DimArray(buffer, length);
 }
 
 void MatrixNxN::initInverse() {
@@ -144,10 +139,8 @@ void MatrixNxN::operator=(const MatrixNxN &other) {
 	bool keepArray = length==other.length;
 	length = other.length;
 	if (!keepArray) {
-		if (elements!=0) {
-			delete[] elements;
-			delete[] buffer;
-		}
+		util::del2DimArray(elements, length);
+		util::del2DimArray(buffer, length);
 		elements = new float*[length];
 		buffer = new float*[length];
 	}
@@ -161,15 +154,11 @@ void MatrixNxN::operator=(const MatrixNxN &other) {
 		}
 	}
 	if (other.inverse==0) {
-		if (inverse!=0) {
-			delete[] inverse;
-		}
+		util::del2DimArray(inverse, length);
 		inverse = 0;
 	} else {
 		if (!keepArray) {
-			if (inverse!=0) {
-				delete[] inverse;
-			}
+			util::del2DimArray(inverse, length);
 			inverse = new float*[length];
 		}
 		for (int i = 0;i<length;i++) {

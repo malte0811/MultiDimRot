@@ -15,12 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-/*
- * VecN.cpp
- *
- *  Created on: 24.07.2016
- *      Author: malte
- */
 #include "VecN.h"
 #include <iostream>
 #include <string>
@@ -45,6 +39,12 @@ VecN::VecN(const VecN &other) {
 	elements = new float[dimensions];
 	for (int i = 0;i<dimensions;i++) {
 		elements[i] = other.elements[i];
+	}
+}
+
+VecN::~VecN() {
+	if (elements!=0) {
+		delete[] elements;
 	}
 }
 
@@ -110,11 +110,13 @@ const float& VecN::operator [](const int &i) const {
 }
 
 void VecN::operator=(const VecN &v) {
-	dimensions = v.dimensions;
-	if (elements!=0) {
-		delete elements;
+	if (elements!=0&&v.dimensions!=dimensions) {
+		delete[] elements;
 	}
-	elements = new float[dimensions];
+	if (elements==0) {
+		elements = new float[dimensions];
+	}
+	dimensions = v.dimensions;
 	for (int i = 0;i<dimensions;i++) {
 		elements[i] = v.elements[i];
 	}
@@ -144,10 +146,4 @@ std::string VecN::toString() const {
 	}
 	ret << "]";
 	return ret.str();
-}
-
-VecN::~VecN() {
-	if (elements!=0) {
-		delete elements;
-	}
 }

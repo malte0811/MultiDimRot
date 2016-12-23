@@ -17,6 +17,7 @@
  *******************************************************************************/
 #include <string>
 #include <vector>
+#include <Polytope.h>
 
 namespace util {
 
@@ -27,7 +28,14 @@ void initQuad(std::vector<Triangle>& tris, int &startIndex,
 		const int &a, const int &b, const int &c, const int &d, const int &normal);
 void addFace(std::vector<Triangle> &faces, std::vector<VecN> &normals, const std::vector<VecN> &vertices,
 		const int &a, const int &b, const int &c, int &id);
-
+template<typename T> void del2DimArray(T** array, int length) {
+	if (array!=0) {
+		for (int i = 0;i<length;i++) {
+			delete[] array[i];
+		}
+		delete[] array;
+	}
+}
 }  // namespace util
 
 

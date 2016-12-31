@@ -15,21 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <MatrixPowerPolytope.h>
 
-MatrixPowerPolytope::MatrixPowerPolytope() {
-	dimensions = 4;
-	base = MatrixNxN(dimensions, false);
-	curr = MatrixNxN(dimensions, false);
-	base.setElement(0, 0, .3);
-	base.setElement(1, 0, .7);
-	base.setElement(1, 1, .6);
-	base.setElement(2, 1, .4);
-	base.setElement(2, 2, .8);
-	base.setElement(3, 2, .2);
-	base.setElement(3, 3, 1);
-	init = VecN(dimensions);
-	init[0] = 1;
+#include <MatrixPowerPolytope.h>
+#include <Util.h>
+#include <iostream>
+#include <vector>
+
+using namespace MultiDimRot;
+
+MatrixPowerPolytope::MatrixPowerPolytope(const char** in, int size) {
+	dimensions = size;
+	init = VecN(size);
+	base = MatrixNxN(size, false);
+	curr = MatrixNxN(size, false);
+	for (int i = 0;i<size;i++) {
+		for (int j = 0;j<size;j++) {
+			base.setElement(i, j, Util::toFloat(in[i*size+j]));
+		}
+	}
+	for (int i = 0;i<size;i++) {
+		init[i] = Util::toFloat(in[size*size+i]);
+	}
 }
 
 MatrixPowerPolytope::~MatrixPowerPolytope() {

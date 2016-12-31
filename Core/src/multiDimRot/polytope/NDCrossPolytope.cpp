@@ -15,20 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-/*
- * NDCrossPolytope.cpp
- *
- *  Created on: 29.07.2016
- *      Author: malte
- */
 
 #include <NDCrossPolytope.h>
-#include <Polytope.h>
-#include <vector>
-#include <VecN.h>
 #include <Util.h>
+#include <VecN.h>
 #include <cmath>
 #include <iostream>
+
+using namespace MultiDimRot;
 
 NDCrossPolytope::NDCrossPolytope(int dim) {
 	float dist = std::sqrt(2.0)/2;
@@ -61,8 +55,8 @@ NDCrossPolytope::NDCrossPolytope(int dim) {
 		for (int j = 0;j<2*i;j++) {
 			for (int k = j+1;k<2*i;k++) {
 				if (k/2!=j/2) {
-					util::addFace(faces, normals, vertices, 2*i, j, k, faceId);
-					util::addFace(faces, normals, vertices, 2*i+1, j, k, faceId);
+					Util::addFace(faces, normals, vertices, 2*i, j, k, faceId);
+					Util::addFace(faces, normals, vertices, 2*i+1, j, k, faceId);
 				}
 			}
 		}

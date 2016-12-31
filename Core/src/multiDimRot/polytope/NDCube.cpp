@@ -21,6 +21,8 @@
 #include <vector>
 #include <iostream>
 
+using namespace MultiDimRot;
+
 bool getBit(int num, int bitId) {
 	return (num&(1<<bitId))!=0;
 }
@@ -58,7 +60,7 @@ NDCube::NDCube(int dims) {
 							}
 						}
 						normals[faceId/2].scaleToLength(1, false);
-						util::initQuad(faces, faceId, i, i+(1<<digit), i+(1<<digit2), i+(1<<digit)+(1<<digit2), faceId/2);
+						Util::initQuad(faces, faceId, i, i+(1<<digit), i+(1<<digit2), i+(1<<digit)+(1<<digit2), faceId/2);
 					}
 				}
 			}

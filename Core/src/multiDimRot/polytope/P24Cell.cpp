@@ -21,6 +21,7 @@
 P24Cell::P24Cell() {
 	vertices = std::vector<VecN>(24, VecN(4));
 	edges = std::vector<Edge>(96);
+	dimensions = 4;
 	int edgeId = 0;
 	for (int i = 0;i<16;i++) {
 		for (int digit = 0;digit<4;digit++) {

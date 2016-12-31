@@ -18,13 +18,13 @@
 #ifndef SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_
 #define SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_
 
-#include <Polytope.h>
 #include <MatrixNxN.h>
+#include <Polytope.h>
 #include <VecN.h>
 
 class MatrixPowerPolytope: public Polytope {
 public:
-	MatrixPowerPolytope();
+	MatrixPowerPolytope(const char** in, int size);
 	virtual ~MatrixPowerPolytope();
 	virtual void update();
 private:

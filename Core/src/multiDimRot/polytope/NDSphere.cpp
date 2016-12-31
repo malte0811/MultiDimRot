@@ -18,7 +18,7 @@
 #include <NDSphere.h>
 #include <cmath>
 #include <Util.h>
-
+using namespace MultiDimRot;
 /*
  * This is not perfect, it generates a lot of duplicate vertices.
  * But it works and the FPS is still pretty high, so I will probably leave it as it is.
@@ -78,7 +78,7 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 				faces.push_back(Triangle());
 				faces.push_back(Triangle());
 				int tmp = idStart;
-				util::initQuad(faces, tmp, j, (j+prevPrevVSize)%newVSize,
+				Util::initQuad(faces, tmp, j, (j+prevPrevVSize)%newVSize,
 						(j+prevVSize)%newVSize, (j+prevVSize+prevPrevVSize)%newVSize, 0);
 				faces[idStart].normals = faces[idStart].vertices;
 				faces[idStart+1].normals = faces[idStart+1].vertices;

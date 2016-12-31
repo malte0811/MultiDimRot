@@ -15,29 +15,32 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <VecN.h>
-#include <Polytope.h>
-#include <Util.h>
-#include <sstream>
-#include <iostream>
-#include <vector>
-#include <string>
 
-int util::toInt(std::string in) {
+#include <Util.h>
+#include <VecN.h>
+#include <sstream>
+
+int MultiDimRot::Util::toInt(std::string in) {
 	std::istringstream tmp(in);
+	if (tmp.bad()) {
+		throw "Invalid input!";
+	}
 	int i;
 	tmp >> i;
 	return i;
 }
 
-float util::toFloat(std::string in) {
+float MultiDimRot::Util::toFloat(std::string in) {
 	std::istringstream tmp(in);
+	if (tmp.bad()) {
+		throw "Invalid input!";
+	}
 	float i = 0;
 	tmp >> i;
 	return i;
 }
 
-std::vector<std::string> util::splitAtWords(std::string inStr, char split) {
+std::vector<std::string> MultiDimRot::Util::splitAtWords(std::string inStr, char split) {
 	std::vector<std::string> ret;
 	std::stringstream s;
 	const char* in = inStr.c_str();
@@ -54,7 +57,7 @@ std::vector<std::string> util::splitAtWords(std::string inStr, char split) {
 	return ret;
 }
 
-void util::addFace(std::vector<Triangle> &faces, std::vector<VecN> &normals, const std::vector<VecN> &vertices,
+void MultiDimRot::Util::addFace(std::vector<Triangle> &faces, std::vector<VecN> &normals, const std::vector<VecN> &vertices,
 		const int &a, const int &b, const int &c, int &id) {
 	for (int i = 0;i<3;i++) {
 		faces[id].normals[i] = id;
@@ -67,7 +70,7 @@ void util::addFace(std::vector<Triangle> &faces, std::vector<VecN> &normals, con
 	id++;
 }
 
-void util::initQuad(std::vector<Triangle>& tris, int &startIndex,
+void MultiDimRot::Util::initQuad(std::vector<Triangle>& tris, int &startIndex,
 		const int &a, const int &b, const int &c, const int &d, const int &normal) {
 	tris[startIndex].normals[0] = normal;
 	tris[startIndex].normals[1] = normal;

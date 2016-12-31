@@ -23,6 +23,8 @@
 #include <cmath>
 #include <iostream>
 
+using namespace MultiDimRot;
+
 NDSimplex::NDSimplex(int dim) {
 	dimensions = dim;
 	vertices = std::vector<VecN>(dimensions+1, VecN(dim));
@@ -53,7 +55,7 @@ NDSimplex::NDSimplex(int dim) {
 			edges[eId].end = j;
 			eId++;
 			for (int k = j+1;k<dimensions+1;k++) {
-				util::addFace(faces, normals, vertices, i, j, k, fId);
+				Util::addFace(faces, normals, vertices, i, j, k, fId);
 			}
 		}
 	}

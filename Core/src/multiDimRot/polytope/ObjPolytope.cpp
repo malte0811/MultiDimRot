@@ -20,12 +20,11 @@
 #include <ObjPolytope.h>
 #include <Util.h>
 #include <VecN.h>
-#include <iostream>
 #include <string>
 #include <vector>
 
-using namespace MultiDimRot;
-
+namespace MultiDimRot {
+namespace Polytope {
 ObjPolytope::ObjPolytope(std::istream* in) {
 	char lineTmp[256];
 	dimensions = 3;//default for reading normal OBJ files
@@ -34,7 +33,7 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 		(*in).getline(lineTmp, 256);
 		line = std::string(lineTmp);
 		if (line.find("v ")==0) {
-			VecN next(dimensions);
+			Math::VecN next(dimensions);
 			std::vector<std::string> words = Util::splitAtWords(line.substr(2), ' ');
 			if (words.size()!=dimensions) {
 				throw "Invalid input in OBJ: vertex element count of \"v\" differs from dimension";
@@ -58,7 +57,7 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 			e.end = Util::toInt(words[1]);
 			edges.push_back(e);
 		} else if (line.find("vn ")==0) {
-			VecN next(dimensions);
+			Math::VecN next(dimensions);
 			std::vector<std::string> words = Util::splitAtWords(line.substr(3), ' ');
 			if (words.size()!=dimensions) {
 				throw "Invalid input in OBJ: normal element count of \"v\" differs from dimension";
@@ -100,15 +99,15 @@ ObjPolytope::ObjPolytope(std::istream* in) {
 
 ObjPolytope::~ObjPolytope() {}
 
-void Polytope::writeObj(std::ostream* out, const MatrixNxN &apply) const {
+void Polytope::writeObj(std::ostream* out, const Math::MatrixNxN &apply) const {
 	int dims = getDimensions();
 	*out << "dims " << dims << "\n";
-	const std::vector<VecN> &verticesOld = getVertices();
-	std::vector<VecN> vertices;
+	const std::vector<Math::VecN> &verticesOld = getVertices();
+	std::vector<Math::VecN> vertices;
 	apply.applyMass(verticesOld, vertices);
 	for (unsigned int i = 0;i<vertices.size();i++) {
 		*out << "v ";
-		VecN &curr = vertices[i];
+		Math::VecN &curr = vertices[i];
 		for (int j = 0;j<dims;j++) {
 			*out << curr.getElement(j, 0);
 			if (j<dims-1) {
@@ -125,12 +124,12 @@ void Polytope::writeObj(std::ostream* out, const MatrixNxN &apply) const {
 		*out << e.start << " " << e.end << "\n";
 	}
 	*out << "\n";
-	const std::vector<VecN> &normalsOld = getNormals();
-	std::vector<VecN> normals;
+	const std::vector<Math::VecN> &normalsOld = getNormals();
+	std::vector<Math::VecN> normals;
 	apply.applyInvTMass(normalsOld, normals);
 	for (unsigned int i = 0;i<normals.size();i++) {
 		*out << "vn ";
-		VecN &curr = normals[i];
+		Math::VecN& curr = normals[i];
 		for (int j = 0;j<dims;j++) {
 			*out << curr.getElement(j, 0);
 			if (j<dims-1) {
@@ -152,4 +151,6 @@ void Polytope::writeObj(std::ostream* out, const MatrixNxN &apply) const {
 		}
 		*out << "\n";
 	}
+}
+}
 }

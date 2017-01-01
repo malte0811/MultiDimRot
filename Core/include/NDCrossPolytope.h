@@ -18,13 +18,15 @@
 #ifndef SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
 #define SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
 
-#include <vector>
-#include "Polytope.h"
+#include <Polytope.h>
 
+namespace MultiDimRot {
+namespace Polytope {
 class NDCrossPolytope:public Polytope {
 public:
 	NDCrossPolytope(int i);
 	virtual ~NDCrossPolytope();
 };
-
+}
+}
 #endif /* SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_ */

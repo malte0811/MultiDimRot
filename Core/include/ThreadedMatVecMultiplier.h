@@ -18,14 +18,13 @@
 #ifndef SRC_MULTIDIMROT_MATH_THREADEDMATVECMULTIPLIER_H_
 #define SRC_MULTIDIMROT_MATH_THREADEDMATVECMULTIPLIER_H_
 
-#include <array>
+#include <boost/thread.hpp>
 #include <MatrixNxN.h>
 #include <VecN.h>
 #include <vector>
-#include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
-#include <thread>
 
+namespace MultiDimRot {
+namespace Math {
 class ThreadedMatVecMultiplier {
 public:
 	ThreadedMatVecMultiplier(const MatrixNxN& m, int threadCount);
@@ -46,5 +45,7 @@ private:
 	bool normals;
 	void run(int threadId);
 };
+}
+}
 
 #endif /* SRC_MULTIDIMROT_MATH_THREADEDMATVECMULTIPLIER_H_ */

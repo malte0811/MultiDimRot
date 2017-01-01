@@ -23,7 +23,7 @@
 #include <vector>
 #include <iostream>
 #include <Util.h>
-using namespace MultiDimRot;
+using namespace MultiDimRot::Math;
 // elements[row][column]
 MatrixNxN::MatrixNxN(int size, bool inverse) {
 	elements = new float*[size];
@@ -376,24 +376,4 @@ void MatrixNxN::setElement(int a, int b, float c) {
 		throw "Can't set individual elements in matrices with inverses";
 	}
 	elements[a][b] = c;
-}
-
-std::ostream& operator<<(std::ostream& os, const MatrixNxN& en) {
-	os << "Matrix: \n";
-	for (int i = 0;i<en.length;i++) {
-		for (int j = 0;j<en.length;j++) {
-			os << (std::abs(en.elements[i][j])<.001?0:en.elements[i][j]) << "\t";
-		}
-		os<<"\n";
-	}
-	if (en.inverse!=0) {
-		os << "Inverse: \n";
-		for (int i = 0;i<en.length;i++) {
-			for (int j = 0;j<en.length;j++) {
-				os << (std::abs(en.inverse[i][j])<.001?0:en.inverse[i][j]) << "\t";
-			}
-			os<<"\n";
-		}
-	}
-	return os;
 }

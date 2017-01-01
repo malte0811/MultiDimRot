@@ -20,25 +20,29 @@
 #define MULTIDIMROT_POLYTOPE_JOINEDPOLYTOPE_H_
 
 #include <Polytope.h>
+#include <VecN.h>
 #include <vector>
 
+namespace MultiDimRot {
+namespace Polytope {
 class JoinedPolytope:public Polytope {
 public:
 	JoinedPolytope(Polytope* p0, Polytope* p1);
 	virtual ~JoinedPolytope();
-	virtual const std::vector<VecN>& getVertices() const;
+	virtual const std::vector<Math::VecN>& getVertices() const;
 	virtual const std::vector<Edge>& getEdges() const;
 	virtual const std::vector<Triangle>& getFaces() const;
-	virtual const std::vector<VecN>& getNormals() const;
+	virtual const std::vector<Math::VecN>& getNormals() const;
 	virtual int getDimensions() const;
 	virtual void update();
 private:
 	Polytope* a;
 	Polytope* b;
 	std::vector<Edge> retE;
-	std::vector<VecN> retV;
-	std::vector<VecN> retN;
+	std::vector<Math::VecN> retV;
+	std::vector<Math::VecN> retN;
 	std::vector<Triangle> retF;
 };
-
+}
+}
 #endif /* MULTIDIMROT_POLYTOPE_JOINEDPOLYTOPE_H_ */

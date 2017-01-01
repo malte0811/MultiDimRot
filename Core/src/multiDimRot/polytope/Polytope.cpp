@@ -15,32 +15,32 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+
 #include <Polytope.h>
-#include <ostream>
-#include <vector>
 #include <cmath>
 
+using namespace MultiDimRot::Polytope;
 
 Polytope::Polytope() {}
 
 Polytope::~Polytope() {}
 
 float Polytope::getLength(Edge e) {
-	const std::vector<VecN>& vertices = getVertices();
+	const std::vector<Math::VecN>& vertices = getVertices();
 	float sum = 0;
-	VecN a = vertices[e.start];
-	VecN b = vertices[e.end];
+	Math::VecN a = vertices[e.start];
+	Math::VecN b = vertices[e.end];
 	for (int i = 0;i<getDimensions();i++) {
 		sum += (a[i]-b[i])*(a[i]-b[i]);
 	}
 	return std::sqrt(sum);
 }
 
-const std::vector<VecN>& Polytope::getVertices() const {
+const std::vector<MultiDimRot::Math::VecN>& Polytope::getVertices() const {
 	return vertices;
 }
 
-const std::vector<VecN>& Polytope::getNormals() const {
+const std::vector<MultiDimRot::Math::VecN>& Polytope::getNormals() const {
 	return normals;
 }
 

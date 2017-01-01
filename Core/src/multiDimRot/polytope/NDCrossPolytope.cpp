@@ -21,13 +21,14 @@
 #include <VecN.h>
 #include <cmath>
 #include <iostream>
+#include <vector>
 
-using namespace MultiDimRot;
+using namespace MultiDimRot::Polytope;
 
 NDCrossPolytope::NDCrossPolytope(int dim) {
 	float dist = std::sqrt(2.0)/2;
 	dimensions = dim;
-	vertices = std::vector<VecN>(2*dimensions, VecN(dimensions));
+	vertices = std::vector<Math::VecN>(2*dimensions, Math::VecN(dimensions));
 	edges = std::vector<Edge>(2*dim*(dim-1));
 	int edgeId = 0;
 	for (int i = 0;i<dimensions;i++) {
@@ -49,7 +50,7 @@ NDCrossPolytope::NDCrossPolytope(int dim) {
 		fCount+=4*i*(i-1);
 	}
 	faces = std::vector<Triangle>(fCount);
-	normals = std::vector<VecN>(fCount);
+	normals = std::vector<Math::VecN>(fCount);
 	int faceId = 0;
 	for (int i = 0;i<dimensions;i++) {
 		for (int j = 0;j<2*i;j++) {

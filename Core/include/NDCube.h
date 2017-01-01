@@ -21,10 +21,13 @@
 #include <vector>
 #include "Polytope.h"
 
+namespace MultiDimRot {
+namespace Polytope {
 class NDCube: public Polytope {
 public:
 	NDCube(int dims);
 	virtual ~NDCube();
 };
-
+}
+}
 #endif /* SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_ */

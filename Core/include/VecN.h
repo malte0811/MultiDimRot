@@ -17,8 +17,11 @@
  *******************************************************************************/
 #ifndef VECN_H_
 #define VECN_H_
+
 #include <string>
 
+namespace MultiDimRot {
+namespace Math {
 class VecN {
 public:
 	VecN();
@@ -43,4 +46,6 @@ private:
 	float* elements;
 	int dimensions = 0;
 };
+}
+}
 #endif /* VECN_H_ */

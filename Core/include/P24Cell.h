@@ -17,12 +17,16 @@
  *******************************************************************************/
 #ifndef MULTIDIMROT_POLYTOPE_P24CELL_H_
 #define MULTIDIMROT_POLYTOPE_P24CELL_H_
-#include <vector>
+
 #include <Polytope.h>
+
+namespace MultiDimRot {
+namespace Polytope {
 class P24Cell:public Polytope {
 public:
 	P24Cell();
 	virtual ~P24Cell();
 };
-
+}
+}
 #endif /* MULTIDIMROT_POLYTOPE_P24CELL_H_ */

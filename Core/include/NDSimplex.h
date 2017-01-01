@@ -18,12 +18,16 @@
 #ifndef SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
 #define SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
 
-#include "Polytope.h"
+#include <Polytope.h>
 
+namespace MultiDimRot {
+namespace Polytope {
 class NDSimplex: public Polytope {
 public:
 	NDSimplex(int i);
 	virtual ~NDSimplex();
 };
+}
+}
 
 #endif /* SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_ */

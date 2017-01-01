@@ -18,7 +18,7 @@
 #include <NDSphere.h>
 #include <cmath>
 #include <Util.h>
-using namespace MultiDimRot;
+using namespace MultiDimRot::Polytope;
 /*
  * This is not perfect, it generates a lot of duplicate vertices.
  * But it works and the FPS is still pretty high, so I will probably leave it as it is.
@@ -26,12 +26,12 @@ using namespace MultiDimRot;
 NDSphere::NDSphere(int dims, int verticesPerHalf) {
 	dimensions = dims;
 	const float angle = 180/verticesPerHalf;
-	vertices = std::vector<VecN>(dims==1?2:1, VecN(dimensions));
+	vertices = std::vector<Math::VecN>(dims==1?2:1, Math::VecN(dimensions));
 	vertices[0][0] = 1;
 	if (dims==1)
 		vertices[1][0] = -1;
-	MatrixNxN rot(dims, false);
-	MatrixNxN rotBase(dims, false);
+	Math::MatrixNxN rot(dims, false);
+	Math::MatrixNxN rotBase(dims, false);
 	int prevPrevVSize = -1;
 	for (int i = 1;i<dimensions;i++) {
 		const int prevVSize = vertices.size();
@@ -44,7 +44,7 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 		for (int j = 0;j<max;j++) {
 			rot *= rotBase;
 			for (int k = 0;k<prevVSize;k++) {
-				VecN tmp(dimensions);
+				Math::VecN tmp(dimensions);
 				rot.apply(vertices[k], tmp);
 				vertices.push_back(tmp);
 			}
@@ -89,11 +89,11 @@ NDSphere::NDSphere(int dims, int verticesPerHalf) {
 	if (dimensions==2)
 		return;
 	// clean up (most of) the mess of duplicates and zero-length edges
-	const std::vector<VecN> oldVertices = vertices;
+	const std::vector<Math::VecN> oldVertices = vertices;
 	const std::vector<Edge> oldEdges = edges;
 	const std::vector<Triangle> oldFaces = faces;
 	std::vector<int> vertexMap = std::vector<int>(oldVertices.size());
-	vertices = std::vector<VecN>(2, VecN(dimensions));
+	vertices = std::vector<Math::VecN>(2, Math::VecN(dimensions));
 	vertices[0][0] = 1;
 	vertices[1][0] = -1;
 	edges = std::vector<Edge>();
@@ -137,6 +137,6 @@ NDSphere::~NDSphere() {
 
 }
 
-const std::vector<VecN>& NDSphere::getNormals() const {
+const std::vector<Math::VecN>& NDSphere::getNormals() const {
 	return vertices;
 }

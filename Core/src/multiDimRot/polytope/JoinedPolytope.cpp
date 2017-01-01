@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+
 #include <JoinedPolytope.h>
-#include <vector>
+
+using namespace MultiDimRot::Polytope;
 
 JoinedPolytope::JoinedPolytope(Polytope* p0, Polytope* p1) {
 	if (p0->getDimensions()!=p1->getDimensions()) {
@@ -35,7 +37,7 @@ JoinedPolytope::~JoinedPolytope() {
 	}
 }
 
-const std::vector<VecN>& JoinedPolytope::getVertices() const {
+const std::vector<MultiDimRot::Math::VecN>& JoinedPolytope::getVertices() const {
 	return retV;
 }
 
@@ -47,7 +49,7 @@ const std::vector<Edge>& JoinedPolytope::getEdges() const {
 	return retE;
 }
 
-const std::vector<VecN>& JoinedPolytope::getNormals() const {
+const std::vector<MultiDimRot::Math::VecN>& JoinedPolytope::getNormals() const {
 	return retN;
 }
 
@@ -57,11 +59,11 @@ int JoinedPolytope::getDimensions() const{
 void JoinedPolytope::update() {
 	a->update();
 	b->update();
-	std::vector<VecN> vA = a->getVertices();
-	std::vector<VecN> vB = b->getVertices();
+	std::vector<Math::VecN> vA = a->getVertices();
+	std::vector<Math::VecN> vB = b->getVertices();
 	int vASize = vA.size();
 	int vBSize = vB.size();
-	retV = std::vector<VecN>(vASize+vBSize);
+	retV = std::vector<Math::VecN>(vASize+vBSize);
 	int i = 0;
 	for (;i<vASize;i++) {
 		retV[i] = vA[i];
@@ -84,11 +86,11 @@ void JoinedPolytope::update() {
 		tmp.end+=vASize;
 		retE[i] = tmp;
 	}
-	std::vector<VecN> nA = a->getNormals();
-	std::vector<VecN> nB = b->getNormals();
+	std::vector<Math::VecN> nA = a->getNormals();
+	std::vector<Math::VecN> nB = b->getNormals();
 	int nASize = nA.size();
 	int nBSize = nB.size();
-	retN = std::vector<VecN>(nASize+nB.size());
+	retN = std::vector<Math::VecN>(nASize+nB.size());
 	i = 0;
 	for (;i<nASize;i++) {
 		retN[i] = nA[i];

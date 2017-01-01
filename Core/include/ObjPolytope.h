@@ -18,13 +18,17 @@
 #ifndef OBJPOLYTOPE_H_
 #define OBJPOLYTOPE_H_
 
-#include "Polytope.h"
+#include <Polytope.h>
+#include <iostream>
 
 
+namespace MultiDimRot {
+namespace Polytope {
 class ObjPolytope: public Polytope {
 public:
 	ObjPolytope(std::istream* in);
 	virtual ~ObjPolytope();
 };
-
+}
+}
 #endif /* OBJPOLYTOPE_H_ */

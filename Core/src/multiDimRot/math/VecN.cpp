@@ -20,6 +20,7 @@
 #include <string>
 #include <sstream>
 #include <cmath>
+using namespace MultiDimRot::Math;
 
 VecN::VecN(int dims) {
 	dimensions = dims;

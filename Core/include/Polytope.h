@@ -17,10 +17,15 @@
  *******************************************************************************/
 #ifndef SRC_MULTIDIMROT_POLYTOPE_H_
 #define SRC_MULTIDIMROT_POLYTOPE_H_
+
+#include <MatrixNxN.h>
+#include <VecN.h>
+#include <iostream>
 #include <vector>
 #include <array>
-#include <VecN.h>
-#include <MatrixNxN.h>
+
+namespace MultiDimRot {
+namespace Polytope {
 struct Edge {
 	int start;
 	int end;
@@ -35,8 +40,8 @@ class Polytope {
 public:
 	Polytope();
 	virtual ~Polytope() = 0;
-	virtual const std::vector<VecN>& getVertices() const;
-	virtual const std::vector<VecN>& getNormals() const;
+	virtual const std::vector<Math::VecN>& getVertices() const;
+	virtual const std::vector<Math::VecN>& getNormals() const;
 	virtual const std::vector<Edge>& getEdges() const;
 	virtual const std::vector<Triangle>& getFaces() const;
 	/**
@@ -44,14 +49,15 @@ public:
 	 */
 	virtual int getDimensions() const;
 	virtual void update();
-	void writeObj(std::ostream* o, const MatrixNxN &apply) const;
+	void writeObj(std::ostream* o, const Math::MatrixNxN &apply) const;
 	float getLength(Edge e);
 protected:
-	std::vector<VecN> vertices;
-	std::vector<VecN> normals;
+	std::vector<Math::VecN> vertices;
+	std::vector<Math::VecN> normals;
 	std::vector<Edge> edges;
 	std::vector<Triangle> faces;
 	int dimensions = -1;
 };
-
+}
+}
 #endif /* SRC_MULTIDIMROT_POLYTOPE_H_ */

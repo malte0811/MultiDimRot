@@ -19,11 +19,16 @@
 #define SRC_MULTIDIMROT_POLYTOPE_NDSPHERE_H_
 
 #include <Polytope.h>
+#include <vector>
+
+namespace MultiDimRot {
+namespace Polytope {
 class NDSphere: public Polytope {
 public:
 	NDSphere(int dimensions, int verticesPerHalf = 10);
 	virtual ~NDSphere();
-	virtual const std::vector<VecN>& getNormals() const;
+	virtual const std::vector<Math::VecN>& getNormals() const;
 };
-
+}
+}
 #endif

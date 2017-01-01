@@ -21,13 +21,13 @@
 #include <iostream>
 #include <vector>
 
-using namespace MultiDimRot;
+using namespace MultiDimRot::Polytope;
 
 MatrixPowerPolytope::MatrixPowerPolytope(const char** in, int size) {
 	dimensions = size;
-	init = VecN(size);
-	base = MatrixNxN(size, false);
-	curr = MatrixNxN(size, false);
+	init = Math::VecN(size);
+	base = Math::MatrixNxN(size, false);
+	curr = Math::MatrixNxN(size, false);
 	for (int i = 0;i<size;i++) {
 		for (int j = 0;j<size;j++) {
 			base.setElement(i, j, Util::toFloat(in[i*size+j]));
@@ -44,7 +44,7 @@ MatrixPowerPolytope::~MatrixPowerPolytope() {
 
 void MatrixPowerPolytope::update() {
 	if (generating) {
-		VecN next(dimensions);
+		Math::VecN next(dimensions);
 		curr.apply(init, next);
 		if (nextId>0&&vertices[nextId-1]==next) {
 			std::cout << "finished generating matrix power polytope\n";

@@ -15,18 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <Renderer.h>
-#include <vector>
-#include <Polytope.h>
-#include <MatrixNxN.h>
-#include <SFML/Graphics.hpp>
-#include <fstream>
-#include <iostream>
-#include <GL/glew.h>
-#include <ThreadedMatVecMultiplier.h>
-#include <cmath>
 
-Renderer::Renderer(Polytope* &p, std::vector<MatrixNxN> &start, MatrixNxN &power, std::vector<MatrixNxN> &end, const bool rt[], int tC):
+#include <Renderer.h>
+#include <SFML/Graphics.hpp>
+#include <ThreadedMatVecMultiplier.h>
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace MultiDimRot::Render;
+
+Renderer::Renderer(Polytope::Polytope* &p, std::vector<Math::MatrixNxN> &start, Math::MatrixNxN &power, std::vector<Math::MatrixNxN> &end, const bool rt[], int tC):
 startMats(start), powerMat(power), endMats(end), dims(p->getDimensions()), threadCount(tC) {
 	polyt = p;
 	renderType = rt;
@@ -91,7 +90,7 @@ void Renderer::init_resources() {
 	glDepthMask(GL_TRUE);
 }
 
-inline void Renderer::renderFaces(const std::vector<Triangle> &faces, const VecN &light) {
+inline void Renderer::renderFaces(const std::vector<Polytope::Triangle> &faces, const Math::VecN &light) {
 	int nSize = transformedNormals.size();
 	for (int i = 0;i<nSize;i++) {
 		transformedNormals[i].scaleToLength(1, true);
@@ -114,7 +113,7 @@ inline void Renderer::renderFaces(const std::vector<Triangle> &faces, const VecN
 	}
 	int base = 0;
 	for (int i = 0;i<fSize;i++) {
-		Triangle curr = faces[i];
+		Polytope::Triangle curr = faces[i];
 		bool skip = true;
 		for (int j = 0;j<3;j++) {
 			if (brightness[curr.normals[j]]>0) {
@@ -124,7 +123,7 @@ inline void Renderer::renderFaces(const std::vector<Triangle> &faces, const VecN
 		}
 		if (!skip) {
 			for (int j = 0;j<3;j++) {
-				const VecN& pos = transformedVertices[curr.vertices[j]];
+				const Math::VecN& pos = transformedVertices[curr.vertices[j]];
 				float b = brightness[curr.normals[j]];
 				data[base] = pos.getElement(0, 0);
 				data[base+1] = pos.getElement(1, 0);
@@ -149,7 +148,7 @@ inline void Renderer::renderVertices() {
 		dataSize = vSize*4;
 	}
 	for (int i = 0;i<vSize;i++) {
-		const VecN& curr = transformedVertices[i];
+		const Math::VecN& curr = transformedVertices[i];
 		data[4*i] = curr.getElement(0, 0);
 		data[4*i+1] = curr.getElement(1, 0);
 		data[4*i+2] = curr.getElement(2, 0);
@@ -166,7 +165,7 @@ inline void Renderer::renderVertices() {
 	glPointSize(1);
 }
 
-inline void Renderer::renderEdges(const std::vector<Edge> &edges) {
+inline void Renderer::renderEdges(const std::vector<Polytope::Edge> &edges) {
 	int eSize = edges.size();
 	if (dataSize<2*4*eSize) {
 		if (data!=0) {
@@ -176,9 +175,9 @@ inline void Renderer::renderEdges(const std::vector<Edge> &edges) {
 		dataSize = 2*4*eSize;
 	}
 	for (int i = 0;i<eSize;i++) {
-		const Edge &curr = edges[i];
-		const VecN &start = transformedVertices[curr.start];
-		const VecN &end = transformedVertices[curr.end];
+		const Polytope::Edge &curr = edges[i];
+		const Math::VecN &start = transformedVertices[curr.start];
+		const Math::VecN &end = transformedVertices[curr.end];
 		data[8*i] = start.getElement(0, 0);
 		data[8*i+1] = start.getElement(1, 0);
 		data[8*i+2] = start.getElement(2, 0);
@@ -212,9 +211,9 @@ void Renderer::render() {
 
 	init_resources();
 	long int sum = 0;
-	const MatrixNxN id(dims+1);
-	MatrixNxN curr = id;
-	MatrixNxN power(dims+1);
+	const Math::MatrixNxN id(dims+1);
+	Math::MatrixNxN curr = id;
+	Math::MatrixNxN power(dims+1);
 	sf::Font font;
 	if (!font.loadFromFile("courier.ttf")) {
 		throw "Could not load font!";
@@ -230,10 +229,10 @@ void Renderer::render() {
 	int startSize = startMats.size();
 	int endSize = endMats.size();
 	bool doCycle = true;
-	VecN light(dims);
+	Math::VecN light(dims);
 	light[dims-1] = -1;
 	std::vector<float> brightnesses(0, 0);
-	ThreadedMatVecMultiplier multiplier(curr, threadCount);
+	Math::ThreadedMatVecMultiplier multiplier(curr, threadCount);
 	while (window.isOpen()) {
 		c.restart();
 		polyt->update();
@@ -249,10 +248,10 @@ void Renderer::render() {
 			frameId++;
 		}
 		window.clear();
-		const std::vector<Triangle>& tris = polyt->getFaces();
-		const std::vector<Edge> &edges = polyt->getEdges();
-		const std::vector<VecN>& verticesOld = polyt->getVertices();
-		const std::vector<VecN>& normalsOld = polyt->getNormals();
+		const std::vector<Polytope::Triangle>& tris = polyt->getFaces();
+		const std::vector<Polytope::Edge> &edges = polyt->getEdges();
+		const std::vector<Math::VecN>& verticesOld = polyt->getVertices();
+		const std::vector<Math::VecN>& normalsOld = polyt->getNormals();
 		multiplier.apply(verticesOld, transformedVertices, false);
 		if (renderType[2]) {
 			multiplier.apply(normalsOld, transformedNormals, true);
@@ -263,7 +262,7 @@ void Renderer::render() {
 		float minZ = 0;
 		float maxZ = 0;
 		for (int i = 0;i<vSize;i++) {
-			VecN& curr = transformedVertices[i];
+			Math::VecN& curr = transformedVertices[i];
 			float last = curr[dims];
 			if (dims>0) {
 				curr[0] /= last;
@@ -327,7 +326,7 @@ void Renderer::render() {
 			} else if (event.type==sf::Event::KeyPressed) {
 				if (event.key.code==sf::Keyboard::Return) {
 					std::ofstream out((outFile+".nobj").c_str());
-					curr = power*(startSize>0?startMats[frameId%startSize]:MatrixNxN(dims+1));
+					curr = power*(startSize>0?startMats[frameId%startSize]:Math::MatrixNxN(dims+1));
 					polyt->writeObj(&out, id);
 					out.flush();
 					outFile = "";

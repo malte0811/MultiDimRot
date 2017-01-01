@@ -15,23 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <Polytope.h>
+
 #include <NDSimplex.h>
 #include <Util.h>
-#include <vector>
-#include <VecN.h>
 #include <cmath>
-#include <iostream>
+#include <vector>
 
-using namespace MultiDimRot;
+using namespace MultiDimRot::Polytope;
 
 NDSimplex::NDSimplex(int dim) {
 	dimensions = dim;
-	vertices = std::vector<VecN>(dimensions+1, VecN(dim));
+	vertices = std::vector<Math::VecN>(dimensions+1, Math::VecN(dim));
 	edges = std::vector<Edge>((dim*(dim+1))/2);
 	int fCount = ((dim-1)*dim*(dim+1))/2;
 	faces = std::vector<Triangle>(fCount);
-	normals = std::vector<VecN>(fCount, VecN(dim));
+	normals = std::vector<Math::VecN>(fCount, Math::VecN(dim));
 	std::vector<float> heights(dim, 0);
 	heights[0] = 1;
 	for (int i = 1;i<dim;i++) {

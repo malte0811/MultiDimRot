@@ -40,37 +40,37 @@
 
 using namespace MultiDimRot;
 
-void rotAll(std::vector<MatrixNxN> &in, int dim, int a0, int a1, float deg, bool con) {
+void rotAll(std::vector<Math::MatrixNxN> &in, int dim, int a0, int a1, float deg, bool con) {
 	for (unsigned int i = 0;i<in.size();i++) {
 		if (in[i].getSize()==0) {
-			in[i] = MatrixNxN(dim+1);
+			in[i] = Math::MatrixNxN(dim+1);
 		}
 		in[i].rotate(a0, a1, (con?i:1)*deg);
 	}
 }
 
-void scale(std::vector<MatrixNxN> &in, int dims, int dim, float val) {
+void scale(std::vector<Math::MatrixNxN> &in, int dims, int dim, float val) {
 	for (unsigned int i = 0;i<in.size();i++) {
 		if (in[i].getSize()==0) {
-			in[i] = MatrixNxN(dims+1);
+			in[i] = Math::MatrixNxN(dims+1);
 		}
 		in[i].scale(val, dim);
 	}
 }
 
-void translate(std::vector<MatrixNxN> &in, int dims, int dim, float val) {
+void translate(std::vector<Math::MatrixNxN> &in, int dims, int dim, float val) {
 	for (unsigned int i = 0;i<in.size();i++) {
 		if (in[i].getSize()==0) {
-			in[i] = MatrixNxN(dims+1);
+			in[i] = Math::MatrixNxN(dims+1);
 		}
 		in[i].translate(dim, val);
 	}
 }
 
-void project(std::vector<MatrixNxN> &in, int dims, int dim, float dist) {
+void project(std::vector<Math::MatrixNxN> &in, int dims, int dim, float dist) {
 	for (unsigned int i = 0;i<in.size();i++) {
 		if (in[i].getSize()==0) {
-			in[i] = MatrixNxN(dims+1);
+			in[i] = Math::MatrixNxN(dims+1);
 		}
 		in[i].project(dim, 1/dist);
 	}
@@ -83,7 +83,7 @@ void checkSpace(int i, int length, int required, std::string name) {
 		throw s.str();
 	}
 }
-void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &polyt) {
+void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope::Polytope* &polyt) {
 	while (pos<argc) {
 		std::string in(argv[pos]);
 		if (in.find("--")==0) {
@@ -93,7 +93,7 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &poly
 			delete polyt;
 		if (in=="cube") {
 			checkSpace(pos, argc, 1, in);
-			polyt = new NDCube(Util::toInt(argv[pos+1]));
+			polyt = new Polytope::NDCube(Util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="obj") {
 			checkSpace(pos, argc, 1, in);
@@ -102,23 +102,23 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &poly
 			if (!instream.is_open()) {
 				throw "File not found/Couldn't open "+file;
 			}
-			polyt = new ObjPolytope(&instream);
+			polyt = new Polytope::ObjPolytope(&instream);
 			pos++;
 		} else if (in=="crossPolytope") {
 			checkSpace(pos, argc, 1, in);
-			polyt = new NDCrossPolytope(Util::toInt(argv[pos+1]));
+			polyt = new Polytope::NDCrossPolytope(Util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="simplex") {
 			checkSpace(pos, argc, 1, in);
-			polyt = new NDSimplex(Util::toInt(argv[pos+1]));
+			polyt = new Polytope::NDSimplex(Util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="24Cell") {
 			if (polyt!=0)
 				delete polyt;
-			polyt = new P24Cell();
+			polyt = new Polytope::P24Cell();
 		} else if (in=="sphere") {
 			checkSpace(pos, argc, 2, in);
-			polyt = new NDSphere(Util::toInt(argv[pos+1]), Util::toInt(argv[pos+2]));
+			polyt = new Polytope::NDSphere(Util::toInt(argv[pos+1]), Util::toInt(argv[pos+2]));
 			pos+=2;
 		} else if (in=="matPower") {
 			// matrix size/dimension count
@@ -132,7 +132,7 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &poly
 			int totalSize = size*size+size;
 			checkSpace(pos, argc, totalSize, in);
 			const char** matStart = argv+pos+1;
-			polyt = new MatrixPowerPolytope(matStart, size);
+			polyt = new Polytope::MatrixPowerPolytope(matStart, size);
 			pos += totalSize;
 		} else {
 			throw "Unknown parameter: "+in;
@@ -141,7 +141,7 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope* &poly
 	}
 }
 
-void parseMatVecParam(const char* argv[], int &argc, int &pos, int dims, std::vector<MatrixNxN> &mats) {
+void parseMatVecParam(const char* argv[], int &argc, int &pos, int dims, std::vector<Math::MatrixNxN> &mats) {
 	while (pos<argc) {
 		std::string in(argv[pos]);
 		if (in.find("--")==0) {
@@ -149,7 +149,7 @@ void parseMatVecParam(const char* argv[], int &argc, int &pos, int dims, std::ve
 		}
 		if (in=="cycle") {
 			checkSpace(pos, argc, 1, in);
-			mats = std::vector<MatrixNxN>(Util::toInt(argv[pos+1]));
+			mats = std::vector<Math::MatrixNxN>(Util::toInt(argv[pos+1]));
 			pos++;
 		} else if (in=="rotInc") {
 			checkSpace(pos, argc, 3, in);
@@ -191,9 +191,9 @@ void parseMatVecParam(const char* argv[], int &argc, int &pos, int dims, std::ve
 	}
 }
 
-void parseMatParam(const char* argv[], int &argc, int &pos, int dims, MatrixNxN &mat) {
+void parseMatParam(const char* argv[], int &argc, int &pos, int dims, Math::MatrixNxN &mat) {
 	if (mat.getSize()==0) {
-		mat = MatrixNxN(dims+1);
+		mat = Math::MatrixNxN(dims+1);
 	}
 	while (pos<argc) {
 		std::string in(argv[pos]);
@@ -270,8 +270,8 @@ void parseMisc(const char* argv[], int argc, int &pos, bool* renderType, int &th
 	}
 }
 
-void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<MatrixNxN> &startMats,
-		MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims, bool renderType[], int& threadCount) {
+void parseArgs(int argc, const char* argv[], Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &startMats,
+		Math::MatrixNxN &powerMat, std::vector<Math::MatrixNxN> &endMats, int &dims, bool renderType[], int& threadCount) {
 	int i = 1;
 	while (i<argc) {
 		std::string in(argv[i]);
@@ -309,17 +309,17 @@ void parseArgs(int argc, const char* argv[], Polytope* &polyt, std::vector<Matri
 	dims = polyt->getDimensions();
 }
 
-void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats,
-		MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, int &dims, bool renderType[]) {
-	polyt = new NDCube(4);
+void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &startMats,
+		Math::MatrixNxN &powerMat, std::vector<Math::MatrixNxN> &endMats, int &dims, bool renderType[]) {
+	polyt = new Polytope::NDCube(4);
 	dims = polyt->getDimensions();
-	endMats = std::vector<MatrixNxN>(1, MatrixNxN(dims+1));
+	endMats = std::vector<Math::MatrixNxN>(1, Math::MatrixNxN(dims+1));
 	endMats[0].scale(.5);
 	for (int j = dims;j>2;j--) {
 		endMats[0].project(j, .2);
 	}
-	powerMat = MatrixNxN(dims+1);
-	startMats = std::vector<MatrixNxN>(0, MatrixNxN(dims+1));
+	powerMat = Math::MatrixNxN(dims+1);
+	startMats = std::vector<Math::MatrixNxN>(0, Math::MatrixNxN(dims+1));
 	//	for (int j = 0;j<dims-1;j++) {
 	//		for (int i = j+1;i<dims;i++) {
 	//			powerMat.rotate(j, i, 1);
@@ -333,10 +333,10 @@ void initDefault(Polytope* &polyt, std::vector<MatrixNxN> &startMats,
 	renderType[2] = 0;
 }
 int main(int argc, const char* argv[]) {
-	Polytope* polyt = 0;
-	std::vector<MatrixNxN> startMats;
-	MatrixNxN power;
-	std::vector<MatrixNxN> endMats;
+	Polytope::Polytope* polyt = 0;
+	std::vector<Math::MatrixNxN> startMats;
+	Math::MatrixNxN power;
+	std::vector<Math::MatrixNxN> endMats;
 	int dims;
 	bool renderType[] = {false, false, false};
 	int threadCount = boost::thread::hardware_concurrency();
@@ -346,7 +346,7 @@ int main(int argc, const char* argv[]) {
 		} else {
 			initDefault(polyt, startMats, power, endMats, dims, renderType);
 		}
-		Renderer r(polyt, startMats, power, endMats, renderType, threadCount);
+		Render::Renderer r(polyt, startMats, power, endMats, renderType, threadCount);
 		r.render();
 	} catch (const char* c) {
 		std::cerr<<c<<"\n";

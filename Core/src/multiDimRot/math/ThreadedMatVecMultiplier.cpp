@@ -18,6 +18,8 @@
 #include <ThreadedMatVecMultiplier.h>
 #include <iostream>
 
+using namespace MultiDimRot::Math;
+
 ThreadedMatVecMultiplier::ThreadedMatVecMultiplier(const MatrixNxN& m, int tC): threadCount(tC), matrix(m) {
 	if (threadCount>1) {
 		threads = std::vector<boost::thread>(threadCount);

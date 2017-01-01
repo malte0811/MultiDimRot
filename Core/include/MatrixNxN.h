@@ -17,11 +17,16 @@
  *******************************************************************************/
 #ifndef MATRIXNXN_H_
 #define MATRIXNXN_H_
+
+#include <VecN.h>
+#include <cmath>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <VecN.h>
-#include <iostream>
 
+
+namespace MultiDimRot {
+namespace Math {
 class MatrixNxN {
 public:
 	MatrixNxN(int size, bool inverse = true);
@@ -57,6 +62,27 @@ private:
 	float** buffer = 0;
 	float** inverse = 0;
 	int length;
-	friend std::ostream& operator<<(std::ostream& os, const MatrixNxN& en);
+	friend std::ostream& operator<<(std::ostream& os, const MatrixNxN& en) {
+		os << "Matrix: \n";
+		for (int i = 0;i<en.length;i++) {
+			for (int j = 0;j<en.length;j++) {
+				os << (std::fabs(en.elements[i][j])<.001?0:en.elements[i][j]) << "\t";
+			}
+			os<<"\n";
+		}
+		if (en.inverse!=0) {
+			os << "Inverse: \n";
+			for (int i = 0;i<en.length;i++) {
+				for (int j = 0;j<en.length;j++) {
+					os << (std::fabs(en.inverse[i][j])<.001?0:en.inverse[i][j]) << "\t";
+				}
+				os<<"\n";
+			}
+		}
+		return os;
+	}
+
 };
+}
+}
 #endif /* MATRIXNXN_H_ */

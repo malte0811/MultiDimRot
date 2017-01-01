@@ -1,5 +1,6 @@
 Core/Debug/*
 GUI/MultiDimRot2.0
+GUI/MultiDimRot2.0.exe
 GUI/courier.ttf
 */bin/*
 .metadata/*
@@ -10,3 +11,4 @@ RemoteSystemsTempFiles/*
 */.cproject
 */.classpath
 *.dll
+.settings/

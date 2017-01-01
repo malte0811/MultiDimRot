@@ -18,8 +18,9 @@
 #include <P24Cell.h>
 #include <vector>
 #include <iostream>
+using namespace MultiDimRot::Polytope;
 P24Cell::P24Cell() {
-	vertices = std::vector<VecN>(24, VecN(4));
+	vertices = std::vector<Math::VecN>(24, Math::VecN(4));
 	edges = std::vector<Edge>(96);
 	dimensions = 4;
 	int edgeId = 0;

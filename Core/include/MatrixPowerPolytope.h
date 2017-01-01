@@ -21,18 +21,20 @@
 #include <MatrixNxN.h>
 #include <Polytope.h>
 #include <VecN.h>
-
+namespace MultiDimRot {
+namespace Polytope {
 class MatrixPowerPolytope: public Polytope {
 public:
 	MatrixPowerPolytope(const char** in, int size);
 	virtual ~MatrixPowerPolytope();
 	virtual void update();
 private:
-	MatrixNxN curr;
-	MatrixNxN base;
-	VecN init;
+	Math::MatrixNxN curr;
+	Math::MatrixNxN base;
+	Math::VecN init;
 	bool generating = true;
 	int nextId = 0;
 };
-
+}
+}
 #endif /* SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_ */

@@ -21,7 +21,7 @@
 #include <vector>
 #include <iostream>
 
-using namespace MultiDimRot;
+using namespace MultiDimRot::Polytope;
 
 bool getBit(int num, int bitId) {
 	return (num&(1<<bitId))!=0;
@@ -33,9 +33,9 @@ NDCube::NDCube(int dims) {
 	//int nCount = (dims*(dims-1))/2;
 	dimensions = dims;
 	edges = std::vector<Edge>(eCount);
-	vertices = std::vector<VecN>(vCount, VecN(dims));
+	vertices = std::vector<Math::VecN>(vCount, Math::VecN(dims));
 	faces = std::vector<Triangle>(fCount*2);
-	normals = std::vector<VecN>(fCount, VecN(dims));
+	normals = std::vector<Math::VecN>(fCount, Math::VecN(dims));
 	int edgeId = 0;
 	int faceId = 0;
 	for (int i = 0;i<vCount;i++) {

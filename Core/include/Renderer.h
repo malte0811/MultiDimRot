@@ -17,32 +17,37 @@
  *******************************************************************************/
 #ifndef SRC_MULTIDIMROT_RENDERER_H_
 #define SRC_MULTIDIMROT_RENDERER_H_
-#include <Polytope.h>
-#include <MatrixNxN.h>
-#include <vector>
-#include <VecN.h>
-#include <GL/glew.h>
 
+#include <GL/glew.h>
+#include <MatrixNxN.h>
+#include <Polytope.h>
+#include <VecN.h>
+#include <vector>
+
+namespace MultiDimRot {
+namespace Render {
 class Renderer {
 public:
-	Renderer(Polytope* &polyt, std::vector<MatrixNxN> &startMats, MatrixNxN &powerMat, std::vector<MatrixNxN> &endMats, const bool* renderType, int threadCount);
+	Renderer(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &startMats,
+			Math::MatrixNxN &powerMat, std::vector<Math::MatrixNxN> &endMats,
+			const bool* renderType, int threadCount);
 	virtual ~Renderer();
 	void render();
 private:
-	inline void renderFaces(const std::vector<Triangle> &faces, const VecN &light);
-	inline void renderEdges(const std::vector<Edge> &edges);
+	inline void renderFaces(const std::vector<Polytope::Triangle> &faces, const Math::VecN &light);
+	inline void renderEdges(const std::vector<Polytope::Edge> &edges);
 	inline void renderVertices();
 	void init_resources();
-	Polytope* polyt;
-	std::vector<MatrixNxN> &startMats;
-	MatrixNxN &powerMat;
-	std::vector<MatrixNxN> &endMats;
+	Polytope::Polytope* polyt;
+	std::vector<Math::MatrixNxN> &startMats;
+	Math::MatrixNxN &powerMat;
+	std::vector<Math::MatrixNxN> &endMats;
 	const bool* renderType;
 	GLuint program = 0;
 	GLint uniform_baseColor = 0;
 	GLint attribute_pos = 0;
-	std::vector<VecN> transformedVertices;
-	std::vector<VecN> transformedNormals;
+	std::vector<Math::VecN> transformedVertices;
+	std::vector<Math::VecN> transformedNormals;
 	std::vector<float> brightness;
 	GLfloat* data = 0;
 	int dataSize = -1;
@@ -51,5 +56,7 @@ private:
 	const int dims;
 	const int threadCount;
 };
+}
+}
 
 #endif /* SRC_MULTIDIMROT_RENDERER_H_ */

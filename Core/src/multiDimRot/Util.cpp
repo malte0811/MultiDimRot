@@ -17,7 +17,6 @@
  *******************************************************************************/
 
 #include <Util.h>
-#include <VecN.h>
 #include <sstream>
 
 int MultiDimRot::Util::toInt(std::string in) {
@@ -57,7 +56,7 @@ std::vector<std::string> MultiDimRot::Util::splitAtWords(std::string inStr, char
 	return ret;
 }
 
-void MultiDimRot::Util::addFace(std::vector<Triangle> &faces, std::vector<VecN> &normals, const std::vector<VecN> &vertices,
+void MultiDimRot::Util::addFace(std::vector<Polytope::Triangle> &faces, std::vector<Math::VecN> &normals, const std::vector<Math::VecN> &vertices,
 		const int &a, const int &b, const int &c, int &id) {
 	for (int i = 0;i<3;i++) {
 		faces[id].normals[i] = id;
@@ -70,7 +69,7 @@ void MultiDimRot::Util::addFace(std::vector<Triangle> &faces, std::vector<VecN> 
 	id++;
 }
 
-void MultiDimRot::Util::initQuad(std::vector<Triangle>& tris, int &startIndex,
+void MultiDimRot::Util::initQuad(std::vector<Polytope::Triangle>& tris, int &startIndex,
 		const int &a, const int &b, const int &c, const int &d, const int &normal) {
 	tris[startIndex].normals[0] = normal;
 	tris[startIndex].normals[1] = normal;

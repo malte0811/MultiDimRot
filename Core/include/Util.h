@@ -20,6 +20,7 @@
 #include <VecN.h>
 #include <string>
 #include <vector>
+#include <Polytope.h>
 
 using namespace MultiDimRot;
 namespace MultiDimRot {

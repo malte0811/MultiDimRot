@@ -78,7 +78,7 @@ public class PolytopePanel extends ParamPanel {
 					} else {
 						try {
 							FileInputStream fis = new FileInputStream(f);
-							int dimensions = -1;
+							int dimensions = 3;
 							while (fis.available()>0) {
 								String line = "";
 								int next;
@@ -94,9 +94,6 @@ public class PolytopePanel extends ParamPanel {
 								path = f.getAbsolutePath();
 								Main.INSTANCE.dimensions = dimensions;
 								Main.INSTANCE.frame.repaint();
-							} else {
-								polytope = null;
-								buttons[iCopy].setSelected(false);
 							}
 							fis.close();
 						} catch (Exception x) {

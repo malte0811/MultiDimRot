@@ -37,6 +37,8 @@
 #include <MatrixPowerPolytope.h>
 #include <boost/thread.hpp>
 #include <new>
+#include <ComplexDouble.h>
+#include <ComplexGraph.h>
 
 using namespace MultiDimRot;
 
@@ -311,6 +313,8 @@ void parseArgs(int argc, const char* argv[], Polytope::Polytope* &polyt, std::ve
 
 void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &startMats,
 		Math::MatrixNxN &powerMat, std::vector<Math::MatrixNxN> &endMats, int &dims, bool renderType[]) {
+//	auto squared = [] (const Math::ComplexDouble x) {return x*x;};
+//	polyt = new Polytope::ComplexGraph(squared, -1, .2, 11, -1, .2, 11);
 	polyt = new Polytope::NDCube(4);
 	dims = polyt->getDimensions();
 	endMats = std::vector<Math::MatrixNxN>(1, Math::MatrixNxN(dims+1));
@@ -330,7 +334,7 @@ void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &start
 	powerMat.rotate(1, 3, 1);
 	renderType[0] = true;
 	renderType[1] = true;
-	renderType[2] = 0;
+	renderType[2] = true;
 }
 int main(int argc, const char* argv[]) {
 	Polytope::Polytope* polyt = 0;

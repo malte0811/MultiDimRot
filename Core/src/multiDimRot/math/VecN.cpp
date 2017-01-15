@@ -136,6 +136,14 @@ bool VecN::operator ==(const VecN& other) {
 	return true;
 }
 
+VecN VecN::operator -() const {
+	VecN ret(dimensions);
+	for (int i = 0;i<dimensions;i++) {
+		ret[i] = -elements[i];
+	}
+	return ret;
+}
+
 std::string VecN::toString() const {
 	std::stringstream ret;
 	ret << "[";

@@ -41,5 +41,6 @@ template<typename T> void del2DimArray(T** array, int length) {
 		delete[] array;
 	}
 }
+bool isNearZero(const double d);
 }
 }

@@ -85,3 +85,7 @@ void MultiDimRot::Util::initQuad(std::vector<Polytope::Triangle>& tris, int &sta
 	tris[startIndex+1].vertices[2] = b;
 	startIndex+=2;
 }
+
+bool MultiDimRot::Util::isNearZero(const double d) {
+	return std::abs(d)<.00000001;
+}

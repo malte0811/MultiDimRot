@@ -17,7 +17,9 @@
  *******************************************************************************/
 #ifndef MULTIDIMROT_MATH_COMPLEXDOUBLE_H_
 #define MULTIDIMROT_MATH_COMPLEXDOUBLE_H_
+
 #include <iostream>
+
 namespace MultiDimRot {
 namespace Math {
 class ComplexDouble {

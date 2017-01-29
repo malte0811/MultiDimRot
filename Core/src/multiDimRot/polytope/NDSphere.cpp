@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <NDSphere.h>
-#include <cmath>
-#include <Util.h>
+
+#include <multiDimRot/math/MatrixNxN.h>
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/NDSphere.h>
+#include <multiDimRot/Util.h>
+
 using namespace MultiDimRot::Polytope;
 /*
  * This is not perfect, it generates a lot of duplicate vertices.

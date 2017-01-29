@@ -15,19 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#ifndef SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
-#define SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
+#ifndef SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
+#define SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_
 
-#include <Polytope.h>
+#include <multiDimRot/polytope/Polytope.h>
 
 namespace MultiDimRot {
 namespace Polytope {
-class NDSimplex: public Polytope {
+class NDCrossPolytope:public Polytope {
 public:
-	NDSimplex(int i);
-	virtual ~NDSimplex();
+	NDCrossPolytope(int i);
+	virtual ~NDCrossPolytope();
 };
 }
 }
-
-#endif /* SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_ */
+#endif /* SRC_MULTIDIMROT_POLYTOPE_NDCROSSPOLYTOPE_H_ */

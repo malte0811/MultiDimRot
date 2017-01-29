@@ -18,7 +18,7 @@
 #ifndef MATRIXNXN_H_
 #define MATRIXNXN_H_
 
-#include <VecN.h>
+#include <multiDimRot/math/VecN.h>
 #include <cmath>
 #include <iostream>
 #include <string>

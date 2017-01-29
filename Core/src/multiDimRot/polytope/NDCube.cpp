@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <NDCube.h>
-#include <Polytope.h>
-#include <Util.h>
-#include <vector>
-#include <iostream>
+
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/NDCube.h>
+#include <multiDimRot/Util.h>
 
 using namespace MultiDimRot::Polytope;
 

@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <ThreadedMatVecMultiplier.h>
-#include <iostream>
+
+#include <multiDimRot/math/ThreadedMatVecMultiplier.h>
 
 using namespace MultiDimRot::Math;
 

@@ -16,8 +16,8 @@
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-#include <MatrixPowerPolytope.h>
-#include <Util.h>
+#include <multiDimRot/polytope/MatrixPowerPolytope.h>
+#include <multiDimRot/Util.h>
 #include <iostream>
 #include <vector>
 

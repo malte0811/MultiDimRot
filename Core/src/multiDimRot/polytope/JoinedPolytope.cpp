@@ -16,7 +16,9 @@
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-#include <JoinedPolytope.h>
+
+
+#include <multiDimRot/polytope/JoinedPolytope.h>
 
 using namespace MultiDimRot::Polytope;
 

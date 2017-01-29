@@ -19,8 +19,8 @@
 #ifndef MULTIDIMROT_POLYTOPE_JOINEDPOLYTOPE_H_
 #define MULTIDIMROT_POLYTOPE_JOINEDPOLYTOPE_H_
 
-#include <Polytope.h>
-#include <VecN.h>
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/Polytope.h>
 #include <vector>
 
 namespace MultiDimRot {

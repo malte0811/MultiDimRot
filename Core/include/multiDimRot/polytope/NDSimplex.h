@@ -15,20 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#ifndef OBJPOLYTOPE_H_
-#define OBJPOLYTOPE_H_
+#ifndef SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
+#define SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_
 
-#include <Polytope.h>
-#include <iostream>
-
+#include <multiDimRot/polytope/Polytope.h>
 
 namespace MultiDimRot {
 namespace Polytope {
-class ObjPolytope: public Polytope {
+class NDSimplex: public Polytope {
 public:
-	ObjPolytope(std::istream* in);
-	virtual ~ObjPolytope();
+	NDSimplex(int i);
+	virtual ~NDSimplex();
 };
 }
 }
-#endif /* OBJPOLYTOPE_H_ */
+
+#endif /* SRC_MULTIDIMROT_POLYTOPE_NDSIMPLEX_H_ */

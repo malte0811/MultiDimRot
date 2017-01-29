@@ -16,7 +16,7 @@
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-#include <Polytope.h>
+#include <multiDimRot/polytope/Polytope.h>
 #include <cmath>
 
 using namespace MultiDimRot::Polytope;

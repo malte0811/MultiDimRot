@@ -15,14 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <MatrixNxN.h>
-#include <string>
+
+#include <multiDimRot/math/MatrixNxN.h>
+#include <multiDimRot/Util.h>
 #include <sstream>
-#include <cmath>
-#include <VecN.h>
-#include <vector>
-#include <iostream>
-#include <Util.h>
+
 using namespace MultiDimRot::Math;
 // elements[row][column]
 MatrixNxN::MatrixNxN(int size, bool inverse) {

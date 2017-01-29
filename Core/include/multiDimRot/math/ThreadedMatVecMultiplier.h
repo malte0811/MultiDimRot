@@ -19,8 +19,8 @@
 #define SRC_MULTIDIMROT_MATH_THREADEDMATVECMULTIPLIER_H_
 
 #include <boost/thread.hpp>
-#include <MatrixNxN.h>
-#include <VecN.h>
+#include <multiDimRot/math/MatrixNxN.h>
+#include <multiDimRot/math/VecN.h>
 #include <vector>
 
 namespace MultiDimRot {

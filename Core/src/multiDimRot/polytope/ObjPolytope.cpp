@@ -16,10 +16,10 @@
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-#include <MatrixNxN.h>
-#include <ObjPolytope.h>
-#include <Util.h>
-#include <VecN.h>
+#include <multiDimRot/math/MatrixNxN.h>
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/ObjPolytope.h>
+#include <multiDimRot/Util.h>
 #include <string>
 #include <vector>
 

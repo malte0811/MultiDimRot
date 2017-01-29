@@ -19,9 +19,9 @@
 #define SRC_MULTIDIMROT_RENDERER_H_
 
 #include <GL/glew.h>
-#include <MatrixNxN.h>
-#include <Polytope.h>
-#include <VecN.h>
+#include <multiDimRot/math/MatrixNxN.h>
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/Polytope.h>
 #include <vector>
 
 namespace MultiDimRot {

@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include "VecN.h"
-#include <iostream>
-#include <string>
-#include <sstream>
+
+#include <multiDimRot/math/VecN.h>
+#include <algorithm>
 #include <cmath>
+#include <sstream>
+
 using namespace MultiDimRot::Math;
 
 VecN::VecN(int dims) {

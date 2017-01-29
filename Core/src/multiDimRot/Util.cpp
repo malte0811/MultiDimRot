@@ -16,8 +16,11 @@
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-#include <Util.h>
+#include <multiDimRot/Util.h>
+#include <cmath>
 #include <sstream>
+#include <string>
+#include <vector>
 
 int MultiDimRot::Util::toInt(std::string in) {
 	std::istringstream tmp(in);

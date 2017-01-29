@@ -15,49 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#ifndef SRC_MULTIDIMROT_POLYTOPE_H_
-#define SRC_MULTIDIMROT_POLYTOPE_H_
+#ifndef SRC_MULTIDIMROT_POLYTOPE_NDSPHERE_H_
+#define SRC_MULTIDIMROT_POLYTOPE_NDSPHERE_H_
 
-#include <MatrixNxN.h>
-#include <VecN.h>
-#include <iostream>
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/Polytope.h>
 #include <vector>
-#include <array>
 
 namespace MultiDimRot {
 namespace Polytope {
-struct Edge {
-	int start;
-	int end;
-};
-struct Triangle {
-	std::array<int, 3> vertices;
-	std::array<int, 3> normals;
-};
-
-typedef struct Edge Edge;
-class Polytope {
+class NDSphere: public Polytope {
 public:
-	Polytope();
-	virtual ~Polytope() = 0;
-	virtual const std::vector<Math::VecN>& getVertices() const;
+	NDSphere(int dimensions, int verticesPerHalf = 10);
+	virtual ~NDSphere();
 	virtual const std::vector<Math::VecN>& getNormals() const;
-	virtual const std::vector<Edge>& getEdges() const;
-	virtual const std::vector<Triangle>& getFaces() const;
-	/**
-	 * The amount of dimensions of this polytope. MUST NOT CHANGE!
-	 */
-	virtual int getDimensions() const;
-	virtual void update();
-	void writeObj(std::ostream* o, const Math::MatrixNxN &apply) const;
-	float getLength(Edge e);
-protected:
-	std::vector<Math::VecN> vertices;
-	std::vector<Math::VecN> normals;
-	std::vector<Edge> edges;
-	std::vector<Triangle> faces;
-	int dimensions = -1;
 };
 }
 }
-#endif /* SRC_MULTIDIMROT_POLYTOPE_H_ */
+#endif

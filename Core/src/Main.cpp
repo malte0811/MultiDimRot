@@ -15,30 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <SFML/Graphics.hpp>
-#include <VecN.h>
-#include <MatrixNxN.h>
-#include <NDCube.h>
-#include <iostream>
-#include <array>
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <cmath>
-#include <Util.h>
-#include <NDCrossPolytope.h>
-#include <NDSimplex.h>
-#include <ObjPolytope.h>
-#include <Polytope.h>
-#include <JoinedPolytope.h>
-#include <P24Cell.h>
-#include <Renderer.h>
-#include <NDSphere.h>
-#include <MatrixPowerPolytope.h>
+
 #include <boost/thread.hpp>
-#include <new>
-#include <ComplexDouble.h>
-#include <ComplexGraph.h>
+#include <boost/thread/detail/thread.hpp>
+#include <multiDimRot/math/MatrixNxN.h>
+#include <multiDimRot/polytope/MatrixPowerPolytope.h>
+#include <multiDimRot/polytope/NDCrossPolytope.h>
+#include <multiDimRot/polytope/NDCube.h>
+#include <multiDimRot/polytope/NDSimplex.h>
+#include <multiDimRot/polytope/NDSphere.h>
+#include <multiDimRot/polytope/ObjPolytope.h>
+#include <multiDimRot/polytope/P24Cell.h>
+#include <multiDimRot/Renderer.h>
+#include <multiDimRot/Util.h>
+#include <SFML/Graphics.hpp>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 using namespace MultiDimRot;
 

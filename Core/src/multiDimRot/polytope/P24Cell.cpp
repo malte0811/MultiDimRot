@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#include <P24Cell.h>
+
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/P24Cell.h>
 #include <vector>
-#include <iostream>
+
 using namespace MultiDimRot::Polytope;
 P24Cell::P24Cell() {
 	vertices = std::vector<Math::VecN>(24, Math::VecN(4));

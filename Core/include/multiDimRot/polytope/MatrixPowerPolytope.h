@@ -15,19 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-#ifndef SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_
-#define SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_
+#ifndef SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_
+#define SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_
 
-#include <vector>
-#include "Polytope.h"
+#include <multiDimRot/math/MatrixNxN.h>
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/Polytope.h>
 
 namespace MultiDimRot {
 namespace Polytope {
-class NDCube: public Polytope {
+class MatrixPowerPolytope: public Polytope {
 public:
-	NDCube(int dims);
-	virtual ~NDCube();
+	MatrixPowerPolytope(const char** in, int size);
+	virtual ~MatrixPowerPolytope();
+	virtual void update();
+private:
+	Math::MatrixNxN curr;
+	Math::MatrixNxN base;
+	Math::VecN init;
+	bool generating = true;
+	int nextId = 0;
 };
 }
 }
-#endif /* SRC_MULTIDIMROT_POLYTOPE_NDCUBE_H_ */
+#endif /* SRC_MULTIDIMROT_POLYTOPE_MATRIXPOWERPOLYTOPE_H_ */

@@ -16,12 +16,12 @@
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-#include <Renderer.h>
+#include <multiDimRot/math/ThreadedMatVecMultiplier.h>
+#include <multiDimRot/Renderer.h>
 #include <SFML/Graphics.hpp>
-#include <ThreadedMatVecMultiplier.h>
 #include <iostream>
-#include <string>
 #include <fstream>
+#include <string>
 
 using namespace MultiDimRot::Render;
 

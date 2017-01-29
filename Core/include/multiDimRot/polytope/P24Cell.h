@@ -15,26 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
+#ifndef MULTIDIMROT_POLYTOPE_P24CELL_H_
+#define MULTIDIMROT_POLYTOPE_P24CELL_H_
 
-#ifndef MULTIDIMROT_POLYTOPE_COMPLEXGRAPH_H_
-#define MULTIDIMROT_POLYTOPE_COMPLEXGRAPH_H_
-
-#include <Polytope.h>
-#include <functional>
-#include <ComplexDouble.h>
+#include <multiDimRot/polytope/Polytope.h>
 
 namespace MultiDimRot {
 namespace Polytope {
-
-class ComplexGraph: public Polytope {
+class P24Cell:public Polytope {
 public:
-	ComplexGraph(std::function<Math::ComplexDouble(const Math::ComplexDouble)> f,
-			double rMin, double rStep, int rCount,
-			double iMin, double iStep, int iCount);
-	virtual ~ComplexGraph();
+	P24Cell();
+	virtual ~P24Cell();
 };
-
-} /* namespace Polytope */
-} /* namespace MultiDimRot */
-
-#endif /* MULTIDIMROT_POLYTOPE_COMPLEXGRAPH_H_ */
+}
+}
+#endif /* MULTIDIMROT_POLYTOPE_P24CELL_H_ */

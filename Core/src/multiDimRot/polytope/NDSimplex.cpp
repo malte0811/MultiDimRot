@@ -16,8 +16,9 @@
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-#include <NDSimplex.h>
-#include <Util.h>
+#include <multiDimRot/math/VecN.h>
+#include <multiDimRot/polytope/NDSimplex.h>
+#include <multiDimRot/Util.h>
 #include <cmath>
 #include <vector>
 

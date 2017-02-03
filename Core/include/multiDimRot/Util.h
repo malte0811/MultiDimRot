@@ -20,6 +20,7 @@
 #include <multiDimRot/polytope/Polytope.h>
 #include <string>
 #include <vector>
+#include <multiDimRot/math/ComplexDouble.h>
 
 using namespace MultiDimRot;
 namespace MultiDimRot {
@@ -41,5 +42,7 @@ template<typename T> void del2DimArray(T** array, int length) {
 	}
 }
 bool isNearZero(const double d);
+//parses a real or imaginary number (3, 2.5I), but no general complex numbers like 4+3I
+Math::ComplexDouble parseComplex(const std::string& in);
 }
 }

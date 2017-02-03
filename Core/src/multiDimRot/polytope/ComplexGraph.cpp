@@ -25,7 +25,7 @@
 namespace MultiDimRot {
 namespace Polytope {
 
-ComplexGraph::ComplexGraph(std::function<Math::ComplexDouble(const Math::ComplexDouble)> f,
+ComplexGraph::ComplexGraph(std::function<Math::ComplexDouble(const Math::ComplexDouble&)> f,
 		double rMin, double rStep, int rCount,
 		double iMin, double iStep, int iCount) {
 	vertices = std::vector<Math::VecN>(rCount*iCount, Math::VecN(4));

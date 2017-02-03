@@ -26,6 +26,7 @@
 #include <multiDimRot/polytope/NDSphere.h>
 #include <multiDimRot/polytope/ObjPolytope.h>
 #include <multiDimRot/polytope/P24Cell.h>
+#include <multiDimRot/polytope/ComplexGraph.h>
 #include <multiDimRot/Renderer.h>
 #include <multiDimRot/Util.h>
 #include <SFML/Graphics.hpp>
@@ -34,6 +35,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <multiDimRot/math/ExpressionParser.h>
 
 using namespace MultiDimRot;
 
@@ -80,6 +82,7 @@ void checkSpace(int i, int length, int required, std::string name) {
 		throw s.str();
 	}
 }
+//TODO change Util::to* to std::strto*
 void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope::Polytope* &polyt) {
 	while (pos<argc) {
 		std::string in(argv[pos]);
@@ -131,6 +134,19 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope::Polyt
 			const char** matStart = argv+pos+1;
 			polyt = new Polytope::MatrixPowerPolytope(matStart, size);
 			pos += totalSize;
+		} else if (in=="cGraph") {
+			checkSpace(pos, argc, 7, in);
+			Math::ExpressionParser function(argv[pos+1]);
+			pos+=2;
+			double rStart = Util::toFloat(argv[pos]);
+			double rStep = Util::toFloat(argv[pos+1]);
+			int rCount = Util::toFloat(argv[pos+2]);
+			pos+=3;
+			double iStart = Util::toFloat(argv[pos]);
+			double iStep = Util::toFloat(argv[pos+1]);
+			int iCount = Util::toFloat(argv[pos+2]);
+			pos+=2;
+			polyt = new Polytope::ComplexGraph(function, rStart, rStep, rCount, iStart, iStep, iCount);
 		} else {
 			throw "Unknown parameter: "+in;
 		}
@@ -308,8 +324,7 @@ void parseArgs(int argc, const char* argv[], Polytope::Polytope* &polyt, std::ve
 
 void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &startMats,
 		Math::MatrixNxN &powerMat, std::vector<Math::MatrixNxN> &endMats, int &dims, bool renderType[]) {
-//	auto squared = [] (const Math::ComplexDouble x) {return x*x;};
-//	polyt = new Polytope::ComplexGraph(squared, -1, .2, 11, -1, .2, 11);
+	//	polyt = new Polytope::ComplexGraph(Math::ExpressionParser("exp(re(.1*x)+im(x))"), -10, 1, 21, -10, 1, 21);
 	polyt = new Polytope::NDCube(4);
 	dims = polyt->getDimensions();
 	endMats = std::vector<Math::MatrixNxN>(1, Math::MatrixNxN(dims+1));

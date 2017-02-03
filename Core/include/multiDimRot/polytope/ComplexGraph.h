@@ -28,7 +28,7 @@ namespace Polytope {
 
 class ComplexGraph: public Polytope {
 public:
-	ComplexGraph(std::function<Math::ComplexDouble(const Math::ComplexDouble)> f,
+	ComplexGraph(std::function<Math::ComplexDouble(const Math::ComplexDouble&)> f,
 			double rMin, double rStep, int rCount,
 			double iMin, double iStep, int iCount);
 	virtual ~ComplexGraph();

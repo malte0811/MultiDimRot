@@ -21,8 +21,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
-int MultiDimRot::Util::toInt(std::string in) {
+namespace MultiDimRot {
+namespace Util {
+int toInt(std::string in) {
 	std::istringstream tmp(in);
 	if (tmp.bad()) {
 		throw "Invalid input!";
@@ -32,7 +33,7 @@ int MultiDimRot::Util::toInt(std::string in) {
 	return i;
 }
 
-float MultiDimRot::Util::toFloat(std::string in) {
+float toFloat(std::string in) {
 	std::istringstream tmp(in);
 	if (tmp.bad()) {
 		throw "Invalid input!";
@@ -42,7 +43,7 @@ float MultiDimRot::Util::toFloat(std::string in) {
 	return i;
 }
 
-std::vector<std::string> MultiDimRot::Util::splitAtWords(std::string inStr, char split) {
+std::vector<std::string> splitAtWords(std::string inStr, char split) {
 	std::vector<std::string> ret;
 	std::stringstream s;
 	const char* in = inStr.c_str();
@@ -59,7 +60,7 @@ std::vector<std::string> MultiDimRot::Util::splitAtWords(std::string inStr, char
 	return ret;
 }
 
-void MultiDimRot::Util::addFace(std::vector<Polytope::Triangle> &faces, std::vector<Math::VecN> &normals, const std::vector<Math::VecN> &vertices,
+void addFace(std::vector<Polytope::Triangle> &faces, std::vector<Math::VecN> &normals, const std::vector<Math::VecN> &vertices,
 		const int &a, const int &b, const int &c, int &id) {
 	for (int i = 0;i<3;i++) {
 		faces[id].normals[i] = id;
@@ -72,7 +73,7 @@ void MultiDimRot::Util::addFace(std::vector<Polytope::Triangle> &faces, std::vec
 	id++;
 }
 
-void MultiDimRot::Util::initQuad(std::vector<Polytope::Triangle>& tris, int &startIndex,
+void initQuad(std::vector<Polytope::Triangle>& tris, int &startIndex,
 		const int &a, const int &b, const int &c, const int &d, const int &normal) {
 	tris[startIndex].normals[0] = normal;
 	tris[startIndex].normals[1] = normal;
@@ -89,6 +90,19 @@ void MultiDimRot::Util::initQuad(std::vector<Polytope::Triangle>& tris, int &sta
 	startIndex+=2;
 }
 
-bool MultiDimRot::Util::isNearZero(const double d) {
+bool isNearZero(const double d) {
 	return std::abs(d)<.00000001;
+}
+
+Math::ComplexDouble parseComplex(const std::string& in) {
+	char last = in[in.size()-1];
+	bool imaginary = last=='I'||last=='i';
+	double value = std::strtod(in.c_str(), NULL);
+	if (imaginary) {
+		return Math::ComplexDouble(0, value);
+	} else {
+		return Math::ComplexDouble(value);
+	}
+}
+}
 }

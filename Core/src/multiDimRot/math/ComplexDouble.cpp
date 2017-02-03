@@ -80,10 +80,14 @@ double ComplexDouble::getImaginary() const {
 }
 
 std::ostream& operator<<(std::ostream& stream, const ComplexDouble& cd) {
-	stream << cd.getReal();
-	if (cd.getImaginary()>=0) {
+	if (cd.getReal()!=0||cd.getImaginary()==0) {
+		stream << cd.getReal();
+	}
+	if (cd.getReal()!=0&&cd.getImaginary()!=0&&cd.getImaginary()>0) {
 		stream << "+";
 	}
-	stream << cd.getImaginary() << "*I";
+	if (cd.getImaginary()!=0) {
+		stream << cd.getImaginary() << "*I";
+	}
 	return stream;
 }

@@ -30,17 +30,34 @@ public:
 	ComplexDouble operator-(const ComplexDouble& b) const;
 	ComplexDouble operator*(const ComplexDouble& b) const;
 	ComplexDouble operator/(const ComplexDouble& b) const;
+	ComplexDouble operator+(double d) const;
+	ComplexDouble operator-(double d) const;
+	ComplexDouble operator*(double d) const;
+	ComplexDouble operator/(double d) const;
 	void operator+=(const ComplexDouble& b);
 	void operator-=(const ComplexDouble& b);
 	void operator*=(const ComplexDouble& b);
 	void operator/=(const ComplexDouble& b);
+	ComplexDouble operator-() const;
+	bool operator==(double d) const;
 	double getReal() const;
 	double getImaginary() const;
+	double abs() const;
+	static ComplexDouble pow(const ComplexDouble& a, const ComplexDouble& b);
+	static ComplexDouble exp(const ComplexDouble& a);
+	static ComplexDouble ln(const ComplexDouble& a);
+	static ComplexDouble sin(const ComplexDouble& a);
+	static ComplexDouble cos(const ComplexDouble& a);
+	static ComplexDouble tan(const ComplexDouble& a);
 private:
 	double real;
 	double imaginary;
 };
 const static ComplexDouble I(0, 1);
+ComplexDouble operator+(double a, const ComplexDouble& b);
+ComplexDouble operator-(double a, const ComplexDouble& b);
+ComplexDouble operator*(double a, const ComplexDouble& b);
+ComplexDouble operator/(double a, const ComplexDouble& b);
 }
 }
 std::ostream& operator<<(std::ostream& os, const MultiDimRot::Math::ComplexDouble& cd);

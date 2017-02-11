@@ -17,6 +17,7 @@
  *******************************************************************************/
 
 #include <multiDimRot/math/ComplexDouble.h>
+#include <cmath>
 
 using namespace MultiDimRot::Math;
 ComplexDouble::ComplexDouble(double r, double i) {
@@ -26,50 +27,33 @@ ComplexDouble::ComplexDouble(double r, double i) {
 
 ComplexDouble::~ComplexDouble() {}
 
-ComplexDouble ComplexDouble::operator +(const ComplexDouble& b) const {
-	return ComplexDouble(real+b.real, imaginary+b.imaginary);
+ComplexDouble ComplexDouble::pow(const ComplexDouble& a, const ComplexDouble& b) {
+	if (a==0) {
+		return ComplexDouble();
+	}
+	return exp(ln(a)*b);
 }
-
-ComplexDouble ComplexDouble::operator -(const ComplexDouble& b) const {
-	return ComplexDouble(real-b.real, imaginary-b.imaginary);
+ComplexDouble ComplexDouble::exp(const ComplexDouble& a) {
+	double multiplier = std::exp(a.getReal());
+	double real = std::cos(a.getImaginary());
+	double imaginary = std::sin(a.getImaginary());
+	return ComplexDouble(real*multiplier, imaginary*multiplier);
 }
-
-ComplexDouble ComplexDouble::operator *(const ComplexDouble& b) const {
-	double r = real*b.real-imaginary*b.imaginary;
-	double i = imaginary*b.real+b.imaginary*real;
-	return ComplexDouble(r, i);
+ComplexDouble ComplexDouble::ln(const ComplexDouble& a) {
+	ComplexDouble dir(0, std::atan2(a.imaginary, a.real));
+	return std::log(a.abs())+dir;
 }
-
-ComplexDouble ComplexDouble::operator /(const ComplexDouble& b) const {
-	double r = real*b.real+imaginary*b.imaginary;
-	double i = imaginary*b.real-b.imaginary*real;
-	double div = b.real*b.real-b.imaginary*b.imaginary;
-	r /= div;
-	i /= div;
-	return ComplexDouble(r, i);
+double ComplexDouble::abs() const {
+	return std::sqrt(real*real+imaginary*imaginary);
 }
-
-void ComplexDouble::operator +=(const ComplexDouble& b) {
-	real += b.real;
-	imaginary += b.imaginary;
+ComplexDouble ComplexDouble::sin(const ComplexDouble& a) {
+	return -I*(exp(I*a)-exp(-I*a))/2;
 }
-
-void ComplexDouble::operator -=(const ComplexDouble& b) {
-	real -=b.real;
-	imaginary -= b.imaginary;
+ComplexDouble ComplexDouble::cos(const ComplexDouble& a) {
+	return (exp(I*a)+exp(-I*a))/2;
 }
-
-//TODO optimization if these are used in the rendering loop
-void ComplexDouble::operator *=(const ComplexDouble& b) {
-	ComplexDouble tmp = (*this)*b;
-	real = tmp.real;
-	imaginary = tmp.imaginary;
-}
-
-void ComplexDouble::operator /=(const ComplexDouble& b) {
-	ComplexDouble tmp = (*this)/b;
-	real = tmp.real;
-	imaginary = tmp.imaginary;
+ComplexDouble ComplexDouble::tan(const ComplexDouble& a) {
+	return sin(a)/cos(a);
 }
 //END OF TODO
 double ComplexDouble::getReal() const {
@@ -77,17 +61,4 @@ double ComplexDouble::getReal() const {
 }
 double ComplexDouble::getImaginary() const {
 	return imaginary;
-}
-
-std::ostream& operator<<(std::ostream& stream, const ComplexDouble& cd) {
-	if (cd.getReal()!=0||cd.getImaginary()==0) {
-		stream << cd.getReal();
-	}
-	if (cd.getReal()!=0&&cd.getImaginary()!=0&&cd.getImaginary()>0) {
-		stream << "+";
-	}
-	if (cd.getImaginary()!=0) {
-		stream << cd.getImaginary() << "*I";
-	}
-	return stream;
 }

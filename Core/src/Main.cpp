@@ -324,7 +324,7 @@ void parseArgs(int argc, const char* argv[], Polytope::Polytope* &polyt, std::ve
 
 void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &startMats,
 		Math::MatrixNxN &powerMat, std::vector<Math::MatrixNxN> &endMats, int &dims, bool renderType[]) {
-	//	polyt = new Polytope::ComplexGraph(Math::ExpressionParser("exp(re(.1*x)+im(x))"), -10, 1, 21, -10, 1, 21);
+//	polyt = new Polytope::ComplexGraph(Math::ExpressionParser("ln(x)"), -10, 1, 21, -10, 1, 21);
 	polyt = new Polytope::NDCube(4);
 	dims = polyt->getDimensions();
 	endMats = std::vector<Math::MatrixNxN>(1, Math::MatrixNxN(dims+1));
@@ -344,7 +344,7 @@ void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &start
 	powerMat.rotate(1, 3, 1);
 	renderType[0] = true;
 	renderType[1] = true;
-	renderType[2] = true;
+	renderType[2] = 0;
 }
 int main(int argc, const char* argv[]) {
 	Polytope::Polytope* polyt = 0;

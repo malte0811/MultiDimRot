@@ -29,6 +29,16 @@ ExpressionElement::ExpressionElement() {
 	type = unknown;
 }
 
+ExpressionElement::ExpressionElement(const ComplexDouble& c) {
+	cValue = c;
+	type = number;
+}
+
+ExpressionElement::ExpressionElement(char c, EElementType t) {
+	charValue = c;
+	type = t;
+}
+
 ExpressionElement::ExpressionElement(std::string in, int& pos) {
 	std::string token = ExpressionParser::readToken(pos, in, type);
 	switch (type) {
@@ -72,6 +82,9 @@ int ExpressionElement::getOpPrecedence() {
 	if (charValue=='*'||charValue=='/') {
 		return 1;
 	}
+	if (charValue=='^') {
+		return 2;
+	}
 	std::cout << "Unknown operator: " << charValue << "\n";
 	return -1;
 }
@@ -80,7 +93,7 @@ EElementType ExpressionParser::getType(char c) {
 	if (c=='('||c==')') {
 		return parenthesis;
 	}
-	if (c=='*'||c=='+'||c=='-'||c=='/') {
+	if (c=='*'||c=='+'||c=='-'||c=='/'||c=='^') {
 		return op;
 	}
 	if (c=='x') {
@@ -125,16 +138,28 @@ std::string ExpressionParser::readToken(int& pos, std::string expression, EEleme
 void ExpressionParser::addFunctions() {
 	if (functions.size()==0) {
 		functions["exp"] = [](const ComplexDouble& c){
-			double multiplier = std::exp(c.getReal());
-			double real = std::cos(c.getImaginary());
-			double imaginary = std::sin(c.getImaginary());
-			return ComplexDouble(real*multiplier, imaginary*multiplier);
+			return ComplexDouble::exp(c);
 		};
 		functions["im"] = [](const ComplexDouble& c) {
 			return ComplexDouble(0, c.getImaginary());
 		};
 		functions["re"] = [](const ComplexDouble& c) {
 			return ComplexDouble(c.getReal());
+		};
+		functions["ln"] = [](const ComplexDouble& c) {
+			return ComplexDouble::ln(c);
+		};
+		functions["abs"] = [](const ComplexDouble& c) {
+			return c.abs();
+		};
+		functions["cos"] = [](const ComplexDouble& c) {
+			return ComplexDouble::cos(c);
+		};
+		functions["sin"] = [](const ComplexDouble& c) {
+			return ComplexDouble::sin(c);
+		};
+		functions["tan"] = [](const ComplexDouble& c) {
+			return ComplexDouble::tan(c);
 		};
 	}
 }

@@ -62,7 +62,6 @@ NDCrossPolytope::NDCrossPolytope(int dim) {
 			}
 		}
 	}
-	std::cout << fCount << ":" << faceId << "\n";
 }
 
 NDCrossPolytope::~NDCrossPolytope() {}

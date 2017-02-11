@@ -38,6 +38,8 @@ class ExpressionElement {
 public:
 	ExpressionElement();
 	ExpressionElement(std::string in, int& pos);
+	ExpressionElement(const ComplexDouble& d);
+	ExpressionElement(char c, EElementType type);
 	EElementType getType() const;
 	const std::function<ComplexDouble(const ComplexDouble&)>& getFunction() const;
 	const ComplexDouble& getComplex() const;

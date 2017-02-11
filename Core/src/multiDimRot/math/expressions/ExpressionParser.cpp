@@ -28,6 +28,7 @@ ExpressionParser::ExpressionParser(std::string expression) {
 	addFunctions();
 	int pos = 0;
 	std::stack<ExpressionElement> opStack;
+	ExpressionElement last('(', parenthesis);
 	while (pos<expression.size()) {
 		ExpressionElement ee(expression, pos);
 		switch (ee.getType()) {
@@ -41,6 +42,10 @@ ExpressionParser::ExpressionParser(std::string expression) {
 			expressionList.push_back(ee);
 			break;
 		case op:
+			// handle unary -
+			if (last.getChar()=='('&&(ee.getChar()=='+'||ee.getChar()=='-')) {
+				expressionList.push_back(ExpressionElement(ComplexDouble()));
+			}
 			//WARNING: this will break once there are right-associative operators!
 			while (!opStack.empty()&&opStack.top().getType()==op&&opStack.top().getOpPrecedence()>=ee.getOpPrecedence()) {
 				expressionList.push_back(opStack.top());
@@ -57,7 +62,7 @@ ExpressionParser::ExpressionParser(std::string expression) {
 					opStack.pop();
 				}
 				opStack.pop();
-				if (opStack.top().getType()==function) {
+				if (!opStack.empty()&&opStack.top().getType()==function) {
 					expressionList.push_back(opStack.top());
 					opStack.pop();
 				}
@@ -67,6 +72,7 @@ ExpressionParser::ExpressionParser(std::string expression) {
 			std::cout << "End of expression reached?";
 			break;
 		}
+		last = ee;
 	}
 	while (!opStack.empty()) {
 		if (opStack.top().getType()==parenthesis) {
@@ -112,6 +118,9 @@ ComplexDouble ExpressionParser::evaluate(const ComplexDouble& xVal) const {
 				break;
 			case '/':
 				val = second/top;
+				break;
+			case '^':
+				val = ComplexDouble::pow(second, top);
 				break;
 			}
 			stack.push(val);

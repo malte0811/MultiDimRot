@@ -56,4 +56,6 @@ int Polytope::getDimensions() const {
 	return dimensions;
 }
 
-void Polytope::update() {}
+bool Polytope::update() {
+	return false;
+}

@@ -27,14 +27,14 @@ namespace MultiDimRot {
 namespace Polytope {
 class JoinedPolytope:public Polytope {
 public:
-	JoinedPolytope(Polytope* p0, Polytope* p1);
+	JoinedPolytope(const std::vector<Polytope*>& parts);
 	virtual ~JoinedPolytope();
 	virtual const std::vector<Math::VecN>& getVertices() const;
 	virtual const std::vector<Edge>& getEdges() const;
 	virtual const std::vector<Triangle>& getFaces() const;
 	virtual const std::vector<Math::VecN>& getNormals() const;
 	virtual int getDimensions() const;
-	virtual void update();
+	virtual bool update();
 private:
 	Polytope* a;
 	Polytope* b;

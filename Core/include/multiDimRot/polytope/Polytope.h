@@ -48,7 +48,10 @@ public:
 	 * The amount of dimensions of this polytope. MUST NOT CHANGE!
 	 */
 	virtual int getDimensions() const;
-	virtual void update();
+	/**
+	 * returns whether changes were made to the polytope
+	 */
+	virtual bool update();
 	void writeObj(std::ostream* o, const Math::MatrixNxN &apply) const;
 	float getLength(Edge e);
 protected:

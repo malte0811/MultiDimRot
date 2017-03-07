@@ -28,7 +28,7 @@ class MatrixPowerPolytope: public Polytope {
 public:
 	MatrixPowerPolytope(const char** in, int size);
 	virtual ~MatrixPowerPolytope();
-	virtual void update();
+	virtual bool update();
 private:
 	Math::MatrixNxN curr;
 	Math::MatrixNxN base;

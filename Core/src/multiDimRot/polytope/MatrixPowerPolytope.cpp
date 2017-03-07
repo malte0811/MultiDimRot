@@ -42,14 +42,14 @@ MatrixPowerPolytope::~MatrixPowerPolytope() {
 
 }
 
-void MatrixPowerPolytope::update() {
+bool MatrixPowerPolytope::update() {
 	if (generating) {
 		Math::VecN next(dimensions);
 		curr.apply(init, next);
 		if (nextId>0&&vertices[nextId-1]==next) {
 			std::cout << "finished generating matrix power polytope\n";
 			generating = false;
-			return;
+			return false;
 		}
 		vertices.push_back(next);
 		if (nextId>0) {
@@ -60,5 +60,7 @@ void MatrixPowerPolytope::update() {
 		}
 		nextId++;
 		curr *= base;
+		return true;
 	}
+	return false;
 }

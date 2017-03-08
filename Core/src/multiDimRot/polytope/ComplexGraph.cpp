@@ -24,7 +24,10 @@
 
 namespace MultiDimRot {
 namespace Polytope {
-
+void writeNormal(Math::VecN& vec, double d, int offset) {
+	vec[offset] = -d;
+	vec[offset+2] = 1;
+}
 ComplexGraph::ComplexGraph(std::function<Math::ComplexDouble(const Math::ComplexDouble&)> f,
 		double rMin, double rStep, int rCount,
 		double iMin, double iStep, int iCount) {
@@ -123,12 +126,9 @@ ComplexGraph::ComplexGraph(std::function<Math::ComplexDouble(const Math::Complex
 				iSamples++;
 			}
 			dI /= iStep*iSamples;
-
-			//TODO handle dR==0||dI==0
-			normals[pos][0] = 1;
-			normals[pos][1] = 1;
-			normals[pos][2] = Util::isNearZero(dI)?-100000:-1/dR;
-			normals[pos][3] = Util::isNearZero(dI)?-100000:-1/dI;
+			Math::VecN& currNormal = normals[pos];
+			writeNormal(currNormal, dR, 0);
+			writeNormal(currNormal, dI, 1);
 			normals[pos+vPos] = -normals[pos];
 		}
 	}

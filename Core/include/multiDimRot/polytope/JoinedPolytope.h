@@ -36,12 +36,13 @@ public:
 	virtual int getDimensions() const;
 	virtual bool update();
 private:
-	Polytope* a;
-	Polytope* b;
-	std::vector<Edge> retE;
-	std::vector<Math::VecN> retV;
-	std::vector<Math::VecN> retN;
-	std::vector<Triangle> retF;
+	void refresh();
+	int dimensions;
+	std::vector<Polytope*> parts;
+	std::vector<Edge> joinedEdges;
+	std::vector<Math::VecN> joinedVertices;
+	std::vector<Math::VecN> joinedNormals;
+	std::vector<Triangle> joinedFaces;
 };
 }
 }

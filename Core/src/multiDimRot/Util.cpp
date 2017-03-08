@@ -104,5 +104,13 @@ Math::ComplexDouble parseComplex(const std::string& in) {
 		return Math::ComplexDouble(value);
 	}
 }
+Polytope::Triangle offset(Polytope::Triangle orig, int vOff, int nOff) {
+	Polytope::Triangle ret;
+	for (int i = 0;i<3;i++) {
+		ret.normals[i] = orig.normals[i]+nOff;
+		ret.vertices[i] = orig.vertices[i]+vOff;
+	}
+	return ret;
+}
 }
 }

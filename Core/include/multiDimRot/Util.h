@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include <multiDimRot/math/ComplexDouble.h>
+#include <functional>
 
 using namespace MultiDimRot;
 namespace MultiDimRot {
@@ -44,5 +45,20 @@ template<typename T> void del2DimArray(T** array, int length) {
 bool isNearZero(const double d);
 //parses a real or imaginary number (3, 2.5I), but no general complex numbers like 4+3I
 Math::ComplexDouble parseComplex(const std::string& in);
+template<typename T>
+void joinVectors(int count, std::function<std::vector<T>(int)> getPartVec,
+		std::function<const std::vector<T> (const std::vector<T>&, int, int)> process, std::vector<T>& output) {
+	output.clear();
+	int processedCount = 0;
+	for (int i = 0;i<count;i++) {
+		const std::vector<T> current = getPartVec(i);
+		int end = processedCount+current.size();
+		output.reserve(end);
+		std::vector<T> processed = process(current, processedCount, i);
+		output.insert(output.end(), processed.begin(), processed.end());
+		processedCount = end;
+	}
+}
+Polytope::Triangle offset(Polytope::Triangle orig, int vOff, int nOff);
 }
 }

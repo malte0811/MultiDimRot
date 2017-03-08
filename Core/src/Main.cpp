@@ -27,6 +27,7 @@
 #include <multiDimRot/polytope/ObjPolytope.h>
 #include <multiDimRot/polytope/P24Cell.h>
 #include <multiDimRot/polytope/ComplexGraph.h>
+#include <multiDimRot/polytope/JoinedPolytope.h>
 #include <multiDimRot/Renderer.h>
 #include <multiDimRot/Util.h>
 #include <SFML/Graphics.hpp>

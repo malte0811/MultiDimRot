@@ -85,16 +85,18 @@ void checkSpace(int i, int length, int required, std::string name) {
 }
 //TODO change Util::to* to std::strto*
 void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope::Polytope* &polyt) {
+	if (polyt!=0) {
+		throw "Already set a polytope!";
+	}
+	std::vector<Polytope::Polytope*> parts;
 	while (pos<argc) {
 		std::string in(argv[pos]);
 		if (in.find("--")==0) {
-			return;
+			break;
 		}
-		if (polyt!=0)
-			delete polyt;
 		if (in=="cube") {
 			checkSpace(pos, argc, 1, in);
-			polyt = new Polytope::NDCube(Util::toInt(argv[pos+1]));
+			parts.push_back(new Polytope::NDCube(Util::toInt(argv[pos+1])));
 			pos++;
 		} else if (in=="obj") {
 			checkSpace(pos, argc, 1, in);
@@ -103,23 +105,23 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope::Polyt
 			if (!instream.is_open()) {
 				throw "File not found/Couldn't open "+file;
 			}
-			polyt = new Polytope::ObjPolytope(&instream);
+			parts.push_back(new Polytope::ObjPolytope(&instream));
 			pos++;
 		} else if (in=="crossPolytope") {
 			checkSpace(pos, argc, 1, in);
-			polyt = new Polytope::NDCrossPolytope(Util::toInt(argv[pos+1]));
+			parts.push_back(new Polytope::NDCrossPolytope(Util::toInt(argv[pos+1])));
 			pos++;
 		} else if (in=="simplex") {
 			checkSpace(pos, argc, 1, in);
-			polyt = new Polytope::NDSimplex(Util::toInt(argv[pos+1]));
+			parts.push_back(new Polytope::NDSimplex(Util::toInt(argv[pos+1])));
 			pos++;
 		} else if (in=="24Cell") {
 			if (polyt!=0)
 				delete polyt;
-			polyt = new Polytope::P24Cell();
+			parts.push_back(new Polytope::P24Cell());
 		} else if (in=="sphere") {
 			checkSpace(pos, argc, 2, in);
-			polyt = new Polytope::NDSphere(Util::toInt(argv[pos+1]), Util::toInt(argv[pos+2]));
+			parts.push_back(new Polytope::NDSphere(Util::toInt(argv[pos+1]), Util::toInt(argv[pos+2])));
 			pos+=2;
 		} else if (in=="matPower") {
 			// matrix size/dimension count
@@ -133,7 +135,7 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope::Polyt
 			int totalSize = size*size+size;
 			checkSpace(pos, argc, totalSize, in);
 			const char** matStart = argv+pos+1;
-			polyt = new Polytope::MatrixPowerPolytope(matStart, size);
+			parts.push_back(new Polytope::MatrixPowerPolytope(matStart, size));
 			pos += totalSize;
 		} else if (in=="cGraph") {
 			checkSpace(pos, argc, 7, in);
@@ -147,11 +149,18 @@ void parsePolytopeParam(const char* argv[], int &argc, int &pos, Polytope::Polyt
 			double iStep = Util::toFloat(argv[pos+1]);
 			int iCount = Util::toFloat(argv[pos+2]);
 			pos+=2;
-			polyt = new Polytope::ComplexGraph(function, rStart, rStep, rCount, iStart, iStep, iCount);
+			parts.push_back(new Polytope::ComplexGraph(function, rStart, rStep, rCount, iStart, iStep, iCount));
 		} else {
 			throw "Unknown parameter: "+in;
 		}
 		pos++;
+	}
+	if (parts.size()==0) {
+		throw "You have to set a polytope!";
+	} else if (parts.size()==1) {
+		polyt = parts[0];
+	} else {
+		polyt = new Polytope::JoinedPolytope(parts);
 	}
 }
 
@@ -345,7 +354,7 @@ void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &start
 	powerMat.rotate(1, 3, 1);
 	renderType[0] = true;
 	renderType[1] = true;
-	renderType[2] = 0;
+	renderType[2] = true;
 }
 int main(int argc, const char* argv[]) {
 	Polytope::Polytope* polyt = 0;

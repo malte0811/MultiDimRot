@@ -1,6 +1,6 @@
 /*******************************************************************************
  * This file is part of MultiDimRot2.0.
- * Copyright (C) 2016 malte0811
+ * Copyright (C) 2016-2017 malte0811
  *
  * MultiDimRot2.0 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with MultiDimRot2.0.  If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ ******************************************************************************/
 package multiDimRot.gui;
 
 import java.awt.Color;
@@ -23,23 +23,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.GroupLayout;
+import javax.swing.*;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 
 import multiDimRot.gui.panels.DimensionCountPanel;
 import multiDimRot.gui.panels.MatrixVectorPanel;
 import multiDimRot.gui.panels.ParamPanel;
-import multiDimRot.gui.panels.PolytopePanel;
 import multiDimRot.gui.panels.MiscPanel;
 import multiDimRot.gui.panels.SingleMatrixPanel;
+import multiDimRot.gui.panels.polytope.PolytopePanel;
 
 public class Main  {
 	public static Main INSTANCE;
@@ -135,6 +128,6 @@ public class Main  {
 		frame.add(new JScrollPane(panel));
 		frame.setSize(500, 500);
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 }

@@ -172,7 +172,7 @@ void parseMatVecParam(const char* argv[], int &argc, int &pos, int dims, std::ve
 		}
 		if (in=="cycle") {
 			checkSpace(pos, argc, 1, in);
-			mats = std::vector<Math::MatrixNxN>(Util::toInt(argv[pos+1]));
+			mats = std::vector<Math::MatrixNxN>(Util::toInt(argv[pos+1]), Math::MatrixNxN(dims+1));
 			pos++;
 		} else if (in=="rotInc") {
 			checkSpace(pos, argc, 3, in);
@@ -334,7 +334,7 @@ void parseArgs(int argc, const char* argv[], Polytope::Polytope* &polyt, std::ve
 
 void initDefault(Polytope::Polytope* &polyt, std::vector<Math::MatrixNxN> &startMats,
 		Math::MatrixNxN &powerMat, std::vector<Math::MatrixNxN> &endMats, int &dims, bool renderType[]) {
-//	polyt = new Polytope::ComplexGraph(Math::ExpressionParser("ln(x)"), -10, 1, 21, -10, 1, 21);
+	//polyt = new Polytope::ComplexGraph(Math::ExpressionParser("ln(x)"), -10, 1, 21, -10, 1, 21);
 	polyt = new Polytope::NDCube(4);
 	dims = polyt->getDimensions();
 	endMats = std::vector<Math::MatrixNxN>(1, Math::MatrixNxN(dims+1));

@@ -31,7 +31,7 @@ import multiDimRot.gui.transformations.Transformation;
 
 public class ColoredCellRenderer extends JLabel implements ListCellRenderer<Transformation> {
 	private static final long serialVersionUID = 1L;
-	final static Color BACK_DEFAULT = UIManager.getColor ( "Panel.background" );
+	private final static Color BACK_DEFAULT = UIManager.getColor ( "Panel.background" );
 	private boolean multible;
 	public ColoredCellRenderer(boolean m) {
 		multible = m;

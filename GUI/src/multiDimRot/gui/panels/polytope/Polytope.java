@@ -35,14 +35,17 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import multiDimRot.gui.Main;
+import multiDimRot.gui.panels.polytope.FixedDimPolytope.BasicPolytopeFactory;
 
 public abstract class Polytope {
 	private static List<PolytopeFactory> polytopes = new ArrayList<>();
 	static {
-		polytopes.add(new PolytopeFactory("N-dimensional Cube", ()->new VarDimPolytope("cube", "Cube")));
-		polytopes.add(new PolytopeFactory("N-dimensional Simplex", ()->new VarDimPolytope("simplex", "Simplex")));
-		polytopes.add(new PolytopeFactory("N-dimensional Cross-Polytope", ()->new VarDimPolytope("crossPolytope", "Cross-Polytope")));
-		polytopes.add(new PolytopeFactory("24-Cell", ()->new FixedDimPolytope("24Cell", "24-Cell", 4)));
+		polytopes.add(new BasicPolytopeFactory("N-dimensional Cube", ()->new VarDimPolytope("cube", "Cube")));
+		polytopes.add(new BasicPolytopeFactory("N-dimensional Simplex", ()->new VarDimPolytope("simplex", "Simplex")));
+		polytopes.add(new BasicPolytopeFactory("N-dimensional Cross-Polytope", ()->new VarDimPolytope("crossPolytope", "Cross-Polytope")));
+		polytopes.add(new AddIntPolytope.AddIntFactory("sphere", "%d-dimensional Sphere with resolution %d", "N-dimensional Sphere with resolution", 10, value -> value>1));
+		polytopes.add(new BasicPolytopeFactory("24-Cell", ()->new FixedDimPolytope("24Cell", "24-Cell", 4)));
+		polytopes.add(new ObjPolytope.ObjFactory());
 	}
 	// mustn't be called multiple times simultaneously!
 	public static Polytope showGUI() {
@@ -51,15 +54,9 @@ public abstract class Polytope {
 		GroupLayout l = new GroupLayout(jp);
 		ParallelGroup hor = l.createParallelGroup();
 		SequentialGroup vert = l.createSequentialGroup();
-		Map<ButtonModel, PolytopeFactory> buttons = new HashMap<>(polytopes.size());
-		ButtonGroup bGroup = new ButtonGroup();
-		for (PolytopeFactory pc:polytopes) {
-			JRadioButton jb = pc.add(l, hor, vert);
-			bGroup.add(jb);
-			buttons.put(jb.getModel(), pc);
-		}
 		AtomicBoolean done = new AtomicBoolean(false);
 		JButton ok = new JButton("OK");
+		ok.setEnabled(false);
 		JButton cancel = new JButton("Cancel");
 		ok.addActionListener((a)->{
 			done.set(true);
@@ -68,6 +65,19 @@ public abstract class Polytope {
 		cancel.addActionListener((a)->{
 			jd.dispose();
 		});
+		Map<ButtonModel, PolytopeFactory> buttons = new HashMap<>(polytopes.size());
+		ButtonGroup bGroup = new ButtonGroup();
+		for (PolytopeFactory pc:polytopes) {
+			JRadioButton jb = pc.add(l, hor, vert);
+			pc.setOnValidFunction(ok::setEnabled);
+			jb.addChangeListener(e -> {
+				if (jb.isSelected()) {
+					ok.setEnabled(pc.isValid());
+				}
+			});
+			bGroup.add(jb);
+			buttons.put(jb.getModel(), pc);
+		}
 		hor.addComponent(ok);
 		vert.addComponent(ok);
 		hor.addComponent(cancel);

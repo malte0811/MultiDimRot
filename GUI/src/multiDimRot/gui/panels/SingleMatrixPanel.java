@@ -33,7 +33,7 @@ import javax.swing.ListSelectionModel;
 
 import multiDimRot.gui.DialogHelper;
 import multiDimRot.gui.Main;
-import multiDimRot.gui.list.ColoredCellRenderer;
+import multiDimRot.gui.gui.ColoredCellRenderer;
 import multiDimRot.gui.transformations.Projection;
 import multiDimRot.gui.transformations.Rotation;
 import multiDimRot.gui.transformations.Scaling;

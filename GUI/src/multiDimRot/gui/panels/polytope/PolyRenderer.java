@@ -23,7 +23,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class PolyRenderer implements ListCellRenderer<Polytope> {
-	final static Color BACK_DEFAULT = UIManager.getColor ( "Panel.background" );
 
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Polytope> list, Polytope value,

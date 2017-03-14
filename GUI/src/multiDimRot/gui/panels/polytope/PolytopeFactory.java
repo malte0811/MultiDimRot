@@ -18,6 +18,7 @@
 
 package multiDimRot.gui.panels.polytope;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.swing.GroupLayout;
@@ -25,21 +26,15 @@ import javax.swing.JRadioButton;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 
-public class PolytopeFactory {
-	String title;
-	Supplier<Polytope> create;
-	public PolytopeFactory() {}
-	public PolytopeFactory(String t, Supplier<Polytope> c) {
-		title = t;
-		create = c;
+public abstract class PolytopeFactory {
+	public abstract Polytope create();
+	public abstract JRadioButton add(GroupLayout gl, ParallelGroup hor, SequentialGroup vert);
+	public abstract boolean isValid();
+	private Consumer<Boolean> onValid = (b)->{};
+	protected void setValid(boolean b) {
+		onValid.accept(b);
 	}
-	public Polytope create() {
-		return create.get();
-	}
-	public JRadioButton add(GroupLayout gl, ParallelGroup hor, SequentialGroup vert) {
-		JRadioButton b = new JRadioButton(title);
-		hor.addComponent(b);
-		vert.addComponent(b);
-		return b;
+	public void setOnValidFunction(Consumer<Boolean> oV) {
+		onValid = oV;
 	}
 }

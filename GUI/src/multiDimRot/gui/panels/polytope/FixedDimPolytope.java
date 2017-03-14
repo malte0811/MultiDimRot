@@ -20,6 +20,9 @@ package multiDimRot.gui.panels.polytope;
 
 import multiDimRot.gui.Main;
 
+import javax.swing.*;
+import java.util.function.Supplier;
+
 public class FixedDimPolytope extends Polytope {
 	private String type;
 	private String display;
@@ -48,5 +51,30 @@ public class FixedDimPolytope extends Polytope {
 	public String getDisplayString() {
 		return display+" ("+dimCount+" dimensions)";
 	}
+	public static class BasicPolytopeFactory extends PolytopeFactory {
+		String title;
+		Supplier<Polytope> create;
+		public BasicPolytopeFactory(String t, Supplier<Polytope> c) {
+			title = t;
+			create = c;
+		}
 
+		@Override
+		public Polytope create() {
+			return create.get();
+		}
+
+		@Override
+		public JRadioButton add(GroupLayout gl, GroupLayout.ParallelGroup hor, GroupLayout.SequentialGroup vert) {
+			JRadioButton b = new JRadioButton(title);
+			hor.addComponent(b);
+			vert.addComponent(b);
+			return b;
+		}
+
+		@Override
+		public boolean isValid() {
+			return true;
+		}
+	}
 }

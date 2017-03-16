@@ -90,9 +90,7 @@ public class AddIntPolytope extends Polytope {
 			in.setMaximumSize(new Dimension(100, 20));
 			in.setMinimumSize(new Dimension(50, 20));
 			in.setEnabled(false);
-			((PlainDocument)in.getDocument()).setDocumentFilter(new NumberDocFilter(false, value -> {
-				setValid(isValid());
-			}));
+			((PlainDocument)in.getDocument()).setDocumentFilter(new NumberDocFilter(false, value -> setValid(isValid())));
 			GroupLayout.ParallelGroup iVert = gl.createParallelGroup();
 			GroupLayout.SequentialGroup iHor = gl.createSequentialGroup();
 			iVert.addComponent(ret);

@@ -46,6 +46,7 @@ public abstract class Polytope {
 		polytopes.add(new AddIntPolytope.AddIntFactory("sphere", "%d-dimensional Sphere with resolution %d", "N-dimensional Sphere with resolution", 10, value -> value>1));
 		polytopes.add(new BasicPolytopeFactory("24-Cell", ()->new FixedDimPolytope("24Cell", "24-Cell", 4)));
 		polytopes.add(new ObjPolytope.ObjFactory());
+		polytopes.add(new CGraphPolytope.CGraphFactory());
 	}
 	// mustn't be called multiple times simultaneously!
 	public static Polytope showGUI() {
